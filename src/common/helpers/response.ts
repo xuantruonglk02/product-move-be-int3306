@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { HttpStatus } from '../constants';
 import { DEFAULT_ERROR_MESSAGE, DEFAULT_SUCCESS_MESSAGE } from '../messages';
 
@@ -27,4 +28,15 @@ export class ErrorResponse {
             version,
         };
     }
+}
+
+@Injectable()
+export class ApiResponse<T> {
+    public code: number;
+
+    public message: string;
+
+    public data: T;
+
+    // public errors: T[];
 }

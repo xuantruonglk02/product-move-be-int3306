@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule as TypeORMModule } from '@nestjs/typeorm';
 import ConfigKey from '../config/configKey';
 
 @Module({
     imports: [
-        TypeOrmModule.forRootAsync({
+        TypeORMModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
@@ -15,10 +15,13 @@ import ConfigKey from '../config/configKey';
                 username: configService.get(ConfigKey.DB_USERNAME),
                 password: configService.get(ConfigKey.DB_PASSWORD),
                 database: configService.get(ConfigKey.DB_NAME),
-                entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+                entities: [
+                    __dirname + '/../../modules/**/entities/*.entity{.ts,.js}',
+                ],
                 synchronize: true,
+                logging: configService.get(ConfigKey.DB_DEBUG).split(','),
             }),
         }),
     ],
 })
-export class MySqlModule {}
+export class TypeOrmModule {}

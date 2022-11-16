@@ -8,6 +8,10 @@ export enum HttpStatus {
     INTERNAL_SERVER_ERROR = 500,
 }
 
+export enum SqlEntity {
+    USERS = 'users',
+}
+
 export enum UserTokenType {
     ACCESS_TOKEN = 'access_token',
     REFRESH_TOKEN = 'refresh_token',
@@ -29,3 +33,11 @@ export enum OrderBy {
     CREATED_AT = 'createdAt',
     UPDATED_AT = 'updatedAt',
 }
+
+export const Regex = {
+    PASSWORD: /./,
+};
+
+export const PASSWORD_MIN_LENGTH = 8;
+export const HASH_PASSWORD_LENGTH = 60;
+export const INPUT_TEXT_MAX_LENGTH = 255;
