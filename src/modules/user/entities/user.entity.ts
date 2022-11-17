@@ -5,15 +5,16 @@ import {
     UserRole,
 } from 'src/common/constants';
 import { BaseEntity } from 'src/common/sql-entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { UserToken } from 'src/modules/auth/entities/userToken.entity';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity(SqlEntity.USERS)
 export class User extends BaseEntity {
     @Column({
         type: 'varchar',
         length: INPUT_TEXT_MAX_LENGTH,
-        unique: true,
     })
+    @Index()
     username: string;
 
     @Column({
@@ -27,6 +28,10 @@ export class User extends BaseEntity {
         length: HASH_PASSWORD_LENGTH,
     })
     password: string;
+
+    // relationships
+    @OneToMany(() => UserToken, (token) => token.user)
+    tokens: UserToken[];
 }
 
-export const userAttributes = ['username', 'role', 'password'];
+export const userAttributes = ['id', 'username', 'role'];

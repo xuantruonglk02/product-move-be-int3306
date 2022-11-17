@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UserTokenType } from 'src/modules/auth/auth.constants';
 import ConfigKey from '../config/configKey';
-import { UserTokenType } from '../constants';
 import { extractToken } from '../helpers/utilityFunctions';
 
 @Injectable()

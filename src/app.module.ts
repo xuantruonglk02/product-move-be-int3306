@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AllExceptionsFilter } from './common/exceptions.filter';
 import { TypeOrmModule } from './common/services/typeOrm.service';
 import { TransformInterceptor } from './common/transform.interceptor';
+import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -14,6 +15,7 @@ import { UserModule } from './modules/user/user.module';
             isGlobal: true,
         }),
         TypeOrmModule,
+        AuthModule,
         UserModule,
     ],
     controllers: [AppController],
