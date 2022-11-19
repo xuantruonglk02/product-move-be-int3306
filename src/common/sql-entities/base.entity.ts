@@ -1,7 +1,6 @@
 import {
     Column,
     Entity,
-    PrimaryGeneratedColumn,
     BaseEntity as TypeORMBaseEntity,
     CreateDateColumn,
     UpdateDateColumn,
@@ -10,9 +9,6 @@ import {
 
 @Entity()
 export class BaseEntity extends TypeORMBaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-
     @CreateDateColumn({
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP(6)',

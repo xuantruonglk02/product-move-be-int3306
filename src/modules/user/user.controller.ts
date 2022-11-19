@@ -80,7 +80,7 @@ export class UserController {
             }
 
             body.password = hashPassword(body.password);
-            body.createdBy = req.loggedUser?.id || 0;
+            body.createdBy = req.loggedUser.id;
             const newUser = await this.userService.createUser(body);
             return new SuccessResponse(
                 newUser,

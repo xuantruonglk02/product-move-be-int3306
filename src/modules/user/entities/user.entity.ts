@@ -6,10 +6,19 @@ import {
 } from 'src/common/constants';
 import { BaseEntity } from 'src/common/sql-entities/base.entity';
 import { UserToken } from 'src/modules/auth/entities/userToken.entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import {
+    Column,
+    Entity,
+    Index,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity(SqlEntity.USERS)
 export class User extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column({
         type: 'varchar',
         length: INPUT_TEXT_MAX_LENGTH,
