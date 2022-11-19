@@ -17,3 +17,15 @@ export const createUserSchema = Joi.object().keys({
         .regex(Regex.PASSWORD)
         .required(),
 });
+
+export const updateUserSchema = Joi.object().keys({
+    confirmPassword: Joi.string()
+        .min(PASSWORD_MIN_LENGTH)
+        .max(INPUT_TEXT_MAX_LENGTH)
+        .required(),
+
+    password: Joi.string()
+        .min(PASSWORD_MIN_LENGTH)
+        .max(INPUT_TEXT_MAX_LENGTH)
+        .optional(),
+});

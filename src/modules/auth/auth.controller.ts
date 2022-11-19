@@ -28,7 +28,7 @@ export class AuthController {
         body: ILogin,
     ) {
         try {
-            const user = await this.userService.getOneUserByField(
+            const user = await this.userService.getUserByField(
                 {
                     key: 'username',
                     value: body.username,

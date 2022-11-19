@@ -72,7 +72,7 @@ export class AuthService {
 
     async login(username: string) {
         try {
-            const user = await this.userService.getOneUserByField(
+            const user = await this.userService.getUserByField(
                 { key: 'username', value: username },
                 ['id', 'username', 'role'],
             );

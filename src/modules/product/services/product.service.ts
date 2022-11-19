@@ -64,17 +64,7 @@ export class ProductService {
                     },
                 ])
                 .execute();
-            return await this.productLineRepository
-                .createQueryBuilder(SqlEntity.PRODUCT_LINES)
-                .select(
-                    productLineAttributes.map(
-                        (attr) => `${SqlEntity.PRODUCT_LINES}.${attr}`,
-                    ),
-                )
-                .where(`${SqlEntity.PRODUCT_LINES}.id = :id`, {
-                    id: inserted.raw.insertId,
-                })
-                .getOne();
+            return await this.getProductLineDetail(inserted.raw.insertId);
         } catch (error) {
             throw error;
         }
@@ -116,17 +106,7 @@ export class ProductService {
 
             await queryRunner.commitTransaction();
 
-            return await this.productRepository
-                .createQueryBuilder(SqlEntity.PRODUCTS)
-                .select(
-                    productAttributes.map(
-                        (attr) => `${SqlEntity.PRODUCTS}.${attr}`,
-                    ),
-                )
-                .where(`${SqlEntity.PRODUCTS}.id = :id`, {
-                    id: inserted.raw.insertId,
-                })
-                .getOne();
+            return await this.getProductDetail(inserted.raw.insertId);
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error;
