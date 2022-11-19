@@ -9,7 +9,6 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
-import { UserRole } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -19,6 +18,7 @@ import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
+import { UserRole } from '../user/user.constants';
 import { ICreateProduct, ICreateProductLine } from './product.interfaces';
 import { ProductMessages } from './product.messages';
 import {

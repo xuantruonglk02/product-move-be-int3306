@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SqlEntity } from 'src/common/constants';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import {
     ProductLine,
     productLineAttributes,
@@ -17,6 +17,7 @@ export class ProductService {
         private readonly productLineRepository: Repository<ProductLine>,
         @InjectRepository(Product)
         private readonly productRepository: Repository<Product>,
+        private readonly dataSource: DataSource,
     ) {}
 
     async getProductDetail(id: number, attrs = productAttributes) {
@@ -80,8 +81,13 @@ export class ProductService {
     }
 
     async createNewProduct(body: ICreateProduct) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+
+        await queryRunner.startTransaction();
+
         try {
-            const inserted = await this.productRepository
+            const inserted = await queryRunner.manager
                 .createQueryBuilder()
                 .insert()
                 .into(
@@ -98,6 +104,18 @@ export class ProductService {
                     },
                 ])
                 .execute();
+            await queryRunner.manager
+                .createQueryBuilder()
+                .update(ProductLine)
+                .set({
+                    quantityOfProduct: () => 'quantityOfProduct + 1',
+                    updatedBy: body.createdBy,
+                })
+                .where('id = :id', { id: body.productLineId })
+                .execute();
+
+            await queryRunner.commitTransaction();
+
             return await this.productRepository
                 .createQueryBuilder(SqlEntity.PRODUCTS)
                 .select(
@@ -110,7 +128,10 @@ export class ProductService {
                 })
                 .getOne();
         } catch (error) {
+            await queryRunner.rollbackTransaction();
             throw error;
+        } finally {
+            await queryRunner.release();
         }
     }
 }

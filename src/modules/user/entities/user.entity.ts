@@ -2,7 +2,6 @@ import {
     HASH_PASSWORD_LENGTH,
     INPUT_TEXT_MAX_LENGTH,
     SqlEntity,
-    UserRole,
 } from 'src/common/constants';
 import { BaseEntity } from 'src/common/sql-entities/base.entity';
 import { UserToken } from 'src/modules/auth/entities/userToken.entity';
@@ -13,6 +12,7 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserRole } from '../user.constants';
 
 @Entity(SqlEntity.USERS)
 export class User extends BaseEntity {

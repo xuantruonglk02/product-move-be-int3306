@@ -7,13 +7,6 @@ export enum SqlEntity {
     PRODUCT_IMAGES = 'product_images',
 }
 
-export enum UserRole {
-    ADMIN = 'admin',
-    PRODUCER = 'producer',
-    AGENCY = 'agency',
-    WARRANTY_CENTER = 'warranty_center',
-}
-
 export enum OrderDirection {
     ASCENDING = 'ascending',
     DESCENDING = 'descending',

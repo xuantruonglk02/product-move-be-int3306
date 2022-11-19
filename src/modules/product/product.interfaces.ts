@@ -4,6 +4,7 @@ export interface IProductLine {
     id: string;
     name: string;
     price: number;
+    quantityOfProduct: number;
 }
 
 export interface IProduct {

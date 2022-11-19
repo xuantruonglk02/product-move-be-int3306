@@ -10,7 +10,6 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
-import { UserRole } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -22,6 +21,7 @@ import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { UserService } from './services/user.service';
+import { UserRole } from './user.constants';
 import { ICreateUser } from './user.interfaces';
 import { UserMessages } from './user.messages';
 import { createUserSchema } from './user.validators';

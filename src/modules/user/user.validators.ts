@@ -3,8 +3,8 @@ import {
     INPUT_TEXT_MAX_LENGTH,
     PASSWORD_MIN_LENGTH,
     Regex,
-    UserRole,
 } from 'src/common/constants';
+import { UserRole } from './user.constants';
 
 export const createUserSchema = Joi.object().keys({
     username: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),

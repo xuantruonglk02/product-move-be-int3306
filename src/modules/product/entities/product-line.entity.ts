@@ -23,9 +23,20 @@ export class ProductLine extends BaseEntity {
     })
     price: number;
 
+    @Column({
+        type: 'int',
+        default: 0,
+    })
+    quantityOfProduct: number;
+
     // relationships
     @OneToMany(() => Product, (product) => product.productLine)
     products: Product[];
 }
 
-export const productLineAttributes = ['id', 'name', 'price'];
+export const productLineAttributes = [
+    'id',
+    'name',
+    'price',
+    'quantityOfProduct',
+];
