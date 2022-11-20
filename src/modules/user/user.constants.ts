@@ -3,4 +3,5 @@ export enum UserRole {
     PRODUCER = 'producer',
     AGENCY = 'agency',
     WARRANTY_CENTER = 'warranty_center',
+    CONSUMER = 'consumer',
 }

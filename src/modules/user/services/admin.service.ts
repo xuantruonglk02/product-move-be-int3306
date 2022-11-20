@@ -26,7 +26,10 @@ export class AdminService {
                 )
                 .values([
                     {
-                        username: body.username,
+                        email: body.email,
+                        phoneNumber: body.phoneNumber,
+                        firstName: body.firstName,
+                        lastName: body.lastName,
                         role: body.role,
                         password: body.password,
                         createdBy: body.createdBy,

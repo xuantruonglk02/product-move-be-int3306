@@ -18,7 +18,9 @@ export enum OrderBy {
 }
 
 export const Regex = {
-    PASSWORD: /./,
+    EMAIL: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    PASSWORD:
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 };
 
 export const IMAGE_URL_MAX_LENGTH = 255;
@@ -26,3 +28,5 @@ export const PASSWORD_MIN_LENGTH = 8;
 export const HASH_PASSWORD_LENGTH = 60;
 export const INPUT_TEXT_MAX_LENGTH = 255;
 export const ID_MIN_NUMBER = 1;
+export const PHONE_NUMBER_MAX_LENGTH = 12;
+export const WORD_MAX_LENGTH = 20;

@@ -2,7 +2,10 @@ import { UserRole } from './user.constants';
 
 export interface IUser {
     id: number;
-    username: string;
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
     role: UserRole;
 }
 
@@ -11,7 +14,7 @@ export interface ICreateUser extends IUser {
     createdBy: number;
 }
 
-export interface IUpdateUser extends Omit<IUser, 'id' | 'username' | 'role'> {
+export interface IUpdateUser extends Omit<IUser, 'id' | 'email' | 'role'> {
     confirmPassword: string;
 
     password: string;

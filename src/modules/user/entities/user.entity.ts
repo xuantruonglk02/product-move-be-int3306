@@ -1,7 +1,9 @@
 import {
     HASH_PASSWORD_LENGTH,
     INPUT_TEXT_MAX_LENGTH,
+    PHONE_NUMBER_MAX_LENGTH,
     SqlEntity,
+    WORD_MAX_LENGTH,
 } from 'src/common/constants';
 import { BaseEntity } from 'src/common/sql-entities/base.entity';
 import { UserToken } from 'src/modules/auth/entities/userToken.entity';
@@ -24,7 +26,26 @@ export class User extends BaseEntity {
         length: INPUT_TEXT_MAX_LENGTH,
     })
     @Index()
-    username: string;
+    email: string;
+
+    @Column({
+        type: 'varchar',
+        length: PHONE_NUMBER_MAX_LENGTH,
+        nullable: true,
+    })
+    phoneNumber: string;
+
+    @Column({
+        type: 'varchar',
+        length: WORD_MAX_LENGTH,
+    })
+    firstName: string;
+
+    @Column({
+        type: 'varchar',
+        length: WORD_MAX_LENGTH,
+    })
+    lastName: string;
 
     @Column({
         type: 'enum',
@@ -43,4 +64,11 @@ export class User extends BaseEntity {
     tokens: UserToken[];
 }
 
-export const userAttributes = ['id', 'username', 'role'];
+export const userAttributes = [
+    'id',
+    'email',
+    'phoneNumber',
+    'firstName',
+    'lastName',
+    'role',
+];

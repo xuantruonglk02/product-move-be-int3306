@@ -71,8 +71,8 @@ export class UserController {
         try {
             const user = await this.userService.getUserByField(
                 {
-                    key: 'username',
-                    value: body.username,
+                    key: 'email',
+                    value: body.email,
                 },
                 ['id'],
             );
@@ -81,7 +81,7 @@ export class UserController {
                     {
                         code: HttpStatus.CONFLICT,
                         message: UserMessages.errors.userExists,
-                        key: 'username',
+                        key: 'email',
                     },
                 ]);
             }
@@ -111,6 +111,19 @@ export class UserController {
                 ['role', 'password'],
             );
 
+            if (
+                req.loggedUser.id !== id &&
+                userRequested.role !== UserRole.ADMIN
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.FORBIDDEN,
+                        message: UserMessages.errors.updateUserForbidden,
+                        key: 'id',
+                    },
+                ]);
+            }
+
             const matchPassword = await bcrypt.compare(
                 body.confirmPassword,
                 userRequested.password,
@@ -121,19 +134,6 @@ export class UserController {
                         code: HttpStatus.UNAUTHORIZED,
                         message: AuthMessages.errors.wrongPassword,
                         key: 'password',
-                    },
-                ]);
-            }
-
-            if (
-                req.loggedUser.id !== id &&
-                userRequested.role !== UserRole.ADMIN
-            ) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.FORBIDDEN,
-                        message: UserMessages.errors.updateUserForbidden,
-                        key: 'id',
                     },
                 ]);
             }
