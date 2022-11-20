@@ -18,7 +18,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
             code: exception.getStatus(),
             name: exception.name,
             message: exception.message,
-            errors: apiResponse?.errors || [],
+            errors: apiResponse?.error || [],
         };
 
         return response.status(status).json(parsedResponse);
