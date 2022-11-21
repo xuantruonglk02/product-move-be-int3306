@@ -20,7 +20,7 @@ import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { UserRole } from '../user/user.constants';
 import { ICreateProduct, ICreateProductLine } from './product.interfaces';
-import { ProductMessages } from './product.messages';
+import { productMessages } from './product.messages';
 import {
     createProductLineSchema,
     createProductSchema,
@@ -42,7 +42,7 @@ export class ProductController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: ProductMessages.errors.productLineNotFound,
+                        message: productMessages.errors.productLineNotFound,
                         key: 'id',
                     },
                 ]);
@@ -62,7 +62,7 @@ export class ProductController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: ProductMessages.errors.productNotFound,
+                        message: productMessages.errors.productNotFound,
                         key: 'id',
                     },
                 ]);
@@ -92,7 +92,7 @@ export class ProductController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.CONFLICT,
-                        message: ProductMessages.errors.productLineExists,
+                        message: productMessages.errors.productLineExists,
                         key: 'id',
                     },
                 ]);
@@ -103,7 +103,7 @@ export class ProductController {
                 await this.productService.createNewProductLine(body);
             return new SuccessResponse(
                 newProductLine,
-                ProductMessages.success.createProductLine,
+                productMessages.success.createProductLine,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);
@@ -125,7 +125,7 @@ export class ProductController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: ProductMessages.errors.productLineNotFound,
+                        message: productMessages.errors.productLineNotFound,
                         key: 'productLineId',
                     },
                 ]);
@@ -136,7 +136,7 @@ export class ProductController {
             const newProduct = await this.productService.createNewProduct(body);
             return new SuccessResponse(
                 newProduct,
-                ProductMessages.success.createProduct,
+                productMessages.success.createProduct,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);

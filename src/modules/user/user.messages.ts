@@ -1,4 +1,4 @@
-export const UserMessages = {
+export const userMessages = {
     errors: {
         userNotFound: 'User not found',
         userExists: 'User already exists',

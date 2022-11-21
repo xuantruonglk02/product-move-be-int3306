@@ -10,11 +10,11 @@ import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
-import { AdminMessages } from '../admin/admin.messages';
+import { adminMessages } from '../admin/admin.messages';
 import { UserService } from '../user/services/user.service';
-import { UserMessages } from '../user/user.messages';
+import { userMessages } from '../user/user.messages';
 import { ILogin, IRegister } from './auth.interfaces';
-import { AuthMessages } from './auth.messages';
+import { authMessages } from './auth.messages';
 import { loginSchema, registerSchema } from './auth.validators';
 import { AuthService } from './services/auth.service';
 
@@ -42,7 +42,7 @@ export class AuthController {
                 return new ErrorResponse(HttpStatus.UNAUTHORIZED, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: AuthMessages.errors.userNotFound,
+                        message: authMessages.errors.userNotFound,
                         key: 'email',
                     },
                 ]);
@@ -56,7 +56,7 @@ export class AuthController {
                 return new ErrorResponse(HttpStatus.UNAUTHORIZED, [
                     {
                         code: HttpStatus.UNAUTHORIZED,
-                        message: AuthMessages.errors.wrongPassword,
+                        message: authMessages.errors.wrongPassword,
                         key: 'password',
                     },
                 ]);
@@ -90,7 +90,7 @@ export class AuthController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.CONFLICT,
-                        message: UserMessages.errors.userExists,
+                        message: userMessages.errors.userExists,
                         key: 'email',
                     },
                 ]);
@@ -100,7 +100,7 @@ export class AuthController {
             const newUser = await this.authService.createUser(body);
             return new SuccessResponse(
                 newUser,
-                AdminMessages.success.createUser,
+                adminMessages.success.createUser,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);

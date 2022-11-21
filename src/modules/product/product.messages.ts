@@ -1,4 +1,4 @@
-export const ProductMessages = {
+export const productMessages = {
     success: {
         createProduct: 'Create product successfully',
         createProductLine: 'Create product line successfully',

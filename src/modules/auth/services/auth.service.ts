@@ -106,8 +106,7 @@ export class AuthService {
                     {
                         email: body.email,
                         phoneNumber: body.phoneNumber,
-                        firstName: body.firstName,
-                        lastName: body.lastName,
+                        name: body.name,
                         role: UserRole.CONSUMER,
                         password: body.password,
                     },

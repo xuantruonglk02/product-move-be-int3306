@@ -17,11 +17,11 @@ import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
-import { AuthMessages } from '../auth/auth.messages';
+import { authMessages } from '../auth/auth.messages';
 import { UserService } from './services/user.service';
 import { UserRole } from './user.constants';
 import { IUpdateUser } from './user.interfaces';
-import { UserMessages } from './user.messages';
+import { userMessages } from './user.messages';
 import { updateUserSchema } from './user.validators';
 
 @Controller('/user')
@@ -40,7 +40,7 @@ export class UserController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: UserMessages.errors.userNotFound,
+                        message: userMessages.errors.userNotFound,
                         key: 'id',
                     },
                 ]);
@@ -72,7 +72,7 @@ export class UserController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.FORBIDDEN,
-                        message: UserMessages.errors.updateUserForbidden,
+                        message: userMessages.errors.updateUserForbidden,
                         key: 'id',
                     },
                 ]);
@@ -86,7 +86,7 @@ export class UserController {
                 return new ErrorResponse(HttpStatus.UNAUTHORIZED, [
                     {
                         code: HttpStatus.UNAUTHORIZED,
-                        message: AuthMessages.errors.wrongPassword,
+                        message: authMessages.errors.wrongPassword,
                         key: 'password',
                     },
                 ]);

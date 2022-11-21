@@ -29,4 +29,3 @@ export const HASH_PASSWORD_LENGTH = 60;
 export const INPUT_TEXT_MAX_LENGTH = 255;
 export const ID_MIN_NUMBER = 1;
 export const PHONE_NUMBER_MAX_LENGTH = 12;
-export const WORD_MAX_LENGTH = 20;

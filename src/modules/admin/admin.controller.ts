@@ -21,9 +21,9 @@ import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
-import { UserMessages } from '../user/user.messages';
+import { userMessages } from '../user/user.messages';
 import { ICreateUser } from './admin.interfaces';
-import { AdminMessages } from './admin.messages';
+import { adminMessages } from './admin.messages';
 import { createUserSchema } from './admin.validators';
 import { AdminService } from './services/admin.service';
 
@@ -54,7 +54,7 @@ export class AdminController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.CONFLICT,
-                        message: UserMessages.errors.userExists,
+                        message: userMessages.errors.userExists,
                         key: 'email',
                     },
                 ]);
@@ -65,7 +65,7 @@ export class AdminController {
             const newUser = await this.adminService.createUser(body);
             return new SuccessResponse(
                 newUser,
-                AdminMessages.success.createUser,
+                adminMessages.success.createUser,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);
@@ -87,7 +87,7 @@ export class AdminController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: UserMessages.errors.userNotFound,
+                        message: userMessages.errors.userNotFound,
                         key: 'id',
                     },
                 ]);
@@ -99,7 +99,7 @@ export class AdminController {
             );
             return new SuccessResponse(
                 deletedUser,
-                AdminMessages.success.deleteUser,
+                adminMessages.success.deleteUser,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);

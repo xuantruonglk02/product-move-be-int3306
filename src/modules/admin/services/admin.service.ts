@@ -28,8 +28,7 @@ export class AdminService {
                     {
                         email: body.email,
                         phoneNumber: body.phoneNumber,
-                        firstName: body.firstName,
-                        lastName: body.lastName,
+                        name: body.name,
                         role: body.role,
                         password: body.password,
                         createdBy: body.createdBy,

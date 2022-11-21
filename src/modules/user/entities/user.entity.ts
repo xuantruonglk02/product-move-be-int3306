@@ -3,7 +3,6 @@ import {
     INPUT_TEXT_MAX_LENGTH,
     PHONE_NUMBER_MAX_LENGTH,
     SqlEntity,
-    WORD_MAX_LENGTH,
 } from 'src/common/constants';
 import { BaseEntity } from 'src/common/sql-entities/base.entity';
 import { UserToken } from 'src/modules/auth/entities/userToken.entity';
@@ -37,15 +36,9 @@ export class User extends BaseEntity {
 
     @Column({
         type: 'varchar',
-        length: WORD_MAX_LENGTH,
+        length: INPUT_TEXT_MAX_LENGTH,
     })
-    firstName: string;
-
-    @Column({
-        type: 'varchar',
-        length: WORD_MAX_LENGTH,
-    })
-    lastName: string;
+    name: string;
 
     @Column({
         type: 'enum',
@@ -64,11 +57,4 @@ export class User extends BaseEntity {
     tokens: UserToken[];
 }
 
-export const userAttributes = [
-    'id',
-    'email',
-    'phoneNumber',
-    'firstName',
-    'lastName',
-    'role',
-];
+export const userAttributes = ['id', 'email', 'phoneNumber', 'name', 'role'];

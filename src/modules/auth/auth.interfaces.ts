@@ -6,7 +6,6 @@ export interface ILogin {
 export interface IRegister {
     email: string;
     phoneNumber: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     password: string;
 }
