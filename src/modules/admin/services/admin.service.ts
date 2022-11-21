@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SqlEntity } from 'src/common/constants';
+import { User, userAttributes } from 'src/modules/user/entities/user.entity';
+import { UserService } from 'src/modules/user/services/user.service';
 import { DataSource, Repository } from 'typeorm';
-import { User, userAttributes } from '../entities/user.entity';
-import { ICreateUser } from '../user.interfaces';
-import { UserService } from './user.service';
+import { ICreateUser } from '../admin.interfaces';
 
 @Injectable()
 export class AdminService {

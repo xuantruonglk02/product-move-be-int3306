@@ -10,6 +10,7 @@ import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
+import { AdminMessages } from '../admin/admin.messages';
 import { UserService } from '../user/services/user.service';
 import { UserMessages } from '../user/user.messages';
 import { ILogin, IRegister } from './auth.interfaces';
@@ -99,7 +100,7 @@ export class AuthController {
             const newUser = await this.authService.createUser(body);
             return new SuccessResponse(
                 newUser,
-                UserMessages.success.createUser,
+                AdminMessages.success.createUser,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);

@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AllExceptionsFilter } from './common/exceptions.filter';
 import { TypeOrmModule } from './common/services/typeOrm.service';
 import { TransformInterceptor } from './common/transform.interceptor';
+import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
@@ -17,6 +18,7 @@ import { UserModule } from './modules/user/user.module';
         }),
         TypeOrmModule,
         AuthModule,
+        AdminModule,
         UserModule,
         ProductModule,
     ],
