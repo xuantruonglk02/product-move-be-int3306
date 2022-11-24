@@ -19,21 +19,23 @@ import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
+import { ICreateProductLine } from '../product/product.interfaces';
+import { productMessages } from '../product/product.messages';
+import { createProductLineSchema } from '../product/product.validators';
+import { ProductService } from '../product/services/product.service';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
+import { ICreateUser } from '../user/user.interfaces';
 import { userMessages } from '../user/user.messages';
-import { ICreateUser } from './admin.interfaces';
-import { adminMessages } from './admin.messages';
-import { createUserSchema } from './admin.validators';
-import { AdminService } from './services/admin.service';
+import { createUserSchema } from '../user/user.validators';
 
 @Controller('/admin')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
 @Roles(UserRole.ADMIN)
 export class AdminController {
     constructor(
-        private readonly adminService: AdminService,
         private readonly userService: UserService,
+        private readonly productService: ProductService,
     ) {}
 
     @Post('/user')
@@ -62,10 +64,10 @@ export class AdminController {
 
             body.password = hashPassword(body.password);
             body.createdBy = req.loggedUser.id;
-            const newUser = await this.adminService.createUser(body);
+            const newUser = await this.userService.createUser(body);
             return new SuccessResponse(
                 newUser,
-                adminMessages.success.createUser,
+                userMessages.success.createUser,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);
@@ -73,7 +75,6 @@ export class AdminController {
     }
 
     @Delete('/user/:id')
-    @Roles(UserRole.ADMIN)
     async deleteUser(@Req() req, @Param('id', new ParseIdPipe()) id: number) {
         try {
             const user = await this.userService.getUserByField(
@@ -93,13 +94,48 @@ export class AdminController {
                 ]);
             }
 
-            const deletedUser = await this.adminService.deleteUser(
+            const deletedUser = await this.userService.deleteUser(
                 id,
                 req.loggedUser.id,
             );
             return new SuccessResponse(
                 deletedUser,
-                adminMessages.success.deleteUser,
+                userMessages.success.deleteUser,
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/product-line')
+    async createProductLine(
+        @Req() req,
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(createProductLineSchema),
+        )
+        body: ICreateProductLine,
+    ) {
+        try {
+            const productLine = await this.productService.getProductLineDetail(
+                body.id,
+            );
+            if (productLine) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.CONFLICT,
+                        message: productMessages.errors.productLineExists,
+                        key: 'id',
+                    },
+                ]);
+            }
+
+            body.createdBy = req.loggedUser.id;
+            const newProductLine =
+                await this.productService.createNewProductLine(body);
+            return new SuccessResponse(
+                newProductLine,
+                productMessages.success.createProductLine,
             );
         } catch (error) {
             throw new InternalServerErrorException(error);

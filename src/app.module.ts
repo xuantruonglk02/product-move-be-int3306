@@ -7,6 +7,7 @@ import { TypeOrmModule } from './common/services/typeOrm.service';
 import { TransformInterceptor } from './common/transform.interceptor';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ProducerModule } from './modules/producer/producer.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -18,9 +19,10 @@ import { UserModule } from './modules/user/user.module';
         }),
         TypeOrmModule,
         AuthModule,
-        AdminModule,
         UserModule,
         ProductModule,
+        AdminModule,
+        ProducerModule,
     ],
     controllers: [AppController],
     providers: [

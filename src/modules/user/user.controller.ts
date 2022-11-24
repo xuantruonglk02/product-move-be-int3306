@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
-import { AuthorizationGuard } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
@@ -25,7 +24,7 @@ import { userMessages } from './user.messages';
 import { updateUserSchema } from './user.validators';
 
 @Controller('/user')
-@UseGuards(AuthenticationGuard, AuthorizationGuard)
+@UseGuards(AuthenticationGuard)
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -65,19 +64,6 @@ export class UserController {
                 ['role', 'password'],
             );
 
-            if (
-                req.loggedUser.id !== id &&
-                userRequested.role !== UserRole.ADMIN
-            ) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.FORBIDDEN,
-                        message: userMessages.errors.updateUserForbidden,
-                        key: 'id',
-                    },
-                ]);
-            }
-
             const matchPassword = await bcrypt.compare(
                 body.confirmPassword,
                 userRequested.password,
@@ -88,6 +74,33 @@ export class UserController {
                         code: HttpStatus.UNAUTHORIZED,
                         message: authMessages.errors.wrongPassword,
                         key: 'password',
+                    },
+                ]);
+            }
+
+            const user = await this.userService.getUserByField({
+                key: 'id',
+                value: id,
+            });
+            if (!user) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: userMessages.errors.userNotFound,
+                        key: 'id',
+                    },
+                ]);
+            }
+
+            if (
+                req.loggedUser.id !== id &&
+                userRequested.role !== UserRole.ADMIN
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.FORBIDDEN,
+                        message: userMessages.errors.updateUserForbidden,
+                        key: 'id',
                     },
                 ]);
             }

@@ -8,6 +8,11 @@ export interface IUser {
     role: UserRole;
 }
 
+export interface ICreateUser extends IUser {
+    password: string;
+    createdBy: number;
+}
+
 export interface IUpdateUser extends Omit<IUser, 'id' | 'email' | 'role'> {
     confirmPassword: string;
 

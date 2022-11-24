@@ -7,15 +7,13 @@ import {
 } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
-import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
-import { adminMessages } from '../admin/admin.messages';
 import { UserService } from '../user/services/user.service';
 import { userMessages } from '../user/user.messages';
-import { ILogin, IRegister } from './auth.interfaces';
+import { ILogin } from './auth.interfaces';
 import { authMessages } from './auth.messages';
-import { loginSchema, registerSchema } from './auth.validators';
+import { loginSchema } from './auth.validators';
 import { AuthService } from './services/auth.service';
 
 @Controller('/auth')
@@ -42,7 +40,7 @@ export class AuthController {
                 return new ErrorResponse(HttpStatus.UNAUTHORIZED, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: authMessages.errors.userNotFound,
+                        message: userMessages.errors.userNotFound,
                         key: 'email',
                     },
                 ]);
@@ -68,40 +66,6 @@ export class AuthController {
                 accessToken: loggedUser.accessToken,
                 refreshToken: loggedUser.refreshToken,
             });
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
-    }
-
-    @Post('/register')
-    async register(
-        @Body(new TrimBodyPipe(), new JoiValidationPipe(registerSchema))
-        body: IRegister,
-    ) {
-        try {
-            const user = await this.userService.getUserByField(
-                {
-                    key: 'email',
-                    value: body.email,
-                },
-                ['id'],
-            );
-            if (user) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.CONFLICT,
-                        message: userMessages.errors.userExists,
-                        key: 'email',
-                    },
-                ]);
-            }
-
-            body.password = hashPassword(body.password);
-            const newUser = await this.authService.createUser(body);
-            return new SuccessResponse(
-                newUser,
-                adminMessages.success.createUser,
-            );
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
