@@ -15,93 +15,61 @@ import {
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
-import { ICreateProduct } from '../product/product.interfaces';
 import { productMessages } from '../product/product.messages';
-import { createProductSchema } from '../product/product.validators';
 import { ProductService } from '../product/services/product.service';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
-import { IExportNewProductToAgency } from './producer.interfaces';
-import { producerMessages } from './producer.messages';
-import { exportNewProductToAgencySchema } from './producer.validators';
-import { ProducerService } from './services/producer.service';
+import { ICheckout, IImportNewProductFromProducer } from './agency.interfaces';
+import { agencyMessages } from './agency.messages';
+import {
+    checkoutProductSchema,
+    importNewProductFromProducerSchema,
+} from './agency.validators';
+import { AgencyService } from './services/agency.service';
 
-@Controller('/producer')
+@Controller('/agency')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
-@Roles(UserRole.PRODUCER)
-export class ProducerController {
+@Roles(UserRole.AGENCY)
+export class AgencyController {
     constructor(
-        private readonly producerService: ProducerService,
+        private readonly agencyService: AgencyService,
         private readonly productService: ProductService,
         private readonly userService: UserService,
     ) {}
 
-    @Post('/product')
-    async createProduct(
-        @Req() req,
-        @Body(new TrimBodyPipe(), new JoiValidationPipe(createProductSchema))
-        body: ICreateProduct,
-    ) {
-        try {
-            const productLine = await this.productService.getProductLineDetail(
-                body.productLineId,
-                ['id'],
-            );
-            if (!productLine) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.NOT_FOUND,
-                        message: productMessages.errors.productLineNotFound,
-                        key: 'productLineId',
-                    },
-                ]);
-            }
-
-            body.userOfLocationId = req.loggedUser.id;
-            body.createdBy = req.loggedUser.id;
-            const newProduct = await this.productService.createNewProduct(body);
-            return new SuccessResponse(
-                newProduct,
-                productMessages.success.createProduct,
-            );
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
-    }
-
-    @Post('/export-to-agency')
-    async exportNewProductToAgency(
+    @Post('/import-new-product')
+    async importNewProductFromProducer(
         @Req() req,
         @Body(
             new TrimBodyPipe(),
-            new JoiValidationPipe(exportNewProductToAgencySchema),
+            new JoiValidationPipe(importNewProductFromProducerSchema),
         )
-        body: IExportNewProductToAgency,
+        body: IImportNewProductFromProducer,
     ) {
         try {
-            const agency = await this.userService.getUserByField(
+            const producer = await this.userService.getUserByField(
                 {
                     key: 'id',
-                    value: body.agencyId,
+                    value: body.producerId,
                 },
                 ['role'],
             );
-            if (!agency) {
+            if (!producer) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: userMessages.errors.userNotFound,
-                        key: 'agencyId',
+                        key: 'producerId',
                     },
                 ]);
             }
-            if (agency.role !== UserRole.AGENCY) {
+            if (producer.role !== UserRole.PRODUCER) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.FORBIDDEN,
-                        message: producerMessages.errors.notAgency,
-                        key: 'agencyId',
+                        message: agencyMessages.errors.notProducer,
+                        key: 'producerId',
                     },
                 ]);
             }
@@ -121,12 +89,28 @@ export class ProducerController {
             }
 
             const transition =
-                await this.producerService.exportNewProductToAgency(
-                    body.productId,
+                await this.agencyService.importNewProductFromProducer(
+                    0,
                     req.loggedUser.id,
-                    body.agencyId,
                 );
             return new SuccessResponse(transition);
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/checkout')
+    async checkout(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(checkoutProductSchema))
+        body: ICheckout,
+    ) {
+        try {
+            // TODO: check
+
+            body.agencyId = req.loggedUser.id;
+            const order = await this.agencyService.createNewCheckout(body);
+            return new SuccessResponse(order);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

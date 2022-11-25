@@ -6,6 +6,10 @@ import {
     ProductLine,
     productLineAttributes,
 } from '../entities/product-line.entity';
+import {
+    ProductStatusTransition,
+    productStatusTransitionAttributes,
+} from '../entities/product-status-transition.entity';
 import { Product, productAttributes } from '../entities/product.entity';
 import { ProductLocation, ProductStatus } from '../product.constants';
 import { ICreateProduct, ICreateProductLine } from '../product.interfaces';
@@ -17,6 +21,8 @@ export class ProductService {
         private readonly productLineRepository: Repository<ProductLine>,
         @InjectRepository(Product)
         private readonly productRepository: Repository<Product>,
+        @InjectRepository(ProductStatusTransition)
+        private readonly productStatusTransactionRepository: Repository<ProductStatusTransition>,
         private readonly dataSource: DataSource,
     ) {}
 
@@ -40,6 +46,28 @@ export class ProductService {
                     attrs.map((attr) => `${SqlEntity.PRODUCT_LINES}.${attr}`),
                 )
                 .where(`${SqlEntity.PRODUCT_LINES}.id = :id`, { id })
+                .getOne();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductStatusTransition(
+        id: number,
+        attrs = productStatusTransitionAttributes,
+    ) {
+        try {
+            return await this.productStatusTransactionRepository
+                .createQueryBuilder(SqlEntity.PRODUCT_STATUS_TRANSITIONS)
+                .select(
+                    attrs.map(
+                        (attr) =>
+                            `${SqlEntity.PRODUCT_STATUS_TRANSITIONS}.${attr}`,
+                    ),
+                )
+                .where(`${SqlEntity.PRODUCT_STATUS_TRANSITIONS}.id = :id`, {
+                    id,
+                })
                 .getOne();
         } catch (error) {
             throw error;

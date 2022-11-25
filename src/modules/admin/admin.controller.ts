@@ -119,6 +119,7 @@ export class AdminController {
         try {
             const productLine = await this.productService.getProductLineDetail(
                 body.id,
+                ['id'],
             );
             if (productLine) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [

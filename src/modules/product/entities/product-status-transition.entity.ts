@@ -23,7 +23,7 @@ export class ProductStatusTransition extends BaseEntity {
     @Column({
         type: 'int',
     })
-    userOfCurrentLocationId: number;
+    userOfNextLocationId: number;
 
     @Column({
         type: 'enum',
@@ -35,7 +35,19 @@ export class ProductStatusTransition extends BaseEntity {
         type: 'enum',
         enum: ProductStatus,
     })
-    currentStatus: ProductStatus;
+    nextStatus: ProductStatus;
+
+    @Column({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP(6)',
+    })
+    startDate: Date;
+
+    @Column({
+        type: 'timestamp',
+        nullable: true,
+    })
+    finishDate: Date;
 
     // relationships
     @ManyToOne(() => Product, (product) => product.statusTransitions, {
@@ -47,14 +59,16 @@ export class ProductStatusTransition extends BaseEntity {
     userOfPreviousLocation: User;
 
     @ManyToOne(() => User)
-    userOfCurrentLocation: User;
+    userOfNextLocation: User;
 }
 
 export const productStatusTransitionAttributes = [
     'id',
     'productId',
     'userOfPreviousLocationId',
-    'userOfCurrentLocationId',
+    'userOfNextLocationId',
     'previousStatus',
     'currentStatus',
+    'startDate',
+    'finishDate',
 ];

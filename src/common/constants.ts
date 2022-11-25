@@ -5,6 +5,8 @@ export enum SqlEntity {
     PRODUCT_LINES = 'product_lines',
     PRODUCT_STATUS_TRANSITIONS = 'product_status_transitions',
     PRODUCT_IMAGES = 'product_images',
+    ORDERS = 'orders',
+    ORDER_DETAILS = 'order_details',
 }
 
 export enum OrderDirection {

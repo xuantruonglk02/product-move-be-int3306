@@ -78,10 +78,13 @@ export class UserController {
                 ]);
             }
 
-            const user = await this.userService.getUserByField({
-                key: 'id',
-                value: id,
-            });
+            const user = await this.userService.getUserByField(
+                {
+                    key: 'id',
+                    value: id,
+                },
+                ['id'],
+            );
             if (!user) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
