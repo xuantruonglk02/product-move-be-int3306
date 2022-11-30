@@ -18,3 +18,10 @@ export enum ProductLocation {
     IN_WARRANTY_CENTER = 'in_warranty_center',
     IN_CUSTOMER = 'in_customer',
 }
+
+export enum ProductColor {
+    BLACK = 'black',
+    GRAY = 'gray',
+    RED = 'red',
+    WHITE = 'white',
+}

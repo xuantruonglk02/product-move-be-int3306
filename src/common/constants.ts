@@ -29,5 +29,6 @@ export const IMAGE_URL_MAX_LENGTH = 255;
 export const PASSWORD_MIN_LENGTH = 8;
 export const HASH_PASSWORD_LENGTH = 60;
 export const INPUT_TEXT_MAX_LENGTH = 255;
+export const AREA_TEXT_MAX_LENGTH = 2000;
 export const ID_MIN_NUMBER = 1;
 export const PHONE_NUMBER_MAX_LENGTH = 12;

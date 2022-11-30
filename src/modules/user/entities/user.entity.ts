@@ -1,5 +1,6 @@
 import {
     HASH_PASSWORD_LENGTH,
+    IMAGE_URL_MAX_LENGTH,
     INPUT_TEXT_MAX_LENGTH,
     PHONE_NUMBER_MAX_LENGTH,
     SqlEntity,
@@ -52,9 +53,22 @@ export class User extends BaseEntity {
     })
     password: string;
 
+    @Column({
+        type: 'varchar',
+        length: IMAGE_URL_MAX_LENGTH,
+    })
+    avatar: string;
+
     // relationships
     @OneToMany(() => UserToken, (token) => token.user)
     tokens: UserToken[];
 }
 
-export const userAttributes = ['id', 'email', 'phoneNumber', 'name', 'role'];
+export const userAttributes = [
+    'id',
+    'email',
+    'phoneNumber',
+    'name',
+    'role',
+    'avatar',
+];

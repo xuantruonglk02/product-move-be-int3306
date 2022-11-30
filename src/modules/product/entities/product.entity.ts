@@ -1,14 +1,23 @@
-import { INPUT_TEXT_MAX_LENGTH, SqlEntity } from 'src/common/constants';
+import {
+    AREA_TEXT_MAX_LENGTH,
+    INPUT_TEXT_MAX_LENGTH,
+    SqlEntity,
+} from 'src/common/constants';
 import { BaseEntity } from 'src/common/sql-entities/base.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import {
     Column,
     Entity,
+    Index,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProductLocation, ProductStatus } from '../product.constants';
+import {
+    ProductColor,
+    ProductLocation,
+    ProductStatus,
+} from '../product.constants';
 import { ProductImage } from './product-image.entity';
 import { ProductLine } from './product-line.entity';
 import { ProductStatusTransition } from './product-status-transition.entity';
@@ -17,11 +26,6 @@ import { ProductStatusTransition } from './product-status-transition.entity';
 export class Product extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
-
-    /**
-     * color
-     * vehicle identification number
-     */
 
     @Column({
         type: 'varchar',
@@ -34,6 +38,52 @@ export class Product extends BaseEntity {
         nullable: true,
     })
     userOfLocationId: number;
+
+    @Column({
+        type: 'varchar',
+        length: INPUT_TEXT_MAX_LENGTH,
+    })
+    @Index()
+    name: string;
+
+    @Column({
+        type: 'varchar',
+        length: AREA_TEXT_MAX_LENGTH,
+    })
+    description: string;
+
+    @Column({
+        type: 'int',
+    })
+    weight: number;
+
+    @Column({
+        type: 'float',
+    })
+    displaySize: number;
+
+    @Column({
+        type: 'varchar',
+        length: INPUT_TEXT_MAX_LENGTH,
+    })
+    bodySize: string;
+
+    @Column({
+        type: 'enum',
+        enum: ProductColor,
+    })
+    color: ProductColor;
+
+    @Column({
+        type: 'varchar',
+        length: INPUT_TEXT_MAX_LENGTH,
+    })
+    bodyBuild: string;
+
+    @Column({
+        type: 'int',
+    })
+    batteryVolume: number;
 
     @Column({
         type: 'enum',
@@ -72,6 +122,14 @@ export const productAttributes = [
     'id',
     'productLineId',
     'userOfLocationId',
+    'name',
+    'description',
+    'weight',
+    'displaySize',
+    'bodySize',
+    'color',
+    'bodyBuild',
+    'batteryVolume',
     'status',
     'location',
 ];
