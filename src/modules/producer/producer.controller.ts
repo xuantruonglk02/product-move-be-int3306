@@ -46,7 +46,7 @@ export class ProducerController {
         try {
             const productLine = await this.productService.getProductLineDetail(
                 body.productLineId,
-                ['id'],
+                ['_id'],
             );
             if (!productLine) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -58,8 +58,8 @@ export class ProducerController {
                 ]);
             }
 
-            body.userOfLocationId = req.loggedUser.id;
-            body.createdBy = req.loggedUser.id;
+            body.userId = req.loggedUser._id;
+            body.createdBy = req.loggedUser._id;
             const newProduct = await this.productService.createNewProduct(body);
             return new SuccessResponse(
                 newProduct,
@@ -82,7 +82,7 @@ export class ProducerController {
         try {
             const agency = await this.userService.getUserByField(
                 {
-                    key: 'id',
+                    key: '_id',
                     value: body.agencyId,
                 },
                 ['role'],
@@ -108,7 +108,7 @@ export class ProducerController {
 
             const product = await this.productService.getProductDetail(
                 body.productId,
-                ['id'],
+                ['_id'],
             );
             if (!product) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -123,7 +123,7 @@ export class ProducerController {
             const transition =
                 await this.producerService.exportNewProductToAgency(
                     body.productId,
-                    req.loggedUser.id,
+                    req.loggedUser._id,
                     body.agencyId,
                 );
             return new SuccessResponse(transition);

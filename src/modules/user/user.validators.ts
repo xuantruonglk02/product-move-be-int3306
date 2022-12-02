@@ -1,10 +1,10 @@
-import Joi from 'joi';
 import {
     INPUT_TEXT_MAX_LENGTH,
     PASSWORD_MIN_LENGTH,
     PHONE_NUMBER_MAX_LENGTH,
     Regex,
 } from 'src/common/constants';
+import Joi from 'src/plugins/joi';
 import { UserRole } from './user.constants';
 
 export const createUserSchema = Joi.object().keys({

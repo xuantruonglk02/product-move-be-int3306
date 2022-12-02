@@ -22,8 +22,8 @@
         "@nestjs/config": "^2.0.1",
         "@nestjs/core": "^8.0.0",
         "@nestjs/jwt": "^8.0.1",
+        "@nestjs/mongoose": "^9.0.3",
         "@nestjs/platform-express": "^8.0.0",
-        "@nestjs/typeorm": "^9.0.1",
         "bcrypt": "^5.0.1",
         "helmet": "^5.1.0",
         "husky": "^8.0.1",
@@ -31,10 +31,10 @@
         "lodash": "^4.17.21",
         "moment": "^2.29.3",
         "moment-timezone": "^0.5.37",
-        "mysql2": "^2.3.3",
+        "mongodb": "^4.12.1",
+        "mongoose": "^6.7.5",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.5.7",
-        "typeorm": "^0.3.10"
+        "rxjs": "^7.5.7"
     },
     "devDependencies": {
         "@nestjs/cli": "^8.0.0",

@@ -1,48 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { SqlEntity } from 'src/common/constants';
+import { InjectModel } from '@nestjs/mongoose';
+import { ObjectId } from 'mongodb';
+import { Model } from 'mongoose';
+import { ProductStatus } from 'src/modules/product/product.constants';
 import {
     ProductStatusTransition,
-    productStatusTransitionAttributes,
-} from 'src/modules/product/entities/product-status-transition.entity';
-import { ProductStatus } from 'src/modules/product/product.constants';
-import { ProductService } from 'src/modules/product/services/product.service';
-import { Repository } from 'typeorm';
+    ProductStatusTransitionDocument,
+} from 'src/modules/product/schemas/product-status-transition.schema';
 
 @Injectable()
 export class ProducerService {
     constructor(
-        @InjectRepository(ProductStatusTransition)
-        private readonly productStatusTransitionRepository: Repository<ProductStatusTransition>,
-        private readonly productService: ProductService,
+        @InjectModel(ProductStatusTransition.name)
+        private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
     ) {}
 
     async exportNewProductToAgency(
-        productId: number,
-        producerId: number,
-        agencyId: number,
+        productId: ObjectId,
+        producerId: ObjectId,
+        agencyId: ObjectId,
     ) {
         try {
-            const inserted = await this.productStatusTransitionRepository
-                .createQueryBuilder()
-                .insert()
-                .into(
-                    SqlEntity.PRODUCT_STATUS_TRANSITIONS,
-                    productStatusTransitionAttributes.concat(['createdBy']),
-                )
-                .values([
-                    {
-                        productId,
-                        userOfPreviousLocationId: producerId,
-                        userOfNextLocationId: agencyId,
-                        previousStatus: ProductStatus.NEW,
-                        nextStatus: ProductStatus.IN_AGENCY,
-                    },
-                ])
-                .execute();
-            return await this.productService.getProductStatusTransition(
-                inserted.raw.insertId,
-            );
+            const transition = await this.productStatusTransitionModel.create({
+                productId,
+                previousUserId: producerId,
+                nextUserId: agencyId,
+                previousStatus: ProductStatus.NEW,
+                nextStatus: ProductStatus.IN_AGENCY,
+                createdBy: producerId,
+                createdAt: new Date(),
+            });
+
+            return transition;
         } catch (error) {
             throw error;
         }

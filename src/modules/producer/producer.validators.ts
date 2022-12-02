@@ -1,7 +1,6 @@
-import Joi from 'joi';
-import { ID_MIN_NUMBER } from 'src/common/constants';
+import Joi from 'src/plugins/joi';
 
 export const exportNewProductToAgencySchema = Joi.object().keys({
-    agencyId: Joi.number().min(ID_MIN_NUMBER).required(),
-    productId: Joi.number().min(ID_MIN_NUMBER).required(),
+    agencyId: Joi.isObjectId().required(),
+    productId: Joi.isObjectId().required(),
 });

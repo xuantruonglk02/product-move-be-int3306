@@ -1,4 +1,6 @@
+import { ObjectId } from 'mongodb';
+
 export interface IExportNewProductToAgency {
-    agencyId: number;
-    productId: number;
+    agencyId: ObjectId;
+    productId: ObjectId;
 }

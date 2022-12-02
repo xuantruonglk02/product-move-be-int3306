@@ -1,12 +1,7 @@
-export interface IImportNewProductFromProducer {
-    producerId: number;
-    productId: number;
-}
+import { ObjectId } from 'mongodb';
 
-export interface ICheckout {
-    agencyId: number;
-    productIds: number[];
-    customerName: string;
-    customerEmail: string;
-    customerPhone: string;
+export interface IImportNewProductFromProducer {
+    transitionId: ObjectId;
+    producerId: ObjectId;
+    productId: ObjectId;
 }

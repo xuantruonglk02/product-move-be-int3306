@@ -1,4 +1,4 @@
-export enum SqlEntity {
+export enum MongoCollection {
     USERS = 'users',
     USER_TOKENS = 'user_tokens',
     PRODUCTS = 'products',
@@ -7,6 +7,7 @@ export enum SqlEntity {
     PRODUCT_IMAGES = 'product_images',
     ORDERS = 'orders',
     ORDER_DETAILS = 'order_details',
+    STORAGES = 'storages',
 }
 
 export enum OrderDirection {
@@ -30,5 +31,21 @@ export const PASSWORD_MIN_LENGTH = 8;
 export const HASH_PASSWORD_LENGTH = 60;
 export const INPUT_TEXT_MAX_LENGTH = 255;
 export const AREA_TEXT_MAX_LENGTH = 2000;
-export const ID_MIN_NUMBER = 1;
 export const PHONE_NUMBER_MAX_LENGTH = 12;
+export const MIN_POSITIVE_NUMBER = 1;
+
+export const softDeleteCondition = {
+    $or: [
+        {
+            deletedAt: {
+                $exists: true,
+                $eq: null,
+            },
+        },
+        {
+            deletedAt: {
+                $exists: false,
+            },
+        },
+    ],
+};

@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { cloneDeep, unset } from 'lodash';
-import { SqlEntity } from 'src/common/constants';
-import { DataSource, Repository } from 'typeorm';
-import { User, userAttributes } from '../entities/user.entity';
+import { ObjectId } from 'mongodb';
+import { Connection, Model } from 'mongoose';
+import { softDeleteCondition } from 'src/common/constants';
+import { User, userAttributes, UserDocument } from '../schemas/user.schema';
 import { ICreateUser, IUpdateUser } from '../user.interfaces';
 
 @Injectable()
 export class UserService {
     constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
-        private readonly dataSource: DataSource,
+        @InjectModel(User.name)
+        private readonly userModel: Model<UserDocument>,
+        @InjectConnection()
+        private readonly connection: Connection,
     ) {}
 
     async getUserByField(
@@ -19,13 +21,12 @@ export class UserService {
         attrs = userAttributes,
     ) {
         try {
-            return await this.userRepository
-                .createQueryBuilder(SqlEntity.USERS)
-                .select(attrs.map((attr) => `${SqlEntity.USERS}.${attr}`))
-                .where(`${SqlEntity.USERS}.${field.key} = :${field.key}`, {
+            return await this.userModel
+                .findOne({
                     [field.key]: field.value,
+                    ...softDeleteCondition,
                 })
-                .getOne();
+                .select(attrs);
         } catch (error) {
             throw error;
         }
@@ -33,77 +34,67 @@ export class UserService {
 
     async createUser(body: ICreateUser) {
         try {
-            const inserted = await this.userRepository
-                .createQueryBuilder()
-                .insert()
-                .into(
-                    SqlEntity.USERS,
-                    userAttributes.concat(['password', 'createdBy']),
-                )
-                .values([
-                    {
-                        email: body.email,
-                        phoneNumber: body.phoneNumber,
-                        name: body.name,
-                        role: body.role,
-                        password: body.password,
-                        createdBy: body.createdBy,
-                    },
-                ])
-                .execute();
-            return await this.getUserByField({
-                key: 'id',
-                value: inserted.raw.insertId,
+            return await this.userModel.create({
+                ...body,
+                createdAt: new Date(),
             });
         } catch (error) {
             throw error;
         }
     }
 
-    async updateUser(id: number, body: IUpdateUser) {
+    async updateUser(id: ObjectId, body: IUpdateUser) {
         try {
             const updateBody = cloneDeep(body);
             unset(updateBody, 'confirmPassword');
 
-            await this.userRepository
-                .createQueryBuilder()
-                .update(User)
-                .set(updateBody)
-                .where('id = :id', { id })
-                .execute();
-
-            return await this.getUserByField({ key: 'id', value: id });
+            return await this.userModel.updateOne(
+                {
+                    _id: id,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        ...updateBody,
+                        updatedAt: new Date(),
+                    },
+                },
+            );
         } catch (error) {
             throw error;
         }
     }
 
-    async deleteUser(id: number, deletedBy: number) {
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-
-        await queryRunner.startTransaction();
+    async deleteUser(id: ObjectId, deletedBy: ObjectId) {
+        const session = await this.connection.startSession();
 
         try {
-            const user = await queryRunner.manager
-                .createQueryBuilder(User, SqlEntity.USERS)
-                .where(`${SqlEntity.USERS}.id = :id`, {
-                    id,
-                })
-                .getOne();
-            user.deletedBy = deletedBy;
+            session.startTransaction();
 
-            await queryRunner.manager.save(user);
-            await queryRunner.manager.softDelete(User, id);
+            const user = await this.userModel.updateOne(
+                {
+                    _id: id,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        deletedBy: deletedBy,
+                        deletedAt: new Date(),
+                    },
+                },
+                { session },
+            );
 
-            await queryRunner.commitTransaction();
+            // TODO: Delete storage;
+
+            await session.commitTransaction();
 
             return user;
         } catch (error) {
-            await queryRunner.rollbackTransaction();
+            await session.abortTransaction();
             throw error;
         } finally {
-            await queryRunner.release();
+            session.endSession();
         }
     }
 }

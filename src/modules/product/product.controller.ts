@@ -6,9 +6,10 @@ import {
     Param,
     UseGuards,
 } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
-import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
+import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { productMessages } from './product.messages';
 import { ProductService } from './services/product.service';
 
@@ -18,7 +19,7 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Get('/product-line/:id')
-    async getProductLineDetail(@Param('id') id: string) {
+    async getProductLineDetail(@Param('id') id: ObjectId) {
         try {
             const productLine = await this.productService.getProductLineDetail(
                 id,
@@ -40,7 +41,7 @@ export class ProductController {
     }
 
     @Get('/:id')
-    async getProductDetail(@Param('id', new ParseIdPipe()) id: number) {
+    async getProductDetail(@Param('id', new ParseObjectIdPipe()) id: ObjectId) {
         try {
             const product = await this.productService.getProductDetail(id);
             if (!product) {

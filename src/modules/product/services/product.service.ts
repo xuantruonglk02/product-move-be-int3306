@@ -1,74 +1,75 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { SqlEntity } from 'src/common/constants';
-import { DataSource, Repository } from 'typeorm';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { ObjectId } from 'mongodb';
+import { Connection, Model } from 'mongoose';
+import { softDeleteCondition } from 'src/common/constants';
+import { ICreateProduct, ICreateProductLine } from '../product.interfaces';
 import {
     ProductLine,
     productLineAttributes,
-} from '../entities/product-line.entity';
+    ProductLineDocument,
+} from '../schemas/product-line.schema';
 import {
     ProductStatusTransition,
     productStatusTransitionAttributes,
-} from '../entities/product-status-transition.entity';
-import { Product, productAttributes } from '../entities/product.entity';
-import { ProductLocation, ProductStatus } from '../product.constants';
-import { ICreateProduct, ICreateProductLine } from '../product.interfaces';
+    ProductStatusTransitionDocument,
+} from '../schemas/product-status-transition.schema';
+import {
+    Product,
+    productAttributes,
+    ProductDocument,
+} from '../schemas/product.schema';
 
 @Injectable()
 export class ProductService {
     constructor(
-        @InjectRepository(ProductLine)
-        private readonly productLineRepository: Repository<ProductLine>,
-        @InjectRepository(Product)
-        private readonly productRepository: Repository<Product>,
-        @InjectRepository(ProductStatusTransition)
-        private readonly productStatusTransactionRepository: Repository<ProductStatusTransition>,
-        private readonly dataSource: DataSource,
+        @InjectModel(Product.name)
+        private readonly productModel: Model<ProductDocument>,
+        @InjectModel(ProductLine.name)
+        private readonly productLineModel: Model<ProductLineDocument>,
+        @InjectModel(ProductStatusTransition.name)
+        private readonly productStatusTransactionModel: Model<ProductStatusTransitionDocument>,
+        @InjectConnection()
+        private readonly connection: Connection,
     ) {}
 
-    async getProductDetail(id: number, attrs = productAttributes) {
+    async getProductDetail(id: ObjectId, attrs = productAttributes) {
         try {
-            return await this.productRepository
-                .createQueryBuilder(SqlEntity.PRODUCTS)
-                .select(attrs.map((attr) => `${SqlEntity.PRODUCTS}.${attr}`))
-                .where(`${SqlEntity.PRODUCTS}.id = :id`, { id })
-                .getOne();
+            return await this.productModel
+                .findOne({
+                    _id: id,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
         } catch (error) {
             throw error;
         }
     }
 
-    async getProductLineDetail(id: string, attrs = productLineAttributes) {
+    async getProductLineDetail(id: ObjectId, attrs = productLineAttributes) {
         try {
-            return await this.productLineRepository
-                .createQueryBuilder(SqlEntity.PRODUCT_LINES)
-                .select(
-                    attrs.map((attr) => `${SqlEntity.PRODUCT_LINES}.${attr}`),
-                )
-                .where(`${SqlEntity.PRODUCT_LINES}.id = :id`, { id })
-                .getOne();
+            return await this.productLineModel
+                .findOne({
+                    _id: id,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
         } catch (error) {
             throw error;
         }
     }
 
     async getProductStatusTransition(
-        id: number,
+        id: ObjectId,
         attrs = productStatusTransitionAttributes,
     ) {
         try {
-            return await this.productStatusTransactionRepository
-                .createQueryBuilder(SqlEntity.PRODUCT_STATUS_TRANSITIONS)
-                .select(
-                    attrs.map(
-                        (attr) =>
-                            `${SqlEntity.PRODUCT_STATUS_TRANSITIONS}.${attr}`,
-                    ),
-                )
-                .where(`${SqlEntity.PRODUCT_STATUS_TRANSITIONS}.id = :id`, {
-                    id,
+            return await this.productStatusTransactionModel
+                .findOne({
+                    _id: id,
+                    ...softDeleteCondition,
                 })
-                .getOne();
+                .select(attrs);
         } catch (error) {
             throw error;
         }
@@ -76,70 +77,52 @@ export class ProductService {
 
     async createNewProductLine(body: ICreateProductLine) {
         try {
-            const inserted = await this.productLineRepository
-                .createQueryBuilder()
-                .insert()
-                .into(
-                    SqlEntity.PRODUCT_LINES,
-                    productLineAttributes.concat(['createdBy']),
-                )
-                .values([
-                    {
-                        id: body.id,
-                        name: body.name,
-                        price: body.price,
-                        createdBy: body.createdBy,
-                    },
-                ])
-                .execute();
-            return await this.getProductLineDetail(inserted.raw.insertId);
+            return await this.productLineModel.create({
+                ...body,
+            });
         } catch (error) {
             throw error;
         }
     }
 
     async createNewProduct(body: ICreateProduct) {
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-
-        await queryRunner.startTransaction();
+        const session = await this.connection.startSession();
 
         try {
-            const inserted = await queryRunner.manager
-                .createQueryBuilder()
-                .insert()
-                .into(
-                    SqlEntity.PRODUCTS,
-                    productAttributes.concat(['createdBy']),
-                )
-                .values([
-                    {
-                        status: ProductStatus.NEW,
-                        location: ProductLocation.IN_PRODUCER,
-                        productLineId: body.productLineId,
-                        userOfLocationId: body.userOfLocationId,
-                        createdBy: body.createdBy,
+            session.startTransaction();
+
+            const product = await this.productModel.create(
+                {
+                    ...body,
+                    createdAt: new Date(),
+                },
+                { session },
+            );
+            await this.productLineModel.updateOne(
+                {
+                    _id: body.productLineId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $inc: {
+                        quantityOfProduct: 1,
                     },
-                ])
-                .execute();
-            await queryRunner.manager
-                .createQueryBuilder()
-                .update(ProductLine)
-                .set({
-                    quantityOfProduct: () => 'quantityOfProduct + 1',
-                    updatedBy: body.createdBy,
-                })
-                .where('id = :id', { id: body.productLineId })
-                .execute();
+                    $set: {
+                        updatedBy: body.createdBy,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
 
-            await queryRunner.commitTransaction();
+            await session.commitTransaction();
 
-            return await this.getProductDetail(inserted.raw.insertId);
+            return product;
         } catch (error) {
-            await queryRunner.rollbackTransaction();
+            await session.abortTransaction();
             throw error;
         } finally {
-            await queryRunner.release();
+            session.endSession();
         }
     }
 }

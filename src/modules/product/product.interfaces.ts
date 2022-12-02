@@ -1,25 +1,38 @@
-import { ProductLocation, ProductStatus } from './product.constants';
+import { ObjectId } from 'mongodb';
+import {
+    ProductColor,
+    ProductLocation,
+    ProductStatus,
+} from './product.constants';
 
 export interface IProductLine {
-    id: string;
     name: string;
     price: number;
     quantityOfProduct: number;
 }
 
 export interface IProduct {
-    id: number;
-    productLineId: string;
-    userOfLocationId: number | null;
+    productLineId: ObjectId;
+    userId: ObjectId | null;
+    storageId: ObjectId | null;
+    name: string;
+    description: string;
+    weight: number;
+    displaySize: number;
+    bodySize: string;
+    color: ProductColor;
+    bodyBuild: string;
+    batteryVolume: number;
     status: ProductStatus;
     location: ProductLocation;
+    sold: boolean;
+    soldDate: Date | null;
 }
 
 export interface ICreateProductLine extends IProductLine {
-    createdBy: number;
+    createdBy: ObjectId;
 }
 
-export interface ICreateProduct
-    extends Omit<IProduct, 'id' | 'status' | 'location'> {
-    createdBy: number;
+export interface ICreateProduct extends Omit<IProduct, 'status' | 'location'> {
+    createdBy: ObjectId;
 }

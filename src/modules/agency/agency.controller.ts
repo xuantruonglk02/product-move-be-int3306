@@ -15,12 +15,13 @@ import {
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
+import { ICreateOrder } from '../order/order.interfaces';
 import { productMessages } from '../product/product.messages';
 import { ProductService } from '../product/services/product.service';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
-import { ICheckout, IImportNewProductFromProducer } from './agency.interfaces';
+import { IImportNewProductFromProducer } from './agency.interfaces';
 import { agencyMessages } from './agency.messages';
 import {
     checkoutProductSchema,
@@ -50,7 +51,7 @@ export class AgencyController {
         try {
             const producer = await this.userService.getUserByField(
                 {
-                    key: 'id',
+                    key: '_id',
                     value: body.producerId,
                 },
                 ['role'],
@@ -76,7 +77,7 @@ export class AgencyController {
 
             const product = await this.productService.getProductDetail(
                 body.productId,
-                ['id'],
+                ['_id'],
             );
             if (!product) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -90,8 +91,8 @@ export class AgencyController {
 
             const transition =
                 await this.agencyService.importNewProductFromProducer(
-                    0,
-                    req.loggedUser.id,
+                    body.transitionId,
+                    req.loggedUser._id,
                 );
             return new SuccessResponse(transition);
         } catch (error) {
@@ -103,12 +104,12 @@ export class AgencyController {
     async checkout(
         @Req() req,
         @Body(new TrimBodyPipe(), new JoiValidationPipe(checkoutProductSchema))
-        body: ICheckout,
+        body: ICreateOrder,
     ) {
         try {
             // TODO: check
 
-            body.agencyId = req.loggedUser.id;
+            body.createdBy = req.loggedUser._id;
             const order = await this.agencyService.createNewCheckout(body);
             return new SuccessResponse(order);
         } catch (error) {

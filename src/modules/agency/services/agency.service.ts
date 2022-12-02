@@ -1,74 +1,96 @@
 import { Injectable } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { ObjectId } from 'mongodb';
+import { Connection, Model } from 'mongoose';
+import { softDeleteCondition } from 'src/common/constants';
+import { ICreateOrder } from 'src/modules/order/order.interfaces';
 import { OrderService } from 'src/modules/order/services/order.service';
-import { ProductStatusTransition } from 'src/modules/product/entities/product-status-transition.entity';
-import { Product } from 'src/modules/product/entities/product.entity';
 import {
     ProductLocation,
     ProductStatus,
 } from 'src/modules/product/product.constants';
+import {
+    ProductStatusTransition,
+    ProductStatusTransitionDocument,
+} from 'src/modules/product/schemas/product-status-transition.schema';
+import {
+    Product,
+    ProductDocument,
+} from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
-import { DataSource } from 'typeorm';
-import { ICheckout } from '../agency.interfaces';
 
 @Injectable()
 export class AgencyService {
     constructor(
+        @InjectModel(Product.name)
+        private readonly productModel: Model<ProductDocument>,
+        @InjectModel(ProductStatusTransition.name)
+        private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
+        @InjectConnection()
+        private readonly connection: Connection,
         private readonly productService: ProductService,
         private readonly orderService: OrderService,
-        private readonly dataSource: DataSource,
     ) {}
 
-    async importNewProductFromProducer(transitionId: number, agencyId: number) {
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-
-        await queryRunner.startTransaction();
+    async importNewProductFromProducer(
+        transitionId: ObjectId,
+        agencyId: ObjectId,
+    ) {
+        const session = await this.connection.startSession();
 
         try {
-            const transition =
-                await this.productService.getProductStatusTransition(
-                    transitionId,
-                    ['productId'],
-                );
+            session.startTransaction();
 
-            await queryRunner.manager
-                .createQueryBuilder()
-                .update(ProductStatusTransition)
-                .set({
-                    finishDate: new Date(),
-                    updatedBy: agencyId,
-                })
-                .where('id = :id', { id: transitionId })
-                .execute();
-            await queryRunner.manager
-                .createQueryBuilder()
-                .update(Product)
-                .set({
-                    userOfLocationId: agencyId,
-                    status: ProductStatus.IN_AGENCY,
-                    location: ProductLocation.IN_AGENCY,
-                    updatedBy: agencyId,
-                })
-                .where(`id = :id`, { id: transition.productId })
-                .execute();
+            const transaction = await this.productStatusTransitionModel
+                .findOneAndUpdate(
+                    {
+                        _id: transitionId,
+                        ...softDeleteCondition,
+                    },
+                    {
+                        $set: {
+                            finishDate: new Date(),
+                            updatedBy: agencyId,
+                            updatedAt: new Date(),
+                        },
+                    },
+                    { session },
+                )
+                .select(['productId']);
+            await this.productModel.updateOne(
+                {
+                    _id: transaction.productId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: agencyId,
+                        // storageId:
+                        status: ProductStatus.IN_AGENCY,
+                        location: ProductLocation.IN_AGENCY,
+                        updatedBy: agencyId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
 
-            await queryRunner.commitTransaction();
+            await session.commitTransaction();
 
             return await this.productService.getProductStatusTransition(
                 transitionId,
             );
         } catch (error) {
-            await queryRunner.rollbackTransaction();
+            await session.abortTransaction();
             throw error;
         } finally {
-            await queryRunner.release();
+            session.endSession();
         }
     }
 
-    async createNewCheckout(body: ICheckout) {
+    async createNewCheckout(body: ICreateOrder) {
         try {
             const order = await this.orderService.createNewOrder(body);
-
             return order;
         } catch (error) {
             throw error;

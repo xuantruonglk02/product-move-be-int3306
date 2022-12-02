@@ -9,6 +9,7 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -16,8 +17,8 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { hashPassword } from 'src/common/helpers/utilityFunctions';
-import { ParseIdPipe } from 'src/common/pipes/id.validation.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
+import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateProductLine } from '../product/product.interfaces';
 import { productMessages } from '../product/product.messages';
@@ -50,7 +51,7 @@ export class AdminController {
                     key: 'email',
                     value: body.email,
                 },
-                ['id'],
+                ['_id'],
             );
             if (user) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -63,7 +64,7 @@ export class AdminController {
             }
 
             body.password = hashPassword(body.password);
-            body.createdBy = req.loggedUser.id;
+            body.createdBy = req.loggedUser._id;
             const newUser = await this.userService.createUser(body);
             return new SuccessResponse(
                 newUser,
@@ -75,14 +76,17 @@ export class AdminController {
     }
 
     @Delete('/user/:id')
-    async deleteUser(@Req() req, @Param('id', new ParseIdPipe()) id: number) {
+    async deleteUser(
+        @Req() req,
+        @Param('id', new ParseObjectIdPipe()) id: ObjectId,
+    ) {
         try {
             const user = await this.userService.getUserByField(
                 {
-                    key: 'id',
+                    key: '_id',
                     value: id,
                 },
-                ['id'],
+                ['_id'],
             );
             if (!user) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -96,7 +100,7 @@ export class AdminController {
 
             const deletedUser = await this.userService.deleteUser(
                 id,
-                req.loggedUser.id,
+                req.loggedUser._id,
             );
             return new SuccessResponse(
                 deletedUser,
@@ -117,21 +121,7 @@ export class AdminController {
         body: ICreateProductLine,
     ) {
         try {
-            const productLine = await this.productService.getProductLineDetail(
-                body.id,
-                ['id'],
-            );
-            if (productLine) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.CONFLICT,
-                        message: productMessages.errors.productLineExists,
-                        key: 'id',
-                    },
-                ]);
-            }
-
-            body.createdBy = req.loggedUser.id;
+            body.createdBy = req.loggedUser._id;
             const newProductLine =
                 await this.productService.createNewProductLine(body);
             return new SuccessResponse(
