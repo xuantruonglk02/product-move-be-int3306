@@ -48,7 +48,7 @@ export class UserService {
             const updateBody = cloneDeep(body);
             unset(updateBody, 'confirmPassword');
 
-            return await this.userModel.updateOne(
+            await this.userModel.updateOne(
                 {
                     _id: id,
                     ...softDeleteCondition,
@@ -60,6 +60,7 @@ export class UserService {
                     },
                 },
             );
+            return await this.getUserByField({ key: '_id', value: id });
         } catch (error) {
             throw error;
         }
@@ -71,7 +72,7 @@ export class UserService {
         try {
             session.startTransaction();
 
-            const user = await this.userModel.updateOne(
+            await this.userModel.updateOne(
                 {
                     _id: id,
                     ...softDeleteCondition,
@@ -89,7 +90,7 @@ export class UserService {
 
             await session.commitTransaction();
 
-            return user;
+            return this.getUserByField({ key: '_id', value: id });
         } catch (error) {
             await session.abortTransaction();
             throw error;

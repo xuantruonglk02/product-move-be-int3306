@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import ConfigKey from 'src/common/config/configKey';
-import { userAttributes } from 'src/modules/user/schemas/user.schema';
 import { UserService } from 'src/modules/user/services/user.service';
 import { IUser } from 'src/modules/user/user.interfaces';
 
@@ -68,10 +67,10 @@ export class AuthService {
 
     async login(email: string) {
         try {
-            const user = await this.userService.getUserByField(
-                { key: 'email', value: email },
-                userAttributes,
-            );
+            const user = await this.userService.getUserByField({
+                key: 'email',
+                value: email,
+            });
 
             const accessToken = this.generateAccessToken(user);
             const refreshToken = this.generateRefreshToken(user);

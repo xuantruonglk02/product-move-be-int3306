@@ -24,10 +24,11 @@ export class AuthenticationGuard implements CanActivate {
             throw new UnauthorizedException();
         }
 
-        request.loggedUser = await this.validateToken(
+        const decrypt = await this.validateToken(
             token,
             request.authorizationType === UserTokenType.REFRESH_TOKEN,
         );
+        request.loggedUser = decrypt._doc;
         request.accessToken = token;
         return true;
     }
