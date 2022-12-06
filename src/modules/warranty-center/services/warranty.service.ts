@@ -22,9 +22,7 @@ export class WarrantyService {
 
     async handleWarranty(productId: ObjectId, warrantyCenterId: ObjectId) {
         try {
-            const product = await this.productService.getProductDetail(
-                productId,
-            );
+            const product = await this.productService.getProductById(productId);
             product.userId = warrantyCenterId;
             product.storageId = null;
             product.status = ProductStatus.IN_WARRANTY;

@@ -14,6 +14,7 @@ export const createUserSchema = Joi.object().keys({
         .required(),
     phoneNumber: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).optional(),
     name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
+    avatar: Joi.string().max(INPUT_TEXT_MAX_LENGTH).optional(),
     role: Joi.string()
         .valid(...Object.values(UserRole))
         .required(),
@@ -30,8 +31,9 @@ export const updateUserSchema = Joi.object().keys({
         .max(INPUT_TEXT_MAX_LENGTH)
         .required(),
 
-    phoneNumber: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).optional(),
     name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).optional(),
+    phoneNumber: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).optional(),
+    avatar: Joi.string().max(INPUT_TEXT_MAX_LENGTH).optional(),
     password: Joi.string()
         .min(PASSWORD_MIN_LENGTH)
         .max(INPUT_TEXT_MAX_LENGTH)

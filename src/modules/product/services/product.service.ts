@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
-import { softDeleteCondition } from 'src/common/constants';
+import { MongoCollection, softDeleteCondition } from 'src/common/constants';
 import { ICreateProduct, ICreateProductLine } from '../product.interfaces';
 import {
     ProductLine,
@@ -33,7 +33,22 @@ export class ProductService {
         private readonly connection: Connection,
     ) {}
 
-    async getProductDetail(id: ObjectId, attrs = productAttributes) {
+    async getProductByIds(ids: ObjectId[], attrs = productAttributes) {
+        try {
+            return await this.productModel
+                .find({
+                    _id: {
+                        $in: ids,
+                    },
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductById(id: ObjectId, attrs = productAttributes) {
         try {
             return await this.productModel
                 .findOne({
@@ -41,6 +56,43 @@ export class ProductService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductDetail(id: ObjectId) {
+        try {
+            return (
+                await this.productModel.aggregate([
+                    {
+                        $match: {
+                            _id: id,
+                            ...softDeleteCondition,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.PRODUCT_LINES,
+                            as: 'productLine',
+                            localField: 'productLineId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$productLine',
+                        },
+                    },
+                ])
+            )[0];
         } catch (error) {
             throw error;
         }
@@ -79,6 +131,7 @@ export class ProductService {
         try {
             return await this.productLineModel.create({
                 ...body,
+                createdAt: new Date(),
             });
         } catch (error) {
             throw error;
@@ -92,10 +145,12 @@ export class ProductService {
             session.startTransaction();
 
             const product = await this.productModel.create(
-                {
-                    ...body,
-                    createdAt: new Date(),
-                },
+                [
+                    {
+                        ...body,
+                        createdAt: new Date(),
+                    },
+                ],
                 { session },
             );
             await this.productLineModel.updateOne(
@@ -117,7 +172,7 @@ export class ProductService {
 
             await session.commitTransaction();
 
-            return product;
+            return product[0];
         } catch (error) {
             await session.abortTransaction();
             throw error;

@@ -11,6 +11,8 @@ import {
 } from '../product/schemas/product-status-transition.schema';
 import { Product, ProductSchema } from '../product/schemas/product.schema';
 import { ProductService } from '../product/services/product.service';
+import { Storage, StorageSchema } from '../storage/schemas/storage.schema';
+import { StorageService } from '../storage/services/storage.service';
 import { User, UserSchema } from '../user/schemas/user.schema';
 import { UserService } from '../user/services/user.service';
 import { ProducerController } from './producer.controller';
@@ -31,8 +33,17 @@ import { ProducerService } from './services/producer.service';
             { name: ProductLine.name, schema: ProductLineSchema },
         ]),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+        MongooseModule.forFeature([
+            { name: Storage.name, schema: StorageSchema },
+        ]),
     ],
     controllers: [ProducerController],
-    providers: [JwtService, ProducerService, ProductService, UserService],
+    providers: [
+        JwtService,
+        ProducerService,
+        ProductService,
+        UserService,
+        StorageService,
+    ],
 })
 export class ProducerModule {}

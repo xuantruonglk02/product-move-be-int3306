@@ -6,6 +6,7 @@ export interface IUser {
     phoneNumber: string;
     name: string;
     role: UserRole;
+    avatar: string;
 }
 
 export interface ICreateUser extends IUser {
@@ -16,6 +17,9 @@ export interface ICreateUser extends IUser {
 export interface IUpdateUser extends Omit<IUser, 'email' | 'role'> {
     confirmPassword: string;
 
+    phoneNumber: string;
+    name: string;
+    avatar: string;
     password: string;
     updatedBy: ObjectId;
 }

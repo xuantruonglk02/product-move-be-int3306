@@ -7,6 +7,7 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -20,12 +21,14 @@ import { productMessages } from '../product/product.messages';
 import { createProductSchema } from '../product/product.validators';
 import { ProductService } from '../product/services/product.service';
 import { UserService } from '../user/services/user.service';
+import { StorageService } from '../storage/services/storage.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
 import { IExportNewProductToAgency } from './producer.interfaces';
 import { producerMessages } from './producer.messages';
 import { exportNewProductToAgencySchema } from './producer.validators';
 import { ProducerService } from './services/producer.service';
+import { storageMessage } from '../storage/storage.messages';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -35,6 +38,7 @@ export class ProducerController {
         private readonly producerService: ProducerService,
         private readonly productService: ProductService,
         private readonly userService: UserService,
+        private readonly storageService: StorageService,
     ) {}
 
     @Post('/product')
@@ -44,6 +48,11 @@ export class ProducerController {
         body: ICreateProduct,
     ) {
         try {
+            body.productLineId = new ObjectId(body.productLineId);
+            body.storageId = new ObjectId(body.storageId);
+            body.userId = new ObjectId(req.loggedUser._id);
+            body.createdBy = new ObjectId(req.loggedUser._id);
+
             const productLine = await this.productService.getProductLineDetail(
                 body.productLineId,
                 ['_id'],
@@ -58,8 +67,29 @@ export class ProducerController {
                 ]);
             }
 
-            body.userId = req.loggedUser._id;
-            body.createdBy = req.loggedUser._id;
+            const storage = await this.storageService.getStorageById(
+                body.storageId,
+                ['userId'],
+            );
+            if (!storage) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: storageMessage.errors.notFound,
+                        key: 'storageId',
+                    },
+                ]);
+            }
+            if (storage.userId.toString() !== req.loggedUser._id.toString()) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: producerMessages.errors.wrongStorage,
+                        key: 'storageId',
+                    },
+                ]);
+            }
+
             const newProduct = await this.productService.createNewProduct(body);
             return new SuccessResponse(
                 newProduct,
@@ -80,6 +110,29 @@ export class ProducerController {
         body: IExportNewProductToAgency,
     ) {
         try {
+            const storage = await this.storageService.getStorageById(
+                body.storageId,
+                ['userId'],
+            );
+            if (!storage) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: storageMessage.errors.notFound,
+                        key: 'storageId',
+                    },
+                ]);
+            }
+            if (storage.userId.toString() !== req.loggedUser._id.toString()) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: producerMessages.errors.wrongStorage,
+                        key: 'storageId',
+                    },
+                ]);
+            }
+
             const agency = await this.userService.getUserByField(
                 {
                     key: '_id',
@@ -106,25 +159,41 @@ export class ProducerController {
                 ]);
             }
 
-            const product = await this.productService.getProductDetail(
-                body.productId,
-                ['_id'],
+            const products = await this.productService.getProductByIds(
+                body.productIds,
+                ['storageId'],
             );
-            if (!product) {
+            if (products.length !== body.productIds.length) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: productMessages.errors.productNotFound,
-                        key: 'productId',
+                        key: 'productIds',
+                    },
+                ]);
+            }
+            if (
+                products.findIndex(
+                    (product) =>
+                        product.storageId?.toString() !==
+                        body.storageId.toString(),
+                ) !== -1
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.FORBIDDEN,
+                        message: producerMessages.errors.notAgency,
+                        key: 'productIds',
                     },
                 ]);
             }
 
             const transition =
                 await this.producerService.exportNewProductToAgency(
-                    body.productId,
-                    req.loggedUser._id,
-                    body.agencyId,
+                    body.productIds,
+                    new ObjectId(req.loggedUser._id),
+                    new ObjectId(body.storageId),
+                    new ObjectId(body.agencyId),
                 );
             return new SuccessResponse(transition);
         } catch (error) {

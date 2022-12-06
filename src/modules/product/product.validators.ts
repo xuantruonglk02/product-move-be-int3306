@@ -4,11 +4,7 @@ import {
     MIN_POSITIVE_NUMBER,
 } from 'src/common/constants';
 import Joi from 'src/plugins/joi';
-import {
-    ProductColor,
-    ProductLocation,
-    ProductStatus,
-} from './product.constants';
+import { ProductColor } from './product.constants';
 
 export const createProductLineSchema = Joi.object().keys({
     name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
@@ -28,12 +24,4 @@ export const createProductSchema = Joi.object().keys({
         .required(),
     bodyBuild: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
     batteryVolume: Joi.number().min(MIN_POSITIVE_NUMBER).required(),
-    status: Joi.string()
-        .valid(...Object.values(ProductStatus))
-        .required(),
-    location: Joi.string()
-        .valid(...Object.values(ProductLocation))
-        .required(),
-    sold: Joi.boolean().required(),
-    soldDate: Joi.date().required().allow(null),
 });

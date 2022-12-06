@@ -24,6 +24,10 @@ import { ICreateProductLine } from '../product/product.interfaces';
 import { productMessages } from '../product/product.messages';
 import { createProductLineSchema } from '../product/product.validators';
 import { ProductService } from '../product/services/product.service';
+import { StorageService } from '../storage/services/storage.service';
+import { ICreateStorage } from '../storage/storage.interfaces';
+import { storageMessage } from '../storage/storage.messages';
+import { createStorageSchema } from '../storage/storage.validators';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { ICreateUser } from '../user/user.interfaces';
@@ -36,6 +40,7 @@ import { createUserSchema } from '../user/user.validators';
 export class AdminController {
     constructor(
         private readonly userService: UserService,
+        private readonly storageService: StorageService,
         private readonly productService: ProductService,
     ) {}
 
@@ -64,7 +69,7 @@ export class AdminController {
             }
 
             body.password = hashPassword(body.password);
-            body.createdBy = req.loggedUser._id;
+            body.createdBy = new ObjectId(req.loggedUser._id);
             const newUser = await this.userService.createUser(body);
             return new SuccessResponse(
                 newUser,
@@ -100,12 +105,57 @@ export class AdminController {
 
             const deletedUser = await this.userService.deleteUser(
                 id,
-                req.loggedUser._id,
+                new ObjectId(req.loggedUser._id),
             );
             return new SuccessResponse(
                 deletedUser,
                 userMessages.success.deleteUser,
             );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/storage')
+    async createStorage(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(createStorageSchema))
+        body: ICreateStorage,
+    ) {
+        try {
+            const user = await this.userService.getUserByField(
+                { key: '_id', value: body.userId },
+                ['_id', 'role'],
+            );
+            if (!user) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: userMessages.errors.userNotFound,
+                        key: 'userId',
+                    },
+                ]);
+            }
+            if (
+                [
+                    UserRole.ADMIN,
+                    UserRole.WARRANTY_CENTER,
+                    UserRole.CONSUMER,
+                ].includes(user.role)
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: storageMessage.errors.createForbidden,
+                        key: 'userId',
+                    },
+                ]);
+            }
+
+            body.userId = new ObjectId(body.userId);
+            body.createdBy = new ObjectId(req.loggedUser._id);
+            const storage = await this.storageService.createStorage(body);
+            return new SuccessResponse(storage);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
@@ -121,7 +171,7 @@ export class AdminController {
         body: ICreateProductLine,
     ) {
         try {
-            body.createdBy = req.loggedUser._id;
+            body.createdBy = new ObjectId(req.loggedUser._id);
             const newProductLine =
                 await this.productService.createNewProductLine(body);
             return new SuccessResponse(

@@ -33,6 +33,7 @@ export interface ICreateProductLine extends IProductLine {
     createdBy: ObjectId;
 }
 
-export interface ICreateProduct extends Omit<IProduct, 'status' | 'location'> {
+export interface ICreateProduct
+    extends Omit<IProduct, 'status' | 'location' | 'sold' | 'soldDate'> {
     createdBy: ObjectId;
 }

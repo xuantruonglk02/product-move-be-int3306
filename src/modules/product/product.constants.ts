@@ -10,6 +10,7 @@ export enum ProductStatus {
     RETURN_PRODUCER_DONE = 'return_producer_done',
     NEED_RECALL = 'need_recall',
     OUT_OF_WARRANTY = 'out_of_warranty',
+    IN_TRANSITION = 'in_transition',
 }
 
 export enum ProductLocation {
@@ -17,6 +18,7 @@ export enum ProductLocation {
     IN_AGENCY = 'in_agency',
     IN_WARRANTY_CENTER = 'in_warranty_center',
     IN_CUSTOMER = 'in_customer',
+    IN_TRANSITION = 'in_transition',
 }
 
 export enum ProductColor {

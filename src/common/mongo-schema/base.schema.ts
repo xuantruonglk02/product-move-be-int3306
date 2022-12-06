@@ -14,14 +14,14 @@ export class BaseEntity {
 
     @Prop({
         type: Date,
-        required: true,
+        required: false,
         default: null,
     })
     updatedAt: Date;
 
     @Prop({
         type: Date,
-        required: true,
+        required: false,
         default: null,
     })
     deletedAt: Date;
@@ -34,14 +34,14 @@ export class BaseEntity {
 
     @Prop({
         type: Types.ObjectId,
-        required: true,
+        required: false,
         default: null,
     })
     updatedBy: ObjectId;
 
     @Prop({
         type: Types.ObjectId,
-        required: true,
+        required: false,
         default: null,
     })
     deletedBy: ObjectId;

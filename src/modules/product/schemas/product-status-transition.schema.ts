@@ -3,8 +3,9 @@ import { ObjectId } from 'mongodb';
 import { Document, Types } from 'mongoose';
 import { MongoCollection } from 'src/common/constants';
 import { BaseEntity } from 'src/common/mongo-schema/base.schema';
+import { Storage } from 'src/modules/storage/schemas/storage.schema';
 import { User } from 'src/modules/user/schemas/user.schema';
-import { ProductStatus } from '../product.constants';
+import { ProductLocation, ProductStatus } from '../product.constants';
 import { Product } from './product.schema';
 
 export type ProductStatusTransitionDocument = ProductStatusTransition &
@@ -25,16 +26,30 @@ export class ProductStatusTransition extends BaseEntity {
     @Prop({
         type: Types.ObjectId,
         ref: User.name,
-        required: true,
+        required: false,
     })
     previousUserId: ObjectId;
 
     @Prop({
         type: Types.ObjectId,
         ref: User.name,
-        required: true,
+        required: false,
     })
     nextUserId: ObjectId;
+
+    @Prop({
+        type: Types.ObjectId,
+        ref: Storage.name,
+        required: false,
+    })
+    previousStorageId: ObjectId;
+
+    @Prop({
+        type: Types.ObjectId,
+        ref: Storage.name,
+        required: false,
+    })
+    nextStorageId: ObjectId;
 
     @Prop({
         type: String,
@@ -49,6 +64,20 @@ export class ProductStatusTransition extends BaseEntity {
         required: true,
     })
     nextStatus: ProductStatus;
+
+    @Prop({
+        type: String,
+        enum: [...Object.values(ProductLocation)],
+        required: true,
+    })
+    previousLocation: ProductLocation;
+
+    @Prop({
+        type: String,
+        enum: [...Object.values(ProductLocation)],
+        required: true,
+    })
+    nextLocation: ProductLocation;
 
     @Prop({
         type: Date,
@@ -82,8 +111,12 @@ export const productStatusTransitionAttributes = [
     'productId',
     'previousUserId',
     'nextUserId',
+    'previousStorageId',
+    'nextStorageId',
     'previousStatus',
     'nextStatus',
+    'previousLocation',
+    'nextLocation',
     'startDate',
     'finishDate',
 ];

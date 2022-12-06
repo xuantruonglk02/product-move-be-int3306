@@ -74,7 +74,7 @@ export class UserController {
                     {
                         code: HttpStatus.UNAUTHORIZED,
                         message: authMessages.errors.wrongPassword,
-                        key: 'password',
+                        key: 'confirmPassword',
                     },
                 ]);
             }
@@ -97,7 +97,7 @@ export class UserController {
             }
 
             if (
-                req.loggedUser._id.toString() !== id &&
+                req.loggedUser._id.toString() !== id.toString() &&
                 userRequested.role !== UserRole.ADMIN
             ) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -112,7 +112,7 @@ export class UserController {
             if (body.password) {
                 body.password = hashPassword(body.password);
             }
-            body.updatedBy = req.loggedUser._id;
+            body.updatedBy = new ObjectId(req.loggedUser._id);
             const updatedUser = await this.userService.updateUser(id, body);
             return new SuccessResponse(updatedUser);
         } catch (error) {

@@ -75,7 +75,7 @@ export class AgencyController {
                 ]);
             }
 
-            const product = await this.productService.getProductDetail(
+            const product = await this.productService.getProductById(
                 body.productId,
                 ['_id'],
             );

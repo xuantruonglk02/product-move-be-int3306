@@ -19,13 +19,15 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Get('/product-line/:id')
-    async getProductLineDetail(@Param('id') id: ObjectId) {
+    async getProductLineDetail(
+        @Param('id', new ParseObjectIdPipe()) id: ObjectId,
+    ) {
         try {
             const productLine = await this.productService.getProductLineDetail(
                 id,
             );
             if (!productLine) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                return new ErrorResponse(HttpStatus.NOT_FOUND, [
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: productMessages.errors.productLineNotFound,
@@ -45,7 +47,7 @@ export class ProductController {
         try {
             const product = await this.productService.getProductDetail(id);
             if (!product) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                return new ErrorResponse(HttpStatus.NOT_FOUND, [
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: productMessages.errors.productNotFound,

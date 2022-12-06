@@ -6,6 +6,7 @@ const { VERSION: version = '1.0.0' } = process.env;
 export class SuccessResponse {
     constructor(data = {}, message = DEFAULT_SUCCESS_MESSAGE) {
         return {
+            success: true,
             code: HttpStatus.OK,
             message,
             data,
@@ -25,6 +26,7 @@ export class ErrorResponse {
         message = DEFAULT_ERROR_MESSAGE,
     ) {
         return {
+            success: false,
             code,
             message,
             errors,

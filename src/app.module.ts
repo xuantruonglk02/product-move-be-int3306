@@ -1,6 +1,8 @@
-import { Module, Scope } from '@nestjs/common';
+import { Module, NestModule, Scope } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import mongoose from 'mongoose';
+import ConfigKey from './common/config/configKey';
 import { AppController } from './app.controller';
 import { AllExceptionsFilter } from './common/exceptions.filter';
 import { MongoModule } from './common/services/mongo.service';
@@ -46,4 +48,8 @@ import { warrantyCenterModule } from './modules/warranty-center/warranty-center.
     ],
     exports: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure() {
+        mongoose.set('debug', process.env[ConfigKey.MONGO_DEBUG] === 'enable');
+    }
+}

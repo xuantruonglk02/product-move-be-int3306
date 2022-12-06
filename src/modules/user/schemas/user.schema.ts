@@ -44,7 +44,7 @@ export class User extends BaseEntity {
 
     @Prop({
         type: String,
-        required: true,
+        required: false,
     })
     avatar: string;
 }
