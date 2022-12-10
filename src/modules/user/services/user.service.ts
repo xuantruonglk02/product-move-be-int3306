@@ -34,10 +34,11 @@ export class UserService {
 
     async createUser(body: ICreateUser) {
         try {
-            return await this.userModel.create({
+            const user = await this.userModel.create({
                 ...body,
                 createdAt: new Date(),
             });
+            return this.getUserByField({ key: '_id', value: user._id });
         } catch (error) {
             throw error;
         }

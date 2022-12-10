@@ -12,11 +12,11 @@ export const importNewProductFromProducerSchema = Joi.object().keys({
 });
 
 export const checkoutProductSchema = Joi.object().keys({
-    productIds: Joi.array().items(Joi.isObjectId()).required(),
     customerName: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
     customerEmail: Joi.string()
         .max(INPUT_TEXT_MAX_LENGTH)
         .regex(Regex.EMAIL)
         .required(),
     customerPhone: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).required(),
+    productIds: Joi.array().items(Joi.isObjectId()).required(),
 });

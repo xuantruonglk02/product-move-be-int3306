@@ -21,7 +21,6 @@ import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateProductLine } from '../product/product.interfaces';
-import { productMessages } from '../product/product.messages';
 import { createProductLineSchema } from '../product/product.validators';
 import { ProductService } from '../product/services/product.service';
 import { StorageService } from '../storage/services/storage.service';
@@ -71,10 +70,7 @@ export class AdminController {
             body.password = hashPassword(body.password);
             body.createdBy = new ObjectId(req.loggedUser._id);
             const newUser = await this.userService.createUser(body);
-            return new SuccessResponse(
-                newUser,
-                userMessages.success.createUser,
-            );
+            return new SuccessResponse(newUser);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
@@ -107,10 +103,7 @@ export class AdminController {
                 id,
                 new ObjectId(req.loggedUser._id),
             );
-            return new SuccessResponse(
-                deletedUser,
-                userMessages.success.deleteUser,
-            );
+            return new SuccessResponse(deletedUser);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
@@ -174,10 +167,7 @@ export class AdminController {
             body.createdBy = new ObjectId(req.loggedUser._id);
             const newProductLine =
                 await this.productService.createNewProductLine(body);
-            return new SuccessResponse(
-                newProductLine,
-                productMessages.success.createProductLine,
-            );
+            return new SuccessResponse(newProductLine);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

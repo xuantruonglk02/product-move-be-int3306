@@ -90,8 +90,7 @@ export class AgencyService {
 
     async createNewCheckout(body: ICreateOrder) {
         try {
-            const order = await this.orderService.createNewOrder(body);
-            return order;
+            return await this.orderService.createNewOrder(body);
         } catch (error) {
             throw error;
         }

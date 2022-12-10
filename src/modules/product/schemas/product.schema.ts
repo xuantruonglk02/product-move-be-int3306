@@ -53,6 +53,35 @@ export class Product extends BaseEntity {
     description: string;
 
     @Prop({
+        type: String,
+        enum: [...Object.values(ProductStatus)],
+        default: ProductStatus.NEW,
+        required: true,
+    })
+    status: ProductStatus;
+
+    @Prop({
+        type: String,
+        enum: [...Object.values(ProductLocation)],
+        default: ProductLocation.IN_PRODUCER,
+        required: true,
+    })
+    location: ProductLocation;
+
+    @Prop({
+        type: Boolean,
+        default: false,
+        required: true,
+    })
+    sold: boolean;
+
+    @Prop({
+        type: Date,
+        require: false,
+    })
+    soldDate: Date;
+
+    @Prop({
         type: Number,
         required: true,
     })
@@ -88,35 +117,6 @@ export class Product extends BaseEntity {
         required: true,
     })
     batteryVolume: number;
-
-    @Prop({
-        type: String,
-        enum: [...Object.values(ProductStatus)],
-        default: ProductStatus.NEW,
-        required: true,
-    })
-    status: ProductStatus;
-
-    @Prop({
-        type: String,
-        enum: [...Object.values(ProductLocation)],
-        default: ProductLocation.IN_PRODUCER,
-        required: true,
-    })
-    location: ProductLocation;
-
-    @Prop({
-        type: Boolean,
-        default: false,
-        required: true,
-    })
-    sold: boolean;
-
-    @Prop({
-        type: Date,
-        require: false,
-    })
-    soldDate: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
@@ -140,14 +140,14 @@ export const productAttributes = [
     'storageId',
     'name',
     'description',
+    'status',
+    'location',
+    'sold',
+    'soldDate',
     'weight',
     'displaySize',
     'bodySize',
     'color',
     'bodyBuild',
     'batteryVolume',
-    'status',
-    'location',
-    'sold',
-    'soldDate',
 ];

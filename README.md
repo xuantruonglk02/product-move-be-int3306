@@ -77,16 +77,16 @@ Nest is [MIT licensed](LICENSE).
 
 ### Admin module
 
--   [x] Create user
+-   [x] [Create user](#create-user)
 -   [ ] Delete user (TODO: delete storage and inside products)
--   [x] Create storage for producer and agency
--   [x] Create product line
+-   [x] [Create storage for producer and agency](#create-storage)
+-   [x] [Create product line](#create-product-line)
 -   [ ] View report (status | producer | agency | warranty center)
 
 ### Producer module
 
 -   [x] [Create product](#create-product)
--   [x] Export product to agency
+-   [x] [Export product to agency](#export-new-product-to-agency)
 -   [ ] Receive error product from warranty center
 -   [ ] Report about product (type | status) (month | quarter | year)
 -   [ ] Report about sold product (month | quarter | year)
@@ -95,7 +95,7 @@ Nest is [MIT licensed](LICENSE).
 ### Agency module
 
 -   [ ] Import new product from producer
--   [ ] Sold product
+-   [x] [Sold product](#checkout)
 -   [ ] Receive error product from customer
 -   [ ] Transfer error product to warranty center
 -   [ ] Receive fixed product from warranty center
@@ -112,6 +112,10 @@ Nest is [MIT licensed](LICENSE).
 -   [ ] Notify agency that the product can not be fixed
 -   [ ] Return error product to producer
 -   [ ] Report about product (line | status) (month | quarter | year)
+
+### Notification
+
+-   TODO: Create notification for all actions
 
 ## API Documentation
 
@@ -293,6 +297,114 @@ GET /api/v1/product/:id
 }
 ```
 
+### Admin module
+
+#### Create user
+
+```http
+POST /api/v1/admin/user
+```
+
+| Parameter     | Type     | Description                                                |
+| :------------ | :------- | :--------------------------------------------------------- |
+| `email`       | `string` | **Required**                                               |
+| `name`        | `string` | **Required**                                               |
+| `role`        | `string` | **Required**. (in [admin,producer,agency,warranty_center]) |
+| `password`    | `string` | **Required**                                               |
+| `phoneNumber` | `string` | **Optional**                                               |
+| `avatar`      | `string` | **Optional**                                               |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "createdAt": "2022-12-06T18:37:26.888Z",
+        "updatedAt": "2022-12-06T18:37:26.888Z",
+        "deletedAt": null,
+        "createdBy": "638b4b7718844a05965a0ca3",
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "agency@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "agency",
+        "role": "agency",
+        "avatar": "https://avatar.com",
+        "_id": "638f8be6e5340b16eaef5a3e",
+        "__v": 0
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Create storage
+
+```http
+POST /api/v1/admin/storage
+```
+
+| Parameter | Type       | Description  |
+| :-------- | :--------- | :----------- |
+| `userId`  | `ObjectId` | **Required** |
+| `name`    | `string`   | **Required** |
+| `address` | `string`   | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "createdAt": "2022-12-10T10:07:24.610Z",
+        "updatedAt": "2022-12-10T10:07:24.610Z",
+        "deletedAt": null,
+        "createdBy": "638b4b7718844a05965a0ca3",
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": "638f8be6e5340b16eaef5a3e",
+        "name": "agency storage",
+        "address": "agency storage",
+        "_id": "63945a5c1db64de99f5f70ff",
+        "__v": 0
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Create product line
+
+```http
+POST /api/v1/admin/product-line
+```
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------- |
+| `name`    | `string` | **Required** |
+| `price`   | `number` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "createdAt": "2022-12-10T10:34:15.977Z",
+        "updatedAt": "2022-12-10T10:34:15.977Z",
+        "deletedAt": null,
+        "createdBy": "638b4b7718844a05965a0ca3",
+        "updatedBy": null,
+        "deletedBy": null,
+        "name": "Samsung",
+        "price": 1000,
+        "quantityOfProduct": 0,
+        "_id": "639460a71db64de99f5f7111",
+        "__v": 0
+    },
+    "version": "1.0.0"
+}
+```
+
 ### Producer module
 
 #### Create product
@@ -318,7 +430,7 @@ POST /api/v1/producer/product
 {
     "success": true,
     "code": 200,
-    "message": "Create product successfully",
+    "message": "Success",
     "data": {
         "createdAt": "2022-12-05T05:27:23.322Z",
         "updatedAt": "2022-12-05T05:27:23.322Z",
@@ -343,6 +455,115 @@ POST /api/v1/producer/product
         "_id": "638d813b70c5c2e16b58e5dd",
         "__v": 0
     }
+    "version": "1.0.0"
+}
+```
+
+#### Export new product to agency
+
+```http
+POST /api/v1/producer/export-to-agency
+```
+
+| Parameter    | Type              | Description  |
+| :----------- | :---------------- | :----------- |
+| `storageId`  | `ObjectId`        | **Required** |
+| `agencyId`   | `ObjectId`        | **Required** |
+| `productIds` | `Array<ObjectId>` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": [
+        {
+            "_id": "6394515a1d58e570ff3627db",
+            "productId": "6394500b1d58e570ff3627cc",
+            "previousUserId": "638d69f4383b14090809a7e8",
+            "nextUserId": "638f8be6e5340b16eaef5a3e",
+            "previousStorageId": "638d809c085dd06475c5f016",
+            "previousStatus": "new",
+            "nextStatus": "in_agency",
+            "previousLocation": "in_producer",
+            "nextLocation": "in_agency",
+            "startDate": "2022-12-10T09:28:58.071Z",
+            "createdBy": "638d69f4383b14090809a7e8",
+            "createdAt": "2022-12-10T09:28:58.071Z"
+        }
+    ],
+    "version": "1.0.0"
+}
+```
+
+### Agency module
+
+#### Checkout
+
+```http
+POST /api/v1/agency/checkout
+```
+
+| Parameter       | Type              | Description  |
+| :-------------- | :---------------- | :----------- |
+| `customerName`  | `string`          | **Required** |
+| `customerEmail` | `string`          | **Required** |
+| `customerPhone` | `string`          | **Required** |
+| `productIds`    | `Array<ObjectId>` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63945abf1db64de99f5f7106",
+        "customerName": "customer",
+        "customerEmail": "customer@gmail.com",
+        "customerPhone": "0123456789",
+        "orderDetails": [
+            {
+                "_id": "63945ac01db64de99f5f710b",
+                "createdAt": "2022-12-10T10:09:03.984Z",
+                "updatedAt": "2022-12-10T10:09:04.065Z",
+                "deletedAt": null,
+                "createdBy": "638f8be6e5340b16eaef5a3e",
+                "updatedBy": null,
+                "deletedBy": null,
+                "orderId": "63945abf1db64de99f5f7106",
+                "productId": "6394500b1d58e570ff3627cc",
+                "productPrice": 1000,
+                "__v": 0,
+                "product": [
+                    {
+                        "_id": "6394500b1d58e570ff3627cc",
+                        "createdAt": "2022-12-10T09:23:23.030Z",
+                        "updatedAt": "2022-12-10T10:09:03.985Z",
+                        "deletedAt": null,
+                        "createdBy": "638d69f4383b14090809a7e8",
+                        "updatedBy": "638f8be6e5340b16eaef5a3e",
+                        "deletedBy": null,
+                        "productLineId": "638d6bbce7f9bf2f085460c9",
+                        "userId": null,
+                        "storageId": null,
+                        "name": "Iphone 1",
+                        "description": "Iphone 1",
+                        "status": "sold",
+                        "location": "in_customer",
+                        "sold": true,
+                        "weight": 1000,
+                        "displaySize": 9.7,
+                        "bodySize": "1x1",
+                        "color": "black",
+                        "bodyBuild": "body build",
+                        "batteryVolume": 1000,
+                        "__v": 0,
+                        "soldDate": "2022-12-10T10:09:03.984Z"
+                    }
+                ]
+            }
+        ]
+    },
     "version": "1.0.0"
 }
 ```

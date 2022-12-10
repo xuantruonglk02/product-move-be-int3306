@@ -7,6 +7,7 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -16,6 +17,7 @@ import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateOrder } from '../order/order.interfaces';
+import { ProductLocation, ProductStatus } from '../product/product.constants';
 import { productMessages } from '../product/product.messages';
 import { ProductService } from '../product/services/product.service';
 import { UserService } from '../user/services/user.service';
@@ -107,9 +109,40 @@ export class AgencyController {
         body: ICreateOrder,
     ) {
         try {
-            // TODO: check
+            const products = await this.productService.getProductByIds(
+                body.productIds,
+                ['userId', 'status', 'location', 'sold'],
+            );
+            if (products.length !== body.productIds.length) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.productNotFound,
+                        key: 'productId',
+                    },
+                ]);
+            }
+            if (
+                !products.every(
+                    (product) =>
+                        product.userId &&
+                        product.userId.toString() ===
+                            req.loggedUser._id.toString() &&
+                        product.status === ProductStatus.IN_AGENCY &&
+                        product.location === ProductLocation.IN_AGENCY &&
+                        !product.sold,
+                )
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: agencyMessages.errors.unprocessableProduct,
+                        key: 'productId',
+                    },
+                ]);
+            }
 
-            body.createdBy = req.loggedUser._id;
+            body.createdBy = new ObjectId(req.loggedUser._id);
             const order = await this.agencyService.createNewCheckout(body);
             return new SuccessResponse(order);
         } catch (error) {

@@ -91,10 +91,7 @@ export class ProducerController {
             }
 
             const newProduct = await this.productService.createNewProduct(body);
-            return new SuccessResponse(
-                newProduct,
-                productMessages.success.createProduct,
-            );
+            return new SuccessResponse(newProduct);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

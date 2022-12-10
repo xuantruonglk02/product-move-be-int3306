@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
-import { softDeleteCondition } from 'src/common/constants';
+import { MongoCollection, softDeleteCondition } from 'src/common/constants';
 import {
     ProductLocation,
     ProductStatus,
@@ -18,9 +18,10 @@ import {
 import { ICreateOrder } from '../order.interfaces';
 import {
     OrderDetail,
+    orderDetailAttributes,
     OrderDetailDocument,
 } from '../schemas/order-detail.schema';
-import { Order, OrderDocument } from '../schemas/order.schema';
+import { Order, orderAttributes, OrderDocument } from '../schemas/order.schema';
 
 @Injectable()
 export class OrderService {
@@ -36,6 +37,71 @@ export class OrderService {
         @InjectConnection()
         private readonly connection: Connection,
     ) {}
+
+    async getOrderById(id: ObjectId, attrs = orderAttributes) {
+        try {
+            return await this.orderModel
+                .findOne({
+                    _id: id,
+                    ...softDeleteCondition,
+                })
+                .select(attrs)
+                .lean();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getOrderDetailsByOrderId(
+        orderId: ObjectId,
+        attrs = orderDetailAttributes,
+    ) {
+        try {
+            return await this.orderDetailModel
+                .find({
+                    orderId: orderId,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getDetailOfOrder(id: ObjectId) {
+        try {
+            const order = await this.getOrderById(id);
+            const orderDetails = await this.orderDetailModel.aggregate([
+                {
+                    $match: {
+                        orderId: id,
+                        ...softDeleteCondition,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: MongoCollection.PRODUCTS,
+                        as: 'product',
+                        localField: 'productId',
+                        foreignField: '_id',
+                        pipeline: [
+                            {
+                                $match: {
+                                    ...softDeleteCondition,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+            return {
+                ...order,
+                orderDetails,
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
 
     async createNewOrder(body: ICreateOrder) {
         const session = await this.connection.startSession();
@@ -113,7 +179,7 @@ export class OrderService {
             const orderDetails = products.map((product) => {
                 return {
                     orderId,
-                    productId: product.id,
+                    productId: product._id,
                     productPrice: mapProductLineIdToPrice.get(
                         product.productLineId.toString(),
                     ),
@@ -146,23 +212,24 @@ export class OrderService {
             await this.productLineModel.bulkWrite(updateProductLineQuery, {
                 session,
             });
-
-            const order = await this.orderModel.create({
-                _id: orderId,
-                customerName: body.customerName,
-                customerEmail: body.customerName,
-                customerPhone: body.customerName,
-                createdBy: body.createdBy,
-                createdAt: new Date(),
-            });
+            await this.orderModel.create(
+                [
+                    {
+                        _id: orderId,
+                        customerName: body.customerName,
+                        customerEmail: body.customerEmail,
+                        customerPhone: body.customerPhone,
+                        createdBy: body.createdBy,
+                        createdAt: new Date(),
+                    },
+                ],
+                { session },
+            );
             await this.orderDetailModel.insertMany(orderDetails, { session });
 
             await session.commitTransaction();
 
-            return {
-                ...order,
-                details: orderDetails,
-            };
+            return await this.getDetailOfOrder(orderId);
         } catch (error) {
             await session.abortTransaction();
             throw error;
