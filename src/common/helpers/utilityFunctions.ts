@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { OrderDirection } from '../constants';
 
 export function extractToken(authorization = '') {
     if (/^Bearer /.test(authorization)) {

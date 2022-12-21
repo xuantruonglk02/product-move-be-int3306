@@ -28,7 +28,7 @@ export class ProductService {
         @InjectModel(ProductLine.name)
         private readonly productLineModel: Model<ProductLineDocument>,
         @InjectModel(ProductStatusTransition.name)
-        private readonly productStatusTransactionModel: Model<ProductStatusTransitionDocument>,
+        private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
         @InjectConnection()
         private readonly connection: Connection,
     ) {}
@@ -116,7 +116,7 @@ export class ProductService {
         attrs = productStatusTransitionAttributes,
     ) {
         try {
-            return await this.productStatusTransactionModel
+            return await this.productStatusTransitionModel
                 .findOne({
                     _id: id,
                     ...softDeleteCondition,

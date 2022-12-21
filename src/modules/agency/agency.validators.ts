@@ -9,6 +9,7 @@ export const importNewProductFromProducerSchema = Joi.object().keys({
     transitionId: Joi.isObjectId().required(),
     producerId: Joi.isObjectId().required(),
     productId: Joi.isObjectId().required(),
+    storageId: Joi.isObjectId().required(),
 });
 
 export const checkoutProductSchema = Joi.object().keys({
@@ -19,4 +20,8 @@ export const checkoutProductSchema = Joi.object().keys({
         .required(),
     customerPhone: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).required(),
     productIds: Joi.array().items(Joi.isObjectId()).required(),
+});
+
+export const returnFixedProduct = Joi.object().keys({
+    productId: Joi.isObjectId().required(),
 });

@@ -2,13 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
-import { softDeleteCondition } from 'src/common/constants';
+import {
+    DEFAULT_ITEM_PER_PAGE_LIMIT,
+    MIN_POSITIVE_NUMBER,
+    OrderDirection,
+    softDeleteCondition,
+} from 'src/common/constants';
 import {
     Storage,
     storageAttributes,
     StorageDocument,
 } from '../schemas/storage.schema';
-import { ICreateStorage } from '../storage.interfaces';
+import { ICreateStorage, IGetStorageList } from '../storage.interfaces';
 
 @Injectable()
 export class StorageService {
@@ -25,6 +30,46 @@ export class StorageService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getStorageList(query: IGetStorageList) {
+        try {
+            const {
+                userId,
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = 'name',
+            } = query;
+
+            const [storageList, total] = await Promise.all([
+                this.storageModel
+                    .find({
+                        userId,
+                        ...softDeleteCondition,
+                    })
+                    .select(storageAttributes)
+                    .sort({
+                        [orderBy]:
+                            orderDirection === OrderDirection.ASCENDING
+                                ? 1
+                                : -1,
+                    })
+                    .limit(limit)
+                    .skip(limit * (page - 1)),
+                this.storageModel.countDocuments({
+                    userId,
+                    ...softDeleteCondition,
+                }),
+            ]);
+
+            return {
+                items: storageList,
+                totalItems: total,
+            };
         } catch (error) {
             throw error;
         }

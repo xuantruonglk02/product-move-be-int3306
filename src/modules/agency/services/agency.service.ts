@@ -10,6 +10,10 @@ import {
     ProductStatus,
 } from 'src/modules/product/product.constants';
 import {
+    ProductReplacement,
+    ProductReplacementDocument,
+} from 'src/modules/product/schemas/product-replacement.schema';
+import {
     ProductStatusTransition,
     ProductStatusTransitionDocument,
 } from 'src/modules/product/schemas/product-status-transition.schema';
@@ -26,6 +30,8 @@ export class AgencyService {
         private readonly productModel: Model<ProductDocument>,
         @InjectModel(ProductStatusTransition.name)
         private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
+        @InjectModel(ProductReplacement.name)
+        private readonly productReplacementModel: Model<ProductReplacementDocument>,
         @InjectConnection()
         private readonly connection: Connection,
         private readonly productService: ProductService,
@@ -35,13 +41,14 @@ export class AgencyService {
     async importNewProductFromProducer(
         transitionId: ObjectId,
         agencyId: ObjectId,
+        storageId: ObjectId,
     ) {
         const session = await this.connection.startSession();
 
         try {
             session.startTransaction();
 
-            const transaction = await this.productStatusTransitionModel
+            const transition = await this.productStatusTransitionModel
                 .findOneAndUpdate(
                     {
                         _id: transitionId,
@@ -49,6 +56,7 @@ export class AgencyService {
                     },
                     {
                         $set: {
+                            nextStorageId: storageId,
                             finishDate: new Date(),
                             updatedBy: agencyId,
                             updatedAt: new Date(),
@@ -59,13 +67,13 @@ export class AgencyService {
                 .select(['productId']);
             await this.productModel.updateOne(
                 {
-                    _id: transaction.productId,
+                    _id: transition.productId,
                     ...softDeleteCondition,
                 },
                 {
                     $set: {
                         userId: agencyId,
-                        // storageId:
+                        storageId,
                         status: ProductStatus.IN_AGENCY,
                         location: ProductLocation.IN_AGENCY,
                         updatedBy: agencyId,
@@ -93,6 +101,231 @@ export class AgencyService {
             return await this.orderService.createNewOrder(body);
         } catch (error) {
             throw error;
+        }
+    }
+
+    async receiveErrorProductFromCustomer(
+        productId: ObjectId,
+        agencyId: ObjectId,
+        storageId: ObjectId,
+    ) {
+        try {
+            await this.productModel.updateOne(
+                {
+                    _id: productId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: agencyId,
+                        storageId,
+                        status: ProductStatus.NEED_WARRANTY,
+                        location: ProductLocation.IN_AGENCY,
+                        updatedBy: agencyId,
+                        updatedAt: new Date(),
+                    },
+                },
+            );
+
+            return await this.productService.getProductById(productId);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async transferErrorProductToWarrantyCenter(
+        productId: ObjectId,
+        warrantyCenterId: ObjectId,
+    ) {
+        const session = await this.connection.startSession();
+
+        try {
+            const product = await this.productService.getProductById(
+                productId,
+                ['userId', 'storageId', 'status'],
+            );
+
+            session.startTransaction();
+
+            const transitionId = new ObjectId();
+            await this.productStatusTransitionModel.create(
+                {
+                    _id: transitionId,
+                    productId,
+                    previousUserId: product.userId,
+                    nextUserId: warrantyCenterId,
+                    previousStorageId: product.storageId,
+                    nextStorageId: null,
+                    previousStatus: product.status,
+                    nextStatus: ProductStatus.IN_WARRANTY,
+                    previousLocation: ProductLocation.IN_AGENCY,
+                    nextLocation: ProductLocation.IN_WARRANTY_CENTER,
+                    startDate: new Date(),
+                },
+                { session },
+            );
+            await this.productModel.updateOne(
+                {
+                    _id: productId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: null,
+                        storageId: null,
+                        status: ProductStatus.IN_TRANSITION,
+                        location: ProductLocation.IN_TRANSITION,
+                        updatedBy: product.userId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
+
+            await session.commitTransaction();
+
+            return await this.productService.getProductStatusTransition(
+                transitionId,
+            );
+        } catch (error) {
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
+        }
+    }
+
+    async receiveFixedProduct(transitionId: ObjectId, storageId: ObjectId) {
+        const session = await this.connection.startSession();
+
+        try {
+            const transition =
+                await this.productService.getProductStatusTransition(
+                    transitionId,
+                    ['productId', 'nextUserId'],
+                );
+
+            session.startTransaction();
+
+            await this.productStatusTransitionModel.updateOne(
+                {
+                    _id: transition._id,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        nextStorageId: storageId,
+                        finishDate: new Date(),
+                        updatedBy: transition.nextUserId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
+            await this.productModel.updateOne(
+                {
+                    _id: transition.productId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: transition.nextUserId,
+                        storageId: storageId,
+                        status: ProductStatus.WARRANTY_DONE,
+                        location: ProductLocation.IN_AGENCY,
+                        updatedBy: transition.nextUserId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
+
+            await session.abortTransaction();
+
+            return await this.productService.getProductStatusTransition(
+                transitionId,
+            );
+        } catch (error) {
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
+        }
+    }
+
+    async returnFixedProductToCustomer(
+        productId: ObjectId,
+        agencyId: ObjectId,
+    ) {
+        try {
+            await this.productModel.updateOne(
+                {
+                    _id: productId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: null,
+                        storageId: null,
+                        status: ProductStatus.RETURN_CONSUMER,
+                        location: ProductLocation.IN_CUSTOMER,
+                        updatedBy: agencyId,
+                        updatedAt: new Date(),
+                    },
+                },
+            );
+
+            return await this.productService.getProductDetail(productId);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async returnNewProductToCustomer(
+        oldProductId: ObjectId,
+        newProductId: ObjectId,
+        agencyId: ObjectId,
+    ) {
+        const session = await this.connection.startSession();
+
+        try {
+            session.startTransaction();
+
+            await this.productModel.updateOne(
+                {
+                    _id: newProductId,
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: null,
+                        storageId: null,
+                        status: ProductStatus.RETURN_CONSUMER,
+                        location: ProductLocation.IN_CUSTOMER,
+                        updatedBy: agencyId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
+            await this.productReplacementModel.create(
+                {
+                    oldProductId: oldProductId,
+                    newProductId: newProductId,
+                    createdBy: agencyId,
+                    createdAt: new Date(),
+                },
+                { session },
+            );
+
+            await session.commitTransaction();
+
+            return await this.productService.getProductDetail(newProductId);
+        } catch (error) {
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
         }
     }
 }

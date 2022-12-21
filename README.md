@@ -85,6 +85,7 @@ Nest is [MIT licensed](LICENSE).
 
 ### Producer module
 
+-   [x] [Get storage list](#get-producers-storage-list)
 -   [x] [Create product](#create-product)
 -   [x] [Export product to agency](#export-new-product-to-agency)
 -   [ ] Receive error product from warranty center
@@ -94,6 +95,7 @@ Nest is [MIT licensed](LICENSE).
 
 ### Agency module
 
+-   [x] [Get storage list](#get-agencys-storage-list)
 -   [ ] Import new product from producer
 -   [x] [Sold product](#checkout)
 -   [ ] Receive error product from customer
@@ -407,6 +409,40 @@ POST /api/v1/admin/product-line
 
 ### Producer module
 
+#### Get producer's storage list
+
+```http
+POST /api/v1/agency/storage
+```
+
+| Parameter        | Type     | Description                               |
+| :--------------- | :------- | :---------------------------------------- |
+| `keyword`        | `string` | **Optional**                              |
+| `page`           | `number` | **Optional**                              |
+| `limit`          | `number` | **Optional**                              |
+| `orderBy`        | `string` | **Optional**                              |
+| `orderDirection` | `string` | **Optional**. (in [ascending,descending]) |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "638d809c085dd06475c5f016",
+                "userId": "638d69f4383b14090809a7e8",
+                "name": "producer storage",
+                "address": "producer storage"
+            }
+        ],
+        "totalItems": 1
+    },
+    "version": "1.0.0"
+}
+```
+
 #### Create product
 
 ```http
@@ -497,6 +533,40 @@ POST /api/v1/producer/export-to-agency
 ```
 
 ### Agency module
+
+#### Get agency's storage list
+
+```http
+POST /api/v1/agency/storage
+```
+
+| Parameter        | Type     | Description                               |
+| :--------------- | :------- | :---------------------------------------- |
+| `keyword`        | `string` | **Optional**                              |
+| `page`           | `number` | **Optional**                              |
+| `limit`          | `number` | **Optional**                              |
+| `orderBy`        | `string` | **Optional**                              |
+| `orderDirection` | `string` | **Optional**. (in [ascending,descending]) |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "63945a5c1db64de99f5f70ff",
+                "userId": "638f8be6e5340b16eaef5a3e",
+                "name": "agency storage",
+                "address": "agency storage"
+            }
+        ],
+        "totalItems": 1
+    },
+    "version": "1.0.0"
+}
+```
 
 #### Checkout
 

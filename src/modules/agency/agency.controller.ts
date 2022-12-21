@@ -1,33 +1,43 @@
 import {
     Body,
     Controller,
+    Get,
     HttpStatus,
     InternalServerErrorException,
     Post,
+    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
+import { commonListQuerySchema } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
     Roles,
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
+import { ICommonListQuery } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
+import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateOrder } from '../order/order.interfaces';
 import { ProductLocation, ProductStatus } from '../product/product.constants';
 import { productMessages } from '../product/product.messages';
 import { ProductService } from '../product/services/product.service';
+import { StorageService } from '../storage/services/storage.service';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
-import { IImportNewProductFromProducer } from './agency.interfaces';
+import {
+    IImportNewProductFromProducer,
+    IReturnFixedProduct,
+} from './agency.interfaces';
 import { agencyMessages } from './agency.messages';
 import {
     checkoutProductSchema,
     importNewProductFromProducerSchema,
+    returnFixedProduct,
 } from './agency.validators';
 import { AgencyService } from './services/agency.service';
 
@@ -39,7 +49,29 @@ export class AgencyController {
         private readonly agencyService: AgencyService,
         private readonly productService: ProductService,
         private readonly userService: UserService,
+        private readonly storageService: StorageService,
     ) {}
+
+    @Get('/storage')
+    async getStorageList(
+        @Req() req,
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(commonListQuerySchema),
+        )
+        query: ICommonListQuery,
+    ) {
+        try {
+            return new SuccessResponse(
+                await this.storageService.getStorageList({
+                    ...query,
+                    userId: new ObjectId(req.loggedUser._id),
+                }),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     @Post('/import-new-product')
     async importNewProductFromProducer(
@@ -93,8 +125,9 @@ export class AgencyController {
 
             const transition =
                 await this.agencyService.importNewProductFromProducer(
-                    body.transitionId,
-                    req.loggedUser._id,
+                    new ObjectId(body.transitionId),
+                    new ObjectId(req.loggedUser._id),
+                    new ObjectId(body.storageId),
                 );
             return new SuccessResponse(transition);
         } catch (error) {
@@ -149,4 +182,73 @@ export class AgencyController {
             throw new InternalServerErrorException(error);
         }
     }
+
+    // TODO
+    // @Post('/receive-error-product')
+    // async receiveErrorProductFromProducer() {}
+
+    // TODO
+    // @Post('/transfer-error-product')
+    // async transferErrorProduct() {}
+
+    // TODO
+    // @Post('/receive-fixed-product')
+    // async receiveFixedProduct() {}
+
+    @Post('/return-fixed-product')
+    async returnFixedProduct(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(returnFixedProduct))
+        body: IReturnFixedProduct,
+    ) {
+        try {
+            const product = await this.productService.getProductById(
+                body.productId,
+                ['_id', 'userId', 'status', 'location'],
+            );
+            if (!product) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.productNotFound,
+                        key: 'productId',
+                    },
+                ]);
+            }
+            if (req.loggedUser._id.toString() !== product.userId) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: productMessages.errors.productNotOfAgency,
+                        key: 'productId',
+                    },
+                ]);
+            }
+            if (
+                product.status !== ProductStatus.WARRANTY_DONE ||
+                product.location !== ProductLocation.IN_AGENCY
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: productMessages.errors.cantReturn,
+                        key: 'productId',
+                    },
+                ]);
+            }
+
+            const fixedProduct =
+                await this.agencyService.returnFixedProductToCustomer(
+                    new ObjectId(body.productId),
+                    new ObjectId(req.loggedUser._id),
+                );
+            return new SuccessResponse(fixedProduct);
+        } catch (error) {
+            return new InternalServerErrorException(error);
+        }
+    }
+
+    // TODO
+    // @Post('/return-fixed-product')
+    // async returnNewProduct() {}
 }

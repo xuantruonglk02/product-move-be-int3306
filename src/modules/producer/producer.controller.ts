@@ -1,9 +1,11 @@
 import {
     Body,
     Controller,
+    Get,
     HttpStatus,
     InternalServerErrorException,
     Post,
+    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
@@ -29,6 +31,9 @@ import { producerMessages } from './producer.messages';
 import { exportNewProductToAgencySchema } from './producer.validators';
 import { ProducerService } from './services/producer.service';
 import { storageMessage } from '../storage/storage.messages';
+import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
+import { commonListQuerySchema } from 'src/common/constants';
+import { ICommonListQuery } from 'src/common/interfaces';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -40,6 +45,27 @@ export class ProducerController {
         private readonly userService: UserService,
         private readonly storageService: StorageService,
     ) {}
+
+    @Get('/storage')
+    async getStorageList(
+        @Req() req,
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(commonListQuerySchema),
+        )
+        query: ICommonListQuery,
+    ) {
+        try {
+            return new SuccessResponse(
+                await this.storageService.getStorageList({
+                    ...query,
+                    userId: new ObjectId(req.loggedUser._id),
+                }),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     @Post('/product')
     async createProduct(
