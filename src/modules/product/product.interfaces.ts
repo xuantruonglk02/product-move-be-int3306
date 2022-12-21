@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { ICommonListQuery } from 'src/common/interfaces';
 import {
     ProductColor,
     ProductLocation,
@@ -27,6 +28,10 @@ export interface IProduct {
     location: ProductLocation;
     sold: boolean;
     soldDate: Date | null;
+}
+
+export interface IGetProductList extends ICommonListQuery {
+    productLineId?: ObjectId;
 }
 
 export interface ICreateProductLine extends IProductLine {

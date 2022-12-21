@@ -2,8 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
-import { MongoCollection, softDeleteCondition } from 'src/common/constants';
-import { ICreateProduct, ICreateProductLine } from '../product.interfaces';
+import {
+    DEFAULT_ITEM_PER_PAGE_LIMIT,
+    MIN_POSITIVE_NUMBER,
+    MongoCollection,
+    OrderDirection,
+    softDeleteCondition,
+} from 'src/common/constants';
+import { ICommonListQuery } from 'src/common/interfaces';
+import {
+    ICreateProduct,
+    ICreateProductLine,
+    IGetProductList,
+} from '../product.interfaces';
 import {
     ProductLine,
     productLineAttributes,
@@ -106,6 +117,97 @@ export class ProductService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductLineList(query: ICommonListQuery) {
+        try {
+            const {
+                keyword = '',
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = 'name',
+            } = query;
+
+            const [productLineList, total] = await Promise.all([
+                this.productLineModel
+                    .find({
+                        name: {
+                            $regex: `.*${keyword}.*`,
+                            $options: 'i',
+                        },
+                        ...softDeleteCondition,
+                    })
+                    .select(productLineAttributes)
+                    .sort({
+                        [orderBy]:
+                            orderDirection === OrderDirection.ASCENDING
+                                ? 1
+                                : -1,
+                    })
+                    .limit(limit)
+                    .skip(limit * (page - 1)),
+                this.productLineModel.countDocuments({
+                    name: {
+                        $regex: `.*${keyword}.*`,
+                        $options: 'i',
+                    },
+                    ...softDeleteCondition,
+                }),
+            ]);
+
+            return {
+                items: productLineList,
+                totalItems: total,
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductList(query: IGetProductList) {
+        try {
+            const {
+                keyword = '',
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = 'name',
+            } = query;
+
+            const getListQuery: Record<string, any> = {
+                name: {
+                    $regex: `.*${keyword}.*`,
+                    $options: 'i',
+                },
+                ...softDeleteCondition,
+            };
+            if (query.productLineId) {
+                getListQuery.productLineId = query.productLineId;
+            }
+
+            const [productList, total] = await Promise.all([
+                this.productModel
+                    .find(getListQuery)
+                    .select(productAttributes)
+                    .sort({
+                        [orderBy]:
+                            orderDirection === OrderDirection.ASCENDING
+                                ? 1
+                                : -1,
+                    })
+                    .limit(limit)
+                    .skip(limit * (page - 1)),
+                this.productModel.countDocuments(getListQuery),
+            ]);
+
+            return {
+                items: productList,
+                totalItems: total,
+            };
         } catch (error) {
             throw error;
         }

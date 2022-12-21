@@ -1,10 +1,16 @@
 import {
     AREA_TEXT_MAX_LENGTH,
+    commonListQuerySchemaKeys,
     INPUT_TEXT_MAX_LENGTH,
     MIN_POSITIVE_NUMBER,
 } from 'src/common/constants';
 import Joi from 'src/plugins/joi';
 import { ProductColor } from './product.constants';
+
+export const getProductListSchema = Joi.object().keys({
+    ...commonListQuerySchemaKeys,
+    productLineId: Joi.isObjectId().optional().allow(null),
+});
 
 export const createProductLineSchema = Joi.object().keys({
     name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),

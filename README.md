@@ -72,7 +72,9 @@ Nest is [MIT licensed](LICENSE).
 
 ### Product module
 
+-   [x] [Get product line list](#get-product-line-list)
 -   [x] [Get product line detail](#get-product-line-detail)
+-   [x] [Get product list](#get-product-list)
 -   [x] [Get product detail](#get-product-detail)
 
 ### Admin module
@@ -218,6 +220,52 @@ PATCH /api/v1/user/:id
 
 ### Product module
 
+#### Get product line list
+
+```http
+POST /api/v1/product/product-line
+```
+
+| Parameter        | Type     | Description                               |
+| :--------------- | :------- | :---------------------------------------- |
+| `keyword`        | `string` | **Optional**                              |
+| `page`           | `number` | **Optional**                              |
+| `limit`          | `number` | **Optional**                              |
+| `orderBy`        | `string` | **Optional**                              |
+| `orderDirection` | `string` | **Optional**. (in [ascending,descending]) |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "638d6ba0f16ac5aff21e9969",
+                "name": "Iphone",
+                "price": 1000,
+                "quantityOfProduct": 1
+            },
+            {
+                "_id": "638d6bbce7f9bf2f085460c9",
+                "name": "Iphone",
+                "price": 1000,
+                "quantityOfProduct": -56
+            },
+            {
+                "_id": "639460a71db64de99f5f7111",
+                "name": "Samsung",
+                "price": 1000,
+                "quantityOfProduct": 0
+            }
+        ],
+        "totalItems": 3
+    },
+    "version": "1.0.0"
+}
+```
+
 #### Get product line detail
 
 ```http
@@ -238,6 +286,69 @@ GET /api/v1/product/product-line/:id
         "name": "Iphone",
         "price": 1000,
         "quantityOfProduct": 0
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Get product list
+
+```http
+POST /api/v1/product
+```
+
+| Parameter        | Type       | Description                               |
+| :--------------- | :--------- | :---------------------------------------- |
+| `productLineId`  | `ObjectId` | **Optional**                              |
+| `keyword`        | `string`   | **Optional**                              |
+| `page`           | `number`   | **Optional**                              |
+| `limit`          | `number`   | **Optional**                              |
+| `orderBy`        | `string`   | **Optional**                              |
+| `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "638d80b5085dd06475c5f01c",
+                "productLineId": "638d6ba0f16ac5aff21e9969",
+                "userId": "638d69f4383b14090809a7e8",
+                "storageId": "638d809c085dd06475c5f016",
+                "name": "Iphone 1",
+                "description": "Iphone 1",
+                "weight": 1000,
+                "displaySize": 9.7,
+                "bodySize": "1x1",
+                "color": "black",
+                "bodyBuild": "body build",
+                "batteryVolume": 1000,
+                "status": "new",
+                "location": "in_producer",
+                "sold": false
+            },
+            {
+                "_id": "638d810770c5c2e16b58e5d8",
+                "productLineId": "638d6ba0f16ac5aff21e9969",
+                "userId": "638d69f4383b14090809a7e8",
+                "storageId": "638d809c085dd06475c5f016",
+                "name": "Iphone 1",
+                "description": "Iphone 1",
+                "weight": 1000,
+                "displaySize": 9.7,
+                "bodySize": "1x1",
+                "color": "black",
+                "bodyBuild": "body build",
+                "batteryVolume": 1000,
+                "status": "new",
+                "location": "in_producer",
+                "sold": false
+            }
+        ],
+        "totalItems": 2
     },
     "version": "1.0.0"
 }

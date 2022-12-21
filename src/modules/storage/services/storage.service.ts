@@ -39,6 +39,7 @@ export class StorageService {
         try {
             const {
                 userId,
+                keyword = '',
                 page = MIN_POSITIVE_NUMBER,
                 limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
                 orderDirection = OrderDirection.ASCENDING,
@@ -49,6 +50,10 @@ export class StorageService {
                 this.storageModel
                     .find({
                         userId,
+                        name: {
+                            $regex: `.*${keyword}.*`,
+                            $options: 'i',
+                        },
                         ...softDeleteCondition,
                     })
                     .select(storageAttributes)
@@ -62,6 +67,10 @@ export class StorageService {
                     .skip(limit * (page - 1)),
                 this.storageModel.countDocuments({
                     userId,
+                    name: {
+                        $regex: `.*${keyword}.*`,
+                        $options: 'i',
+                    },
                     ...softDeleteCondition,
                 }),
             ]);
