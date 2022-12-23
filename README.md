@@ -166,9 +166,9 @@ POST /api/v1/auth/login
 GET /api/v1/user/:id
 ```
 
-| Parameter | Type       | Description  |
-| :-------- | :--------- | :----------- |
-| `id`      | `ObjectId` | **Required** |
+| Path Variables | Type       |
+| :------------- | :--------- |
+| `id`           | `ObjectId` |
 
 ```javascript
 {
@@ -243,14 +243,17 @@ GET /api/v1/user
 PATCH /api/v1/user/:id
 ```
 
-| Parameter         | Type       | Description  |
-| :---------------- | :--------- | :----------- |
-| `id`              | `ObjectId` | **Required** |
-| `confirmPassword` | `string`   | **Required** |
-| `name`            | `string`   | **Optional** |
-| `phoneNumber`     | `string`   | **Optional** |
-| `avatar`          | `string`   | **Optional** |
-| `password`        | `string`   | **Optional** |
+| Path Variables | Type       |
+| :------------- | :--------- |
+| `id`           | `ObjectId` |
+
+| Parameter         | Type     | Description  |
+| :---------------- | :------- | :----------- |
+| `confirmPassword` | `string` | **Required** |
+| `name`            | `string` | **Optional** |
+| `phoneNumber`     | `string` | **Optional** |
+| `avatar`          | `string` | **Optional** |
+| `password`        | `string` | **Optional** |
 
 ```javascript
 {
@@ -277,9 +280,9 @@ PATCH /api/v1/user/:id
 GET /api/v1/product/product-line/:id
 ```
 
-| Parameter | Type       | Description  |
-| :-------- | :--------- | :----------- |
-| `id`      | `ObjectId` | **Required** |
+| Path Variables | Type       |
+| :------------- | :--------- |
+| `id`           | `ObjectId` |
 
 ```javascript
 {
@@ -348,9 +351,9 @@ GET /api/v1/product/product-line
 GET /api/v1/product/:id
 ```
 
-| Parameter | Type       | Description  |
-| :-------- | :--------- | :----------- |
-| `id`      | `ObjectId` | **Required** |
+| Path Variables | Type       |
+| :------------- | :--------- |
+| `id`           | `ObjectId` |
 
 ```javascript
 {
@@ -574,7 +577,7 @@ POST /api/v1/admin/product-line
 #### Get producer's storage list
 
 ```http
-POST /api/v1/agency/storage
+GET /api/v1/producer/storage
 ```
 
 | Parameter        | Type     | Description                               |
@@ -699,7 +702,7 @@ POST /api/v1/producer/export-to-agency
 #### Get agency's storage list
 
 ```http
-POST /api/v1/agency/storage
+GET /api/v1/agency/storage
 ```
 
 | Parameter        | Type     | Description                               |
