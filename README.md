@@ -68,7 +68,7 @@ Nest is [MIT licensed](LICENSE).
 ### User module
 
 -   [x] [Get user detail](#get-user-detail)
--   [x] [Get user list]()
+-   [x] [Get user list](#get-user-list)
 -   [x] [Update user](#update-user)
 
 ### Product module
