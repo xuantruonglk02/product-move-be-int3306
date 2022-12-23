@@ -1,4 +1,5 @@
 import {
+    commonListQuerySchemaKeys,
     INPUT_TEXT_MAX_LENGTH,
     PASSWORD_MIN_LENGTH,
     PHONE_NUMBER_MAX_LENGTH,
@@ -6,6 +7,14 @@ import {
 } from 'src/common/constants';
 import Joi from 'src/plugins/joi';
 import { UserRole } from './user.constants';
+
+export const getUserListSchema = Joi.object().keys({
+    ...commonListQuerySchemaKeys,
+    role: Joi.string()
+        .valid(...Object.values(UserRole))
+        .optional()
+        .allow(null, ''),
+});
 
 export const createUserSchema = Joi.object().keys({
     email: Joi.string()

@@ -64,10 +64,12 @@ export class AgencyService {
                     },
                     { session },
                 )
-                .select(['productId']);
-            await this.productModel.updateOne(
+                .select(['productIds']);
+            await this.productModel.updateMany(
                 {
-                    _id: transition.productId,
+                    _id: {
+                        $in: transition.productIds,
+                    },
                     ...softDeleteCondition,
                 },
                 {
@@ -195,45 +197,47 @@ export class AgencyService {
         }
     }
 
-    async receiveFixedProduct(transitionId: ObjectId, storageId: ObjectId) {
+    async receiveFixedProduct(
+        transitionId: ObjectId,
+        agencyId: ObjectId,
+        storageId: ObjectId,
+    ) {
         const session = await this.connection.startSession();
 
         try {
-            const transition =
-                await this.productService.getProductStatusTransition(
-                    transitionId,
-                    ['productId', 'nextUserId'],
-                );
-
             session.startTransaction();
 
-            await this.productStatusTransitionModel.updateOne(
-                {
-                    _id: transition._id,
-                    ...softDeleteCondition,
-                },
-                {
-                    $set: {
-                        nextStorageId: storageId,
-                        finishDate: new Date(),
-                        updatedBy: transition.nextUserId,
-                        updatedAt: new Date(),
+            const transition = await this.productStatusTransitionModel
+                .findOneAndUpdate(
+                    {
+                        _id: transitionId,
+                        ...softDeleteCondition,
                     },
-                },
-                { session },
-            );
-            await this.productModel.updateOne(
+                    {
+                        $set: {
+                            nextStorageId: storageId,
+                            finishDate: new Date(),
+                            updatedBy: agencyId,
+                            updatedAt: new Date(),
+                        },
+                    },
+                    { session },
+                )
+                .select(['productIds']);
+            await this.productModel.updateMany(
                 {
-                    _id: transition.productId,
+                    _id: {
+                        $in: transition.productIds,
+                    },
                     ...softDeleteCondition,
                 },
                 {
                     $set: {
-                        userId: transition.nextUserId,
+                        userId: agencyId,
                         storageId: storageId,
                         status: ProductStatus.WARRANTY_DONE,
                         location: ProductLocation.IN_AGENCY,
-                        updatedBy: transition.nextUserId,
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },

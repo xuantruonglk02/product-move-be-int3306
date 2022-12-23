@@ -68,14 +68,15 @@ Nest is [MIT licensed](LICENSE).
 ### User module
 
 -   [x] [Get user detail](#get-user-detail)
+-   [x] [Get user list]()
 -   [x] [Update user](#update-user)
 
 ### Product module
 
--   [x] [Get product line list](#get-product-line-list)
 -   [x] [Get product line detail](#get-product-line-detail)
--   [x] [Get product list](#get-product-list)
+-   [x] [Get product line list](#get-product-line-list)
 -   [x] [Get product detail](#get-product-detail)
+-   [x] [Get product list](#get-product-list)
 
 ### Admin module
 
@@ -98,7 +99,7 @@ Nest is [MIT licensed](LICENSE).
 ### Agency module
 
 -   [x] [Get storage list](#get-agencys-storage-list)
--   [ ] Import new product from producer
+-   [x] Import new product from producer
 -   [x] [Sold product](#checkout)
 -   [ ] Receive error product from customer
 -   [ ] Transfer error product to warranty center
@@ -186,6 +187,56 @@ GET /api/v1/user/:id
 }
 ```
 
+#### Get user list
+
+```http
+GET /api/v1/user
+```
+
+| Parameter        | Type     | Description                                                |
+| :--------------- | :------- | :--------------------------------------------------------- |
+| `page`           | `number` | **Optional**                                               |
+| `limit`          | `number` | **Optional**                                               |
+| `orderBy`        | `string` | **Optional**                                               |
+| `orderDirection` | `string` | **Optional**. (in [ascending,descending])                  |
+| `role`           | `string` | **Optional**. (in [admin,producer,agency,warranty_center]) |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "638f8be6e5340b16eaef5a3e",
+                "email": "agency@productmove.com",
+                "phoneNumber": "0123456456",
+                "name": "agency",
+                "role": "agency",
+                "avatar": "https://avatar.com"
+            },
+            {
+                "_id": "638d69f4383b14090809a7e8",
+                "email": "producer@productmove.com",
+                "name": "producer",
+                "role": "producer"
+            },
+            {
+                "_id": "638b4b7718844a05965a0ca3",
+                "email": "admin@productmove.com",
+                "phoneNumber": "0123456789",
+                "name": "Admin",
+                "role": "admin",
+                "avatar": "https://avatar.com"
+            }
+        ],
+        "totalItems": 3
+    },
+    "version": "1.0.0"
+}
+```
+
 #### Update user
 
 ```http
@@ -220,10 +271,35 @@ PATCH /api/v1/user/:id
 
 ### Product module
 
+#### Get product line detail
+
+```http
+GET /api/v1/product/product-line/:id
+```
+
+| Parameter | Type       | Description  |
+| :-------- | :--------- | :----------- |
+| `id`      | `ObjectId` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "638d6ba0f16ac5aff21e9969",
+        "name": "Iphone",
+        "price": 1000,
+        "quantityOfProduct": 0
+    },
+    "version": "1.0.0"
+}
+```
+
 #### Get product line list
 
 ```http
-POST /api/v1/product/product-line
+GET /api/v1/product/product-line
 ```
 
 | Parameter        | Type     | Description                               |
@@ -261,94 +337,6 @@ POST /api/v1/product/product-line
             }
         ],
         "totalItems": 3
-    },
-    "version": "1.0.0"
-}
-```
-
-#### Get product line detail
-
-```http
-GET /api/v1/product/product-line/:id
-```
-
-| Parameter | Type       | Description  |
-| :-------- | :--------- | :----------- |
-| `id`      | `ObjectId` | **Required** |
-
-```javascript
-{
-    "success": true,
-    "code": 200,
-    "message": "Success",
-    "data": {
-        "_id": "638d6ba0f16ac5aff21e9969",
-        "name": "Iphone",
-        "price": 1000,
-        "quantityOfProduct": 0
-    },
-    "version": "1.0.0"
-}
-```
-
-#### Get product list
-
-```http
-POST /api/v1/product
-```
-
-| Parameter        | Type       | Description                               |
-| :--------------- | :--------- | :---------------------------------------- |
-| `productLineId`  | `ObjectId` | **Optional**                              |
-| `keyword`        | `string`   | **Optional**                              |
-| `page`           | `number`   | **Optional**                              |
-| `limit`          | `number`   | **Optional**                              |
-| `orderBy`        | `string`   | **Optional**                              |
-| `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
-
-```javascript
-{
-    "success": true,
-    "code": 200,
-    "message": "Success",
-    "data": {
-        "items": [
-            {
-                "_id": "638d80b5085dd06475c5f01c",
-                "productLineId": "638d6ba0f16ac5aff21e9969",
-                "userId": "638d69f4383b14090809a7e8",
-                "storageId": "638d809c085dd06475c5f016",
-                "name": "Iphone 1",
-                "description": "Iphone 1",
-                "weight": 1000,
-                "displaySize": 9.7,
-                "bodySize": "1x1",
-                "color": "black",
-                "bodyBuild": "body build",
-                "batteryVolume": 1000,
-                "status": "new",
-                "location": "in_producer",
-                "sold": false
-            },
-            {
-                "_id": "638d810770c5c2e16b58e5d8",
-                "productLineId": "638d6ba0f16ac5aff21e9969",
-                "userId": "638d69f4383b14090809a7e8",
-                "storageId": "638d809c085dd06475c5f016",
-                "name": "Iphone 1",
-                "description": "Iphone 1",
-                "weight": 1000,
-                "displaySize": 9.7,
-                "bodySize": "1x1",
-                "color": "black",
-                "bodyBuild": "body build",
-                "batteryVolume": 1000,
-                "status": "new",
-                "location": "in_producer",
-                "sold": false
-            }
-        ],
-        "totalItems": 2
     },
     "version": "1.0.0"
 }
@@ -405,6 +393,69 @@ GET /api/v1/product/:id
             "quantityOfProduct": 1,
             "__v": 0
         }
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Get product list
+
+```http
+GET /api/v1/product
+```
+
+| Parameter        | Type       | Description                               |
+| :--------------- | :--------- | :---------------------------------------- |
+| `productLineId`  | `ObjectId` | **Optional**                              |
+| `keyword`        | `string`   | **Optional**                              |
+| `page`           | `number`   | **Optional**                              |
+| `limit`          | `number`   | **Optional**                              |
+| `orderBy`        | `string`   | **Optional**                              |
+| `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "638d80b5085dd06475c5f01c",
+                "productLineId": "638d6ba0f16ac5aff21e9969",
+                "userId": "638d69f4383b14090809a7e8",
+                "storageId": "638d809c085dd06475c5f016",
+                "name": "Iphone 1",
+                "description": "Iphone 1",
+                "weight": 1000,
+                "displaySize": 9.7,
+                "bodySize": "1x1",
+                "color": "black",
+                "bodyBuild": "body build",
+                "batteryVolume": 1000,
+                "status": "new",
+                "location": "in_producer",
+                "sold": false
+            },
+            {
+                "_id": "638d810770c5c2e16b58e5d8",
+                "productLineId": "638d6ba0f16ac5aff21e9969",
+                "userId": "638d69f4383b14090809a7e8",
+                "storageId": "638d809c085dd06475c5f016",
+                "name": "Iphone 1",
+                "description": "Iphone 1",
+                "weight": 1000,
+                "displaySize": 9.7,
+                "bodySize": "1x1",
+                "color": "black",
+                "bodyBuild": "body build",
+                "batteryVolume": 1000,
+                "status": "new",
+                "location": "in_producer",
+                "sold": false
+            }
+        ],
+        "totalItems": 2
     },
     "version": "1.0.0"
 }

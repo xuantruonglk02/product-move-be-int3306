@@ -109,27 +109,28 @@ export class AgencyController {
                 ]);
             }
 
-            const product = await this.productService.getProductById(
-                body.productId,
-                ['_id'],
-            );
-            if (!product) {
+            const transition =
+                await this.productService.getProductStatusTransition(
+                    body.transitionId,
+                    ['_id'],
+                );
+            if (!transition) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.NOT_FOUND,
-                        message: productMessages.errors.productNotFound,
-                        key: 'productId',
+                        message: productMessages.errors.transitionNotFound,
+                        key: 'transitionId',
                     },
                 ]);
             }
 
-            const transition =
+            return new SuccessResponse(
                 await this.agencyService.importNewProductFromProducer(
                     new ObjectId(body.transitionId),
                     new ObjectId(req.loggedUser._id),
                     new ObjectId(body.storageId),
-                );
-            return new SuccessResponse(transition);
+                ),
+            );
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

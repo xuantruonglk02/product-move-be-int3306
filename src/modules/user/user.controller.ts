@@ -6,6 +6,7 @@ import {
     InternalServerErrorException,
     Param,
     Patch,
+    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
@@ -16,18 +17,36 @@ import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { hashPassword } from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
+import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { authMessages } from '../auth/auth.messages';
 import { UserService } from './services/user.service';
 import { UserRole } from './user.constants';
-import { IUpdateUser } from './user.interfaces';
+import { IGetUserList, IUpdateUser } from './user.interfaces';
 import { userMessages } from './user.messages';
-import { updateUserSchema } from './user.validators';
+import { getUserListSchema, updateUserSchema } from './user.validators';
 
 @Controller('/user')
 @UseGuards(AuthenticationGuard)
 export class UserController {
     constructor(private readonly userService: UserService) {}
+
+    @Get()
+    async getUserList(
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(getUserListSchema),
+        )
+        query: IGetUserList,
+    ) {
+        try {
+            return new SuccessResponse(
+                await this.userService.getUserList(query),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     @Get('/:id')
     async getUserDetail(@Param('id', new ParseObjectIdPipe()) id: ObjectId) {

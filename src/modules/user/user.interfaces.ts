@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { ICommonListQuery } from 'src/common/interfaces';
 import { UserRole } from './user.constants';
 
 export interface IUser {
@@ -7,6 +8,10 @@ export interface IUser {
     name: string;
     role: UserRole;
     avatar: string;
+}
+
+export interface IGetUserList extends ICommonListQuery {
+    role?: UserRole;
 }
 
 export interface ICreateUser extends IUser {

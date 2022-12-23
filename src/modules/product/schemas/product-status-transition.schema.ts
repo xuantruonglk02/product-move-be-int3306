@@ -18,13 +18,6 @@ export type ProductStatusTransitionDocument = ProductStatusTransition &
 export class ProductStatusTransition extends BaseEntity {
     @Prop({
         type: Types.ObjectId,
-        ref: Product.name,
-        required: true,
-    })
-    productId: ObjectId;
-
-    @Prop({
-        type: Types.ObjectId,
         ref: User.name,
         required: false,
     })
@@ -50,6 +43,13 @@ export class ProductStatusTransition extends BaseEntity {
         required: false,
     })
     nextStorageId: ObjectId;
+
+    @Prop({
+        type: Array(Types.ObjectId),
+        ref: Product.name,
+        required: true,
+    })
+    productIds: ObjectId[];
 
     @Prop({
         type: String,
@@ -98,7 +98,6 @@ export const ProductStatusTransitionSchema = SchemaFactory.createForClass(
 );
 ProductStatusTransitionSchema.index(
     {
-        productId: 1,
         previousUserId: 1,
         nextUserId: 1,
     },
@@ -108,11 +107,11 @@ ProductStatusTransitionSchema.index(
 );
 
 export const productStatusTransitionAttributes = [
-    'productId',
     'previousUserId',
     'nextUserId',
     'previousStorageId',
     'nextStorageId',
+    'productIds',
     'previousStatus',
     'nextStatus',
     'previousLocation',

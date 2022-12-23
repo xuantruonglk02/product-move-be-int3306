@@ -133,6 +133,8 @@ export class ProducerController {
         body: IExportNewProductToAgency,
     ) {
         try {
+            body.productIds = body.productIds.map((id) => new ObjectId(id));
+
             const storage = await this.storageService.getStorageById(
                 body.storageId,
                 ['userId'],

@@ -15,6 +15,7 @@ import {
     Product,
     ProductDocument,
 } from 'src/modules/product/schemas/product.schema';
+import { ProductService } from 'src/modules/product/services/product.service';
 
 @Injectable()
 export class ProducerService {
@@ -25,6 +26,7 @@ export class ProducerService {
         private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
         @InjectConnection()
         private readonly connection: Connection,
+        private readonly productService: ProductService,
     ) {}
 
     async exportNewProductToAgency(
@@ -36,24 +38,26 @@ export class ProducerService {
         const session = await this.connection.startSession();
 
         try {
-            const transitions = productIds.map((productId) => ({
-                _id: new ObjectId(),
-                productId: new ObjectId(productId),
-                previousUserId: producerId,
-                nextUserId: agencyId,
-                previousStorageId: storageId,
-                previousStatus: ProductStatus.NEW,
-                nextStatus: ProductStatus.IN_AGENCY,
-                previousLocation: ProductLocation.IN_PRODUCER,
-                nextLocation: ProductLocation.IN_AGENCY,
-                startDate: new Date(),
-                createdBy: producerId,
-                createdAt: new Date(),
-            }));
-
             session.startTransaction();
 
-            await this.productStatusTransitionModel.insertMany(transitions);
+            const transitionId = new ObjectId();
+            await this.productStatusTransitionModel.create(
+                {
+                    _id: transitionId,
+                    previousUserId: producerId,
+                    nextUserId: agencyId,
+                    previousStorageId: storageId,
+                    productIds,
+                    previousStatus: ProductStatus.NEW,
+                    nextStatus: ProductStatus.IN_AGENCY,
+                    previousLocation: ProductLocation.IN_PRODUCER,
+                    nextLocation: ProductLocation.IN_AGENCY,
+                    startDate: new Date(),
+                    createdBy: producerId,
+                    createdAt: new Date(),
+                },
+                { session },
+            );
             await this.productModel.updateMany(
                 {
                     _id: {
@@ -75,7 +79,9 @@ export class ProducerService {
 
             await session.commitTransaction();
 
-            return transitions;
+            return await this.productService.getProductStatusTransition(
+                transitionId,
+            );
         } catch (error) {
             await session.abortTransaction();
             throw error;
