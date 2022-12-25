@@ -36,6 +36,7 @@ import { ICommonListQuery } from 'src/common/interfaces';
 import { ICreateStorage } from '../storage/storage.interfaces';
 import { createOwnStorageSchema } from '../storage/storage.validators';
 import { ObjectId } from 'mongodb';
+import { convertObjectId } from 'src/common/helpers/utilityFunctions';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -92,8 +93,7 @@ export class ProducerController {
         body: ICreateProduct,
     ) {
         try {
-            body.productLineId = new ObjectId(body.productLineId);
-            body.storageId = new ObjectId(body.storageId);
+            convertObjectId(body, ['productLineId', 'storageId']);
 
             const productLine = await this.productService.getProductLineDetail(
                 body.productLineId,
@@ -151,9 +151,7 @@ export class ProducerController {
         body: IExportNewProductToAgency,
     ) {
         try {
-            body.storageId = new ObjectId(body.storageId);
-            body.agencyId = new ObjectId(body.agencyId);
-            body.productIds = body.productIds.map((id) => new ObjectId(id));
+            convertObjectId(body, ['storageId', 'agencyId', 'productIds']);
 
             const storage = await this.storageService.getStorageById(
                 body.storageId,

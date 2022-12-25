@@ -16,7 +16,10 @@ import {
     Roles,
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
-import { hashPassword } from 'src/common/helpers/utilityFunctions';
+import {
+    convertObjectId,
+    hashPassword,
+} from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
@@ -116,7 +119,7 @@ export class AdminController {
         body: ICreateStorage,
     ) {
         try {
-            body.userId = new ObjectId(body.userId);
+            convertObjectId(body, ['userId']);
 
             const user = await this.userService.getUserByField(
                 { key: '_id', value: body.userId },

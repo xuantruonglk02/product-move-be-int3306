@@ -20,6 +20,7 @@ import {
     Roles,
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
+import { convertObjectId } from 'src/common/helpers/utilityFunctions';
 import { ICommonListQuery } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
@@ -107,9 +108,11 @@ export class AgencyController {
         body: IImportNewProductFromProducer,
     ) {
         try {
-            body.transitionId = new ObjectId(body.transitionId);
-            body.producerId = new ObjectId(body.producerId);
-            body.agencyStorageId = new ObjectId(body.agencyStorageId);
+            convertObjectId(body, [
+                'transitionId',
+                'producerId',
+                'agencyStorageId',
+            ]);
 
             const producer = await this.userService.getUserByField(
                 {
@@ -171,7 +174,7 @@ export class AgencyController {
         body: ICreateOrder,
     ) {
         try {
-            body.productIds = body.productIds.map((id) => new ObjectId(id));
+            convertObjectId(body, ['productIds']);
 
             const products = await this.productService.getProductByIds(
                 body.productIds,
@@ -221,8 +224,7 @@ export class AgencyController {
         body: IReceiveErrorProduct,
     ) {
         try {
-            body.productId = new ObjectId(body.productId);
-            body.agencyStorageId = new ObjectId(body.agencyStorageId);
+            convertObjectId(body, ['productId', 'agencyStorageId']);
 
             const product = await this.productService.getProductById(
                 body.productId,
@@ -280,7 +282,7 @@ export class AgencyController {
         body: IReturnFixedProduct,
     ) {
         try {
-            body.productId = new ObjectId(body.productId);
+            convertObjectId(body, ['productId']);
 
             const product = await this.productService.getProductById(
                 body.productId,
