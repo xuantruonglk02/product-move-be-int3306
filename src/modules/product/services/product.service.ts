@@ -90,6 +90,13 @@ export class ProductService {
                         },
                     },
                     {
+                        $project: Object.fromEntries(
+                            productAttributes
+                                .map((attr) => [attr, 1])
+                                .concat([['createdBy', 1]]),
+                        ),
+                    },
+                    {
                         $lookup: {
                             from: MongoCollection.PRODUCT_LINES,
                             as: 'productLine',
@@ -101,16 +108,251 @@ export class ProductService {
                                         ...softDeleteCondition,
                                     },
                                 },
+                                {
+                                    $project: { name: 1, price: 1 },
+                                },
                             ],
                         },
                     },
                     {
                         $unwind: {
                             path: '$productLine',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'createdBy',
+                            localField: 'createdBy',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$createdBy',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'user',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$user',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'storage',
+                            localField: 'storageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { name: 1, address: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$storage',
+                            preserveNullAndEmptyArrays: true,
                         },
                     },
                 ])
             )[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductList(query: IGetProductList) {
+        try {
+            const {
+                keyword = '',
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = 'name',
+            } = query;
+
+            const getListQuery: Record<string, any> = {
+                name: {
+                    $regex: `.*${keyword}.*`,
+                    $options: 'i',
+                },
+                ...softDeleteCondition,
+            };
+            if (query.productLineId) {
+                getListQuery.productLineId = query.productLineId;
+            }
+            if (query.createdBy) {
+                getListQuery.createdBy = query.createdBy;
+            }
+
+            const [productList, total] = await Promise.all([
+                this.productModel.aggregate([
+                    {
+                        $match: getListQuery,
+                    },
+                    {
+                        $sort: {
+                            [orderBy]:
+                                orderDirection === OrderDirection.ASCENDING
+                                    ? 1
+                                    : -1,
+                        },
+                    },
+                    {
+                        $limit: parseInt(limit.toString()),
+                    },
+                    {
+                        $skip: limit * (page - 1),
+                    },
+                    {
+                        $project: Object.fromEntries(
+                            productAttributes
+                                .map((attr) => [attr, 1])
+                                .concat([['createdBy', 1]]),
+                        ),
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.PRODUCT_LINES,
+                            as: 'productLine',
+                            localField: 'productLineId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { name: 1, price: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$productLine',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'createdBy',
+                            localField: 'createdBy',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$createdBy',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'user',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$user',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'storage',
+                            localField: 'storageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { name: 1, address: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$storage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ]),
+                this.productModel.countDocuments(getListQuery),
+            ]);
+
+            return {
+                items: productList,
+                totalItems: total,
+            };
         } catch (error) {
             throw error;
         }
@@ -168,54 +410,6 @@ export class ProductService {
 
             return {
                 items: productLineList,
-                totalItems: total,
-            };
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async getProductList(query: IGetProductList) {
-        try {
-            const {
-                keyword = '',
-                page = MIN_POSITIVE_NUMBER,
-                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
-                orderDirection = OrderDirection.ASCENDING,
-                orderBy = 'name',
-            } = query;
-
-            const getListQuery: Record<string, any> = {
-                name: {
-                    $regex: `.*${keyword}.*`,
-                    $options: 'i',
-                },
-                ...softDeleteCondition,
-            };
-            if (query.productLineId) {
-                getListQuery.productLineId = query.productLineId;
-            }
-            if (query.createdBy) {
-                getListQuery.createdBy = query.createdBy;
-            }
-
-            const [productList, total] = await Promise.all([
-                this.productModel
-                    .find(getListQuery)
-                    .select(productAttributes)
-                    .sort({
-                        [orderBy]:
-                            orderDirection === OrderDirection.ASCENDING
-                                ? 1
-                                : -1,
-                    })
-                    .limit(limit)
-                    .skip(limit * (page - 1)),
-                this.productModel.countDocuments(getListQuery),
-            ]);
-
-            return {
-                items: productList,
                 totalItems: total,
             };
         } catch (error) {

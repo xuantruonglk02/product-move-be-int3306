@@ -134,6 +134,7 @@ export class ProducerController {
                 ]);
             }
 
+            body.userId = new ObjectId(req.loggedUser._id);
             body.createdBy = new ObjectId(req.loggedUser._id);
             const newProduct = await this.productService.createNewProduct(body);
             return new SuccessResponse(newProduct);
