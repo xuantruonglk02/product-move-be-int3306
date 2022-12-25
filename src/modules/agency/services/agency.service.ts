@@ -63,9 +63,9 @@ export class AgencyService {
                     },
                     {
                         $set: {
-                            nextStorageId: new ObjectId(storageId),
+                            nextStorageId: storageId,
                             finishDate: new Date(),
-                            updatedBy: new ObjectId(agencyId),
+                            updatedBy: agencyId,
                             updatedAt: new Date(),
                         },
                     },
@@ -81,11 +81,11 @@ export class AgencyService {
                 },
                 {
                     $set: {
-                        userId: new ObjectId(agencyId),
-                        storageId: new ObjectId(storageId),
+                        userId: agencyId,
+                        storageId: storageId,
                         status: ProductStatus.IN_AGENCY,
                         location: ProductLocation.IN_AGENCY,
-                        updatedBy: new ObjectId(agencyId),
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },
@@ -127,9 +127,9 @@ export class AgencyService {
                 [
                     {
                         _id: reportId,
-                        productId: new ObjectId(body.productId),
+                        productId: body.productId,
                         description: body.errorDescription,
-                        createdBy: new ObjectId(agencyId),
+                        createdBy: agencyId,
                         createdAt: new Date(),
                     },
                 ],
@@ -143,11 +143,11 @@ export class AgencyService {
                 },
                 {
                     $set: {
-                        userId: new ObjectId(agencyId),
+                        userId: agencyId,
                         storageId: body.agencyStorageId,
                         status: ProductStatus.NEED_WARRANTY,
                         location: ProductLocation.IN_AGENCY,
-                        updatedBy: new ObjectId(agencyId),
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },
@@ -189,9 +189,9 @@ export class AgencyService {
             await this.productStatusTransitionModel.create(
                 {
                     _id: transitionId,
-                    productId: new ObjectId(productId),
+                    productId: productId,
                     previousUserId: product.userId,
-                    nextUserId: new ObjectId(warrantyCenterId),
+                    nextUserId: warrantyCenterId,
                     previousStorageId: product.storageId,
                     nextStorageId: null,
                     previousStatus: product.status,
@@ -253,9 +253,9 @@ export class AgencyService {
                     },
                     {
                         $set: {
-                            nextStorageId: new ObjectId(storageId),
+                            nextStorageId: storageId,
                             finishDate: new Date(),
-                            updatedBy: new ObjectId(agencyId),
+                            updatedBy: agencyId,
                             updatedAt: new Date(),
                         },
                     },
@@ -271,11 +271,11 @@ export class AgencyService {
                 },
                 {
                     $set: {
-                        userId: new ObjectId(agencyId),
-                        storageId: new ObjectId(storageId),
+                        userId: agencyId,
+                        storageId: storageId,
                         status: ProductStatus.WARRANTY_DONE,
                         location: ProductLocation.IN_AGENCY,
-                        updatedBy: new ObjectId(agencyId),
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },
@@ -311,7 +311,7 @@ export class AgencyService {
                         storageId: null,
                         status: ProductStatus.RETURN_CONSUMER,
                         location: ProductLocation.IN_CUSTOMER,
-                        updatedBy: new ObjectId(agencyId),
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },
@@ -344,7 +344,7 @@ export class AgencyService {
                         storageId: null,
                         status: ProductStatus.RETURN_CONSUMER,
                         location: ProductLocation.IN_CUSTOMER,
-                        updatedBy: new ObjectId(agencyId),
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },
@@ -352,9 +352,9 @@ export class AgencyService {
             );
             await this.productReplacementModel.create(
                 {
-                    oldProductId: new ObjectId(oldProductId),
-                    newProductId: new ObjectId(newProductId),
-                    createdBy: new ObjectId(agencyId),
+                    oldProductId: oldProductId,
+                    newProductId: newProductId,
+                    createdBy: agencyId,
                     createdAt: new Date(),
                 },
                 { session },

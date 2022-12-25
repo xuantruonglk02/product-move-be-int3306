@@ -81,7 +81,6 @@ export class UserService {
         try {
             const user = await this.userModel.create({
                 ...body,
-                createdBy: new ObjectId(body.createdBy),
                 createdAt: new Date(),
             });
             return this.getUserByField({ key: '_id', value: user._id });
@@ -103,7 +102,6 @@ export class UserService {
                 {
                     $set: {
                         ...updateBody,
-                        updatedBy: new ObjectId(body.updatedBy),
                         updatedAt: new Date(),
                     },
                 },

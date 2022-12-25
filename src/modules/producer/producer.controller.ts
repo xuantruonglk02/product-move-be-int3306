@@ -36,6 +36,7 @@ import { ICommonListQuery } from 'src/common/interfaces';
 import { ICreateStorage } from '../storage/storage.interfaces';
 import { createOwnStorageSchema } from '../storage/storage.validators';
 import { ObjectId } from 'mongodb';
+import { ConvertObjectIdPipe } from 'src/common/pipes/convertObjectId.pipe';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -76,8 +77,8 @@ export class ProducerController {
         body: ICreateStorage,
     ) {
         try {
-            body.userId = req.loggedUser._id;
-            body.createdBy = req.loggedUser._id;
+            body.userId = new ObjectId(req.loggedUser._id);
+            body.createdBy = new ObjectId(req.loggedUser._id);
             const storage = await this.storageService.createStorage(body);
             return new SuccessResponse(storage);
         } catch (error) {
@@ -88,7 +89,11 @@ export class ProducerController {
     @Post('/product')
     async createProduct(
         @Req() req,
-        @Body(new TrimBodyPipe(), new JoiValidationPipe(createProductSchema))
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(createProductSchema),
+            new ConvertObjectIdPipe(),
+        )
         body: ICreateProduct,
     ) {
         try {
@@ -129,6 +134,7 @@ export class ProducerController {
                 ]);
             }
 
+            body.createdBy = new ObjectId(req.loggedUser._id);
             const newProduct = await this.productService.createNewProduct(body);
             return new SuccessResponse(newProduct);
         } catch (error) {
@@ -142,6 +148,7 @@ export class ProducerController {
         @Body(
             new TrimBodyPipe(),
             new JoiValidationPipe(exportNewProductToAgencySchema),
+            new ConvertObjectIdPipe(),
         )
         body: IExportNewProductToAgency,
     ) {
@@ -227,7 +234,7 @@ export class ProducerController {
             const transition =
                 await this.producerService.exportNewProductToAgency(
                     body.productIds,
-                    req.loggedUser._id,
+                    new ObjectId(req.loggedUser._id),
                     body.storageId,
                     body.agencyId,
                 );

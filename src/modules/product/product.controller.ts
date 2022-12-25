@@ -76,7 +76,7 @@ export class ProductController {
     ) {
         try {
             query.productLineId = query.productLineId
-                ? query.productLineId
+                ? new ObjectId(query.productLineId)
                 : null;
 
             return new SuccessResponse(

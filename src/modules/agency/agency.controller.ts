@@ -21,6 +21,7 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { ICommonListQuery } from 'src/common/interfaces';
+import { ConvertObjectIdPipe } from 'src/common/pipes/convertObjectId.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
@@ -90,7 +91,6 @@ export class AgencyController {
         try {
             body.userId = new ObjectId(req.loggedUser._id);
             body.createdBy = new ObjectId(req.loggedUser._id);
-
             const storage = await this.storageService.createStorage(body);
             return new SuccessResponse(storage);
         } catch (error) {
@@ -104,6 +104,7 @@ export class AgencyController {
         @Body(
             new TrimBodyPipe(),
             new JoiValidationPipe(importNewProductFromProducerSchema),
+            new ConvertObjectIdPipe(),
         )
         body: IImportNewProductFromProducer,
     ) {
@@ -152,7 +153,7 @@ export class AgencyController {
             return new SuccessResponse(
                 await this.agencyService.importNewProductFromProducer(
                     body.transitionId,
-                    req.loggedUser._id,
+                    new ObjectId(req.loggedUser._id),
                     body.agencyStorageId,
                 ),
             );
@@ -164,7 +165,11 @@ export class AgencyController {
     @Post('/checkout')
     async checkout(
         @Req() req,
-        @Body(new TrimBodyPipe(), new JoiValidationPipe(checkoutProductSchema))
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(checkoutProductSchema),
+            new ConvertObjectIdPipe(),
+        )
         body: ICreateOrder,
     ) {
         try {
@@ -201,7 +206,7 @@ export class AgencyController {
                 ]);
             }
 
-            body.createdBy = req.loggedUser._id;
+            body.createdBy = new ObjectId(req.loggedUser._id);
             const order = await this.agencyService.createNewCheckout(body);
             return new SuccessResponse(order);
         } catch (error) {
@@ -212,7 +217,11 @@ export class AgencyController {
     @Post('/receive-error-product')
     async receiveErrorProductFromCustomer(
         @Req() req,
-        @Body(new TrimBodyPipe(), new JoiValidationPipe(receiveErrorProduct))
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(receiveErrorProduct),
+            new ConvertObjectIdPipe(),
+        )
         body: IReceiveErrorProduct,
     ) {
         try {
@@ -248,7 +257,7 @@ export class AgencyController {
                 return new SuccessResponse(
                     await this.agencyService.receiveErrorProductFromCustomer(
                         body,
-                        req.loggedUser._id,
+                        new ObjectId(req.loggedUser._id),
                     ),
                 );
             }
@@ -268,7 +277,11 @@ export class AgencyController {
     @Post('/return-fixed-product')
     async returnFixedProduct(
         @Req() req,
-        @Body(new TrimBodyPipe(), new JoiValidationPipe(returnFixedProduct))
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(returnFixedProduct),
+            new ConvertObjectIdPipe(),
+        )
         body: IReturnFixedProduct,
     ) {
         try {
@@ -310,7 +323,7 @@ export class AgencyController {
             const fixedProduct =
                 await this.agencyService.returnFixedProductToCustomer(
                     body.productId,
-                    req.loggedUser._id,
+                    new ObjectId(req.loggedUser._id),
                 );
             return new SuccessResponse(fixedProduct);
         } catch (error) {

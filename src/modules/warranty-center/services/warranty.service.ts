@@ -23,11 +23,11 @@ export class WarrantyService {
     async handleWarranty(productId: ObjectId, warrantyCenterId: ObjectId) {
         try {
             const product = await this.productService.getProductById(productId);
-            product.userId = new ObjectId(warrantyCenterId);
+            product.userId = warrantyCenterId;
             product.storageId = null;
             product.status = ProductStatus.IN_WARRANTY;
             product.location = ProductLocation.IN_WARRANTY_CENTER;
-            product.updatedBy = new ObjectId(warrantyCenterId);
+            product.updatedBy = warrantyCenterId;
             product.updatedAt = new Date();
             await product.save();
 
@@ -44,12 +44,12 @@ export class WarrantyService {
     ) {
         try {
             const transition = await this.productStatusTransitionModel.create({
-                productId: new ObjectId(productId),
-                previousUserId: new ObjectId(warrantyCenterId),
-                nextUserId: new ObjectId(producerId),
+                productId: productId,
+                previousUserId: warrantyCenterId,
+                nextUserId: producerId,
                 previousStatus: ProductStatus.IN_WARRANTY,
                 nextStatus: ProductStatus.RETURN_PRODUCER_DONE,
-                createdBy: new ObjectId(warrantyCenterId),
+                createdBy: warrantyCenterId,
                 createdAt: new Date(),
             });
 

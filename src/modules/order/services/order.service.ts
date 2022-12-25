@@ -167,7 +167,7 @@ export class OrderService {
                                     ),
                             },
                             $set: {
-                                updatedBy: new ObjectId(body.createdBy),
+                                updatedBy: body.createdBy,
                                 updatedAt: new Date(),
                             },
                         },
@@ -183,7 +183,7 @@ export class OrderService {
                     productPrice: mapProductLineIdToPrice.get(
                         product.productLineId.toString(),
                     ),
-                    createdBy: new ObjectId(body.createdBy),
+                    createdBy: body.createdBy,
                     createdAt: new Date(),
                 };
             });
@@ -203,7 +203,7 @@ export class OrderService {
                         location: ProductLocation.IN_CUSTOMER,
                         sold: true,
                         soldDate: new Date(),
-                        updatedBy: new ObjectId(body.createdBy),
+                        updatedBy: body.createdBy,
                         updatedAt: new Date(),
                     },
                 },
@@ -219,7 +219,7 @@ export class OrderService {
                         customerName: body.customerName,
                         customerEmail: body.customerEmail,
                         customerPhone: body.customerPhone,
-                        createdBy: new ObjectId(body.createdBy),
+                        createdBy: body.createdBy,
                         createdAt: new Date(),
                     },
                 ],

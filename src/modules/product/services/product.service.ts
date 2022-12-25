@@ -273,10 +273,6 @@ export class ProductService {
                 [
                     {
                         ...body,
-                        productLineId: new ObjectId(body.productLineId),
-                        userId: new ObjectId(body.userId),
-                        storageId: new ObjectId(body.storageId),
-                        createdBy: new ObjectId(body.createdBy),
                         createdAt: new Date(),
                     },
                 ],
@@ -292,7 +288,7 @@ export class ProductService {
                         quantityOfProduct: 1,
                     },
                     $set: {
-                        updatedBy: new ObjectId(body.createdBy),
+                        updatedBy: body.createdBy,
                         updatedAt: new Date(),
                     },
                 },

@@ -1,8 +1,10 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { isPlainObject, mapKeys, trim } from 'lodash';
+import { isPlainObject, mapKeys } from 'lodash';
+import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 @Injectable()
-export class TrimBodyPipe implements PipeTransform {
+export class ConvertObjectIdPipe implements PipeTransform {
     constructor() {
         //
     }
@@ -10,9 +12,11 @@ export class TrimBodyPipe implements PipeTransform {
     trimData(body: Record<string, any>) {
         const trimValue = (item: any) => {
             mapKeys(item, (value, key) => {
-                // remove string contain only space characters
-                if (typeof value === 'string') {
-                    item[key] = value.trim();
+                if (
+                    typeof value === 'string' &&
+                    Types.ObjectId.isValid(value)
+                ) {
+                    item[key] = new ObjectId(value);
                 }
 
                 // iterate array
@@ -21,9 +25,9 @@ export class TrimBodyPipe implements PipeTransform {
                         // remove string contain only space characters
                         if (
                             typeof subValue === 'string' &&
-                            !trim(subValue as string)
+                            Types.ObjectId.isValid(subValue)
                         ) {
-                            value.splice(index, 1);
+                            value[index] = new ObjectId(subValue);
                         } else if (isPlainObject(subValue)) {
                             trimValue(subValue);
                         }

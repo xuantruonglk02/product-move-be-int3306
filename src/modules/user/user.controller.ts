@@ -131,7 +131,7 @@ export class UserController {
             if (body.password) {
                 body.password = hashPassword(body.password);
             }
-            body.updatedBy = req.loggedUser._id;
+            body.updatedBy = new ObjectId(req.loggedUser._id);
             const updatedUser = await this.userService.updateUser(id, body);
             return new SuccessResponse(updatedUser);
         } catch (error) {
