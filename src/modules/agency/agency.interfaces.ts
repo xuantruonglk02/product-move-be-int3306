@@ -3,9 +3,15 @@ import { ObjectId } from 'mongodb';
 export interface IImportNewProductFromProducer {
     transitionId: ObjectId;
     producerId: ObjectId;
-    storageId: ObjectId;
+    agencyStorageId: ObjectId;
 }
 
 export interface IReturnFixedProduct {
     productId: ObjectId;
+}
+
+export interface IReceiveErrorProduct {
+    productId: ObjectId;
+    errorDescription: string;
+    agencyStorageId: ObjectId;
 }

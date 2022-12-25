@@ -42,20 +42,22 @@ export class ProducerService {
 
             const transitionId = new ObjectId();
             await this.productStatusTransitionModel.create(
-                {
-                    _id: transitionId,
-                    previousUserId: producerId,
-                    nextUserId: agencyId,
-                    previousStorageId: storageId,
-                    productIds,
-                    previousStatus: ProductStatus.NEW,
-                    nextStatus: ProductStatus.IN_AGENCY,
-                    previousLocation: ProductLocation.IN_PRODUCER,
-                    nextLocation: ProductLocation.IN_AGENCY,
-                    startDate: new Date(),
-                    createdBy: producerId,
-                    createdAt: new Date(),
-                },
+                [
+                    {
+                        _id: transitionId,
+                        previousUserId: new ObjectId(producerId),
+                        nextUserId: new ObjectId(agencyId),
+                        previousStorageId: new ObjectId(storageId),
+                        productIds: productIds.map((id) => new ObjectId(id)),
+                        previousStatus: ProductStatus.NEW,
+                        nextStatus: ProductStatus.IN_AGENCY,
+                        previousLocation: ProductLocation.IN_PRODUCER,
+                        nextLocation: ProductLocation.IN_AGENCY,
+                        startDate: new Date(),
+                        createdBy: new ObjectId(producerId),
+                        createdAt: new Date(),
+                    },
+                ],
                 { session },
             );
             await this.productModel.updateMany(
@@ -71,7 +73,7 @@ export class ProducerService {
                         storageId: null,
                         status: ProductStatus.IN_TRANSITION,
                         location: ProductLocation.IN_TRANSITION,
-                        updatedBy: producerId,
+                        updatedBy: new ObjectId(producerId),
                         updatedAt: new Date(),
                     },
                 },

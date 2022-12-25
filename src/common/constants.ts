@@ -8,6 +8,7 @@ export enum MongoCollection {
     PRODUCT_STATUS_TRANSITIONS = 'product_status_transitions',
     PRODUCT_IMAGES = 'product_images',
     PRODUCT_REPLACEMENTS = 'product_replacements',
+    PRODUCT_ERROR_REPORTS = 'Product_error_reports',
     ORDERS = 'orders',
     ORDER_DETAILS = 'order_details',
     STORAGES = 'storages',

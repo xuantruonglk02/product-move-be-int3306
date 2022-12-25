@@ -8,6 +8,10 @@ import {
 import { Order, OrderSchema } from '../order/schemas/order.schema';
 import { OrderService } from '../order/services/order.service';
 import {
+    ProductErrorReport,
+    ProductErrorReportSchema,
+} from '../product/schemas/product-error-report.schema';
+import {
     ProductLine,
     ProductLineSchema,
 } from '../product/schemas/product-line.schema';
@@ -55,6 +59,9 @@ import { AgencyService } from './services/agency.service';
         ]),
         MongooseModule.forFeature([
             { name: Storage.name, schema: StorageSchema },
+        ]),
+        MongooseModule.forFeature([
+            { name: ProductErrorReport.name, schema: ProductErrorReportSchema },
         ]),
     ],
     controllers: [AgencyController],

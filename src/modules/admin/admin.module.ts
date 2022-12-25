@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
+    ProductErrorReport,
+    ProductErrorReportSchema,
+} from '../product/schemas/product-error-report.schema';
+import {
     ProductLine,
     ProductLineSchema,
 } from '../product/schemas/product-line.schema';
@@ -34,6 +38,9 @@ import { AdminController } from './admin.controller';
                 name: ProductStatusTransition.name,
                 schema: ProductStatusTransitionSchema,
             },
+        ]),
+        MongooseModule.forFeature([
+            { name: ProductErrorReport.name, schema: ProductErrorReportSchema },
         ]),
     ],
     controllers: [AdminController],

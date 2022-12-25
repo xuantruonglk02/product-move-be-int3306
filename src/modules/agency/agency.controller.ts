@@ -9,7 +9,9 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+import { ConfigService } from '@nestjs/config';
+import moment from 'moment';
+import ConfigKey from 'src/common/config/configKey';
 import { commonListQuerySchema } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
@@ -26,17 +28,21 @@ import { ProductLocation, ProductStatus } from '../product/product.constants';
 import { productMessages } from '../product/product.messages';
 import { ProductService } from '../product/services/product.service';
 import { StorageService } from '../storage/services/storage.service';
+import { ICreateStorage } from '../storage/storage.interfaces';
+import { createOwnStorageSchema } from '../storage/storage.validators';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
 import {
     IImportNewProductFromProducer,
+    IReceiveErrorProduct,
     IReturnFixedProduct,
 } from './agency.interfaces';
 import { agencyMessages } from './agency.messages';
 import {
     checkoutProductSchema,
     importNewProductFromProducerSchema,
+    receiveErrorProduct,
     returnFixedProduct,
 } from './agency.validators';
 import { AgencyService } from './services/agency.service';
@@ -50,6 +56,7 @@ export class AgencyController {
         private readonly productService: ProductService,
         private readonly userService: UserService,
         private readonly storageService: StorageService,
+        private readonly configService: ConfigService,
     ) {}
 
     @Get('/storage')
@@ -65,9 +72,25 @@ export class AgencyController {
             return new SuccessResponse(
                 await this.storageService.getStorageList({
                     ...query,
-                    userId: new ObjectId(req.loggedUser._id),
+                    userId: req.loggedUser._id,
                 }),
             );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/storage')
+    async createStorage(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(createOwnStorageSchema))
+        body: ICreateStorage,
+    ) {
+        try {
+            body.userId = req.loggedUser._id;
+            body.createdBy = req.loggedUser._id;
+            const storage = await this.storageService.createStorage(body);
+            return new SuccessResponse(storage);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
@@ -126,9 +149,9 @@ export class AgencyController {
 
             return new SuccessResponse(
                 await this.agencyService.importNewProductFromProducer(
-                    new ObjectId(body.transitionId),
-                    new ObjectId(req.loggedUser._id),
-                    new ObjectId(body.storageId),
+                    body.transitionId,
+                    req.loggedUser._id,
+                    body.agencyStorageId,
                 ),
             );
         } catch (error) {
@@ -176,7 +199,7 @@ export class AgencyController {
                 ]);
             }
 
-            body.createdBy = new ObjectId(req.loggedUser._id);
+            body.createdBy = req.loggedUser._id;
             const order = await this.agencyService.createNewCheckout(body);
             return new SuccessResponse(order);
         } catch (error) {
@@ -184,9 +207,53 @@ export class AgencyController {
         }
     }
 
-    // TODO
-    // @Post('/receive-error-product')
-    // async receiveErrorProductFromProducer() {}
+    @Post('/receive-error-product')
+    async receiveErrorProductFromCustomer(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(receiveErrorProduct))
+        body: IReceiveErrorProduct,
+    ) {
+        try {
+            const product = await this.productService.getProductById(
+                body.productId,
+                ['sold', 'soldDate'],
+            );
+            if (!product) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.productNotFound,
+                        key: 'productId',
+                    },
+                ]);
+            }
+            if (!product.sold) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: productMessages.errors.productNotSold,
+                        key: 'productId',
+                    },
+                ]);
+            }
+
+            if (
+                moment(new Date()).diff(moment(product.soldDate), 'years') >
+                this.configService.get(ConfigKey.PRODUCT_WARRANTY_TIME_IN_YEAR)
+            ) {
+                // TOTO: error with out of warranty
+            } else {
+                return new SuccessResponse(
+                    await this.agencyService.receiveErrorProductFromCustomer(
+                        body,
+                        req.loggedUser._id,
+                    ),
+                );
+            }
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     // TODO
     // @Post('/transfer-error-product')
@@ -240,8 +307,8 @@ export class AgencyController {
 
             const fixedProduct =
                 await this.agencyService.returnFixedProductToCustomer(
-                    new ObjectId(body.productId),
-                    new ObjectId(req.loggedUser._id),
+                    body.productId,
+                    req.loggedUser._id,
                 );
             return new SuccessResponse(fixedProduct);
         } catch (error) {

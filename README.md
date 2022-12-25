@@ -89,6 +89,7 @@ Nest is [MIT licensed](LICENSE).
 ### Producer module
 
 -   [x] [Get storage list](#get-producers-storage-list)
+-   [x] [create storage](#producer-create-storage)
 -   [x] [Create product](#create-product)
 -   [x] [Export product to agency](#export-new-product-to-agency)
 -   [ ] Receive error product from warranty center
@@ -99,7 +100,8 @@ Nest is [MIT licensed](LICENSE).
 ### Agency module
 
 -   [x] [Get storage list](#get-agencys-storage-list)
--   [x] Import new product from producer
+-   [x] [Create storage](#agency-create-storage)
+-   [x] [Import new product from producer](#import-new-product-from-producer)
 -   [x] [Sold product](#checkout)
 -   [ ] Receive error product from customer
 -   [ ] Transfer error product to warranty center
@@ -608,6 +610,39 @@ GET /api/v1/producer/storage
 }
 ```
 
+#### Producer create storage
+
+```http
+POST /api/v1/producer/storage
+```
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------- |
+| `name`    | `string` | **Required** |
+| `address` | `string` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "createdAt": "2022-12-25T09:12:21.504Z",
+        "updatedAt": "2022-12-25T09:12:21.504Z",
+        "deletedAt": null,
+        "createdBy": "638d69f4383b14090809a7e8",
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": "638d69f4383b14090809a7e8",
+        "name": "producer storage 3",
+        "address": "producer storage 3",
+        "_id": "63a813f55b89e87de7d9f28f",
+        "__v": 0
+    },
+    "version": "1.0.0"
+}
+```
+
 #### Create product
 
 ```http
@@ -677,22 +712,20 @@ POST /api/v1/producer/export-to-agency
     "success": true,
     "code": 200,
     "message": "Success",
-    "data": [
-        {
-            "_id": "6394515a1d58e570ff3627db",
-            "productId": "6394500b1d58e570ff3627cc",
-            "previousUserId": "638d69f4383b14090809a7e8",
-            "nextUserId": "638f8be6e5340b16eaef5a3e",
-            "previousStorageId": "638d809c085dd06475c5f016",
-            "previousStatus": "new",
-            "nextStatus": "in_agency",
-            "previousLocation": "in_producer",
-            "nextLocation": "in_agency",
-            "startDate": "2022-12-10T09:28:58.071Z",
-            "createdBy": "638d69f4383b14090809a7e8",
-            "createdAt": "2022-12-10T09:28:58.071Z"
-        }
-    ],
+    "data": {
+        "_id": "63a6db965cf7d23d50149281",
+        "previousUserId": "638d69f4383b14090809a7e8",
+        "nextUserId": "638f8be6e5340b16eaef5a3e",
+        "previousStorageId": "638d809c085dd06475c5f016",
+        "productIds": [
+            "638d80b5085dd06475c5f01c"
+        ],
+        "previousStatus": "new",
+        "nextStatus": "in_agency",
+        "previousLocation": "in_producer",
+        "nextLocation": "in_agency",
+        "startDate": "2022-12-24T10:59:34.578Z"
+    },
     "version": "1.0.0"
 }
 ```
@@ -728,6 +761,76 @@ GET /api/v1/agency/storage
             }
         ],
         "totalItems": 1
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Agency create storage
+
+```http
+POST /api/v1/agency/storage
+```
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------- |
+| `name`    | `string` | **Required** |
+| `address` | `string` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "createdAt": "2022-12-10T10:07:24.610Z",
+        "updatedAt": "2022-12-10T10:07:24.610Z",
+        "deletedAt": null,
+        "createdBy": "638f8be6e5340b16eaef5a3e",
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": "638f8be6e5340b16eaef5a3e",
+        "name": "agency storage",
+        "address": "agency storage",
+        "_id": "63945a5c1db64de99f5f70ff",
+        "__v": 0
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Import new product from producer
+
+```http
+POST /api/v1/agency/import-new-product
+```
+
+| Parameter         | Type       | Description  |
+| :---------------- | :--------- | :----------- |
+| `transitionId`    | `ObjectId` | **Required** |
+| `producerId`      | `ObjectId` | **Required** |
+| `agencyStorageId` | `ObjectId` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63a6db965cf7d23d50149281",
+        "previousUserId": "638d69f4383b14090809a7e8",
+        "nextUserId": "638f8be6e5340b16eaef5a3e",
+        "previousStorageId": "638d809c085dd06475c5f016",
+        "productIds": [
+            "638d80b5085dd06475c5f01c"
+        ],
+        "previousStatus": "new",
+        "nextStatus": "in_agency",
+        "previousLocation": "in_producer",
+        "nextLocation": "in_agency",
+        "startDate": "2022-12-24T10:59:34.578Z",
+        "finishDate": "2022-12-24T11:07:24.878Z",
+        "nextStorageId": "63945a5c1db64de99f5f70ff"
     },
     "version": "1.0.0"
 }

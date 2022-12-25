@@ -6,5 +6,6 @@ export const productMessages = {
         productLineExists: 'Product line already exists',
         productNotOfAgency: 'Product not of this agency',
         cantReturn: 'Can not return this product',
+        productNotSold: 'Product has not been sold yet',
     },
 };

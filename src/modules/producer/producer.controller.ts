@@ -9,7 +9,6 @@ import {
     Req,
     UseGuards,
 } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -34,6 +33,8 @@ import { storageMessage } from '../storage/storage.messages';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { commonListQuerySchema } from 'src/common/constants';
 import { ICommonListQuery } from 'src/common/interfaces';
+import { ICreateStorage } from '../storage/storage.interfaces';
+import { createOwnStorageSchema } from '../storage/storage.validators';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -59,9 +60,25 @@ export class ProducerController {
             return new SuccessResponse(
                 await this.storageService.getStorageList({
                     ...query,
-                    userId: new ObjectId(req.loggedUser._id),
+                    userId: req.loggedUser._id,
                 }),
             );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/storage')
+    async createStorage(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(createOwnStorageSchema))
+        body: ICreateStorage,
+    ) {
+        try {
+            body.userId = req.loggedUser._id;
+            body.createdBy = req.loggedUser._id;
+            const storage = await this.storageService.createStorage(body);
+            return new SuccessResponse(storage);
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
@@ -74,11 +91,6 @@ export class ProducerController {
         body: ICreateProduct,
     ) {
         try {
-            body.productLineId = new ObjectId(body.productLineId);
-            body.storageId = new ObjectId(body.storageId);
-            body.userId = new ObjectId(req.loggedUser._id);
-            body.createdBy = new ObjectId(req.loggedUser._id);
-
             const productLine = await this.productService.getProductLineDetail(
                 body.productLineId,
                 ['_id'],
@@ -133,8 +145,6 @@ export class ProducerController {
         body: IExportNewProductToAgency,
     ) {
         try {
-            body.productIds = body.productIds.map((id) => new ObjectId(id));
-
             const storage = await this.storageService.getStorageById(
                 body.storageId,
                 ['userId'],
@@ -206,8 +216,8 @@ export class ProducerController {
             ) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
-                        code: HttpStatus.FORBIDDEN,
-                        message: producerMessages.errors.notAgency,
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: producerMessages.errors.wrongProducts,
                         key: 'productIds',
                     },
                 ]);
@@ -216,9 +226,9 @@ export class ProducerController {
             const transition =
                 await this.producerService.exportNewProductToAgency(
                     body.productIds,
-                    new ObjectId(req.loggedUser._id),
-                    new ObjectId(body.storageId),
-                    new ObjectId(body.agencyId),
+                    req.loggedUser._id,
+                    body.storageId,
+                    body.agencyId,
                 );
             return new SuccessResponse(transition);
         } catch (error) {

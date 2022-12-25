@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
+    ProductErrorReport,
+    ProductErrorReportSchema,
+} from '../product/schemas/product-error-report.schema';
+import {
     ProductLine,
     ProductLineSchema,
 } from '../product/schemas/product-line.schema';
@@ -25,6 +29,9 @@ import { WarrantyService } from './services/warranty.service';
         ]),
         MongooseModule.forFeature([
             { name: ProductLine.name, schema: ProductLineSchema },
+        ]),
+        MongooseModule.forFeature([
+            { name: ProductErrorReport.name, schema: ProductErrorReportSchema },
         ]),
     ],
     controllers: [],

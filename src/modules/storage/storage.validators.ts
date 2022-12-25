@@ -14,3 +14,8 @@ export const createStorageSchema = Joi.object().keys({
     name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
     address: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
 });
+
+export const createOwnStorageSchema = Joi.object().keys({
+    name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
+    address: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
+});

@@ -1,4 +1,5 @@
 import {
+    AREA_TEXT_MAX_LENGTH,
     INPUT_TEXT_MAX_LENGTH,
     PHONE_NUMBER_MAX_LENGTH,
     Regex,
@@ -8,7 +9,7 @@ import Joi from 'src/plugins/joi';
 export const importNewProductFromProducerSchema = Joi.object().keys({
     transitionId: Joi.isObjectId().required(),
     producerId: Joi.isObjectId().required(),
-    storageId: Joi.isObjectId().required(),
+    agencyStorageId: Joi.isObjectId().required(),
 });
 
 export const checkoutProductSchema = Joi.object().keys({
@@ -23,4 +24,10 @@ export const checkoutProductSchema = Joi.object().keys({
 
 export const returnFixedProduct = Joi.object().keys({
     productId: Joi.isObjectId().required(),
+});
+
+export const receiveErrorProduct = Joi.object().keys({
+    productId: Joi.isObjectId().required(),
+    errorDescription: Joi.string().max(AREA_TEXT_MAX_LENGTH),
+    agencyStorageId: Joi.isObjectId().required(),
 });

@@ -16,6 +16,11 @@ import {
     IGetProductList,
 } from '../product.interfaces';
 import {
+    ProductErrorReport,
+    productErrorReportAttributes,
+    ProductErrorReportDocument,
+} from '../schemas/product-error-report.schema';
+import {
     ProductLine,
     productLineAttributes,
     ProductLineDocument,
@@ -40,6 +45,8 @@ export class ProductService {
         private readonly productLineModel: Model<ProductLineDocument>,
         @InjectModel(ProductStatusTransition.name)
         private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
+        @InjectModel(ProductErrorReport.name)
+        private readonly productErrorReportModel: Model<ProductErrorReportDocument>,
         @InjectConnection()
         private readonly connection: Connection,
     ) {}
@@ -229,10 +236,27 @@ export class ProductService {
         }
     }
 
+    async getProductErrorReport(
+        id: ObjectId,
+        attrs = productErrorReportAttributes,
+    ) {
+        try {
+            return await this.productErrorReportModel
+                .findOne({
+                    _id: id,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async createNewProductLine(body: ICreateProductLine) {
         try {
             return await this.productLineModel.create({
                 ...body,
+                createdBy: new ObjectId(body.createdBy),
                 createdAt: new Date(),
             });
         } catch (error) {
@@ -250,6 +274,10 @@ export class ProductService {
                 [
                     {
                         ...body,
+                        productLineId: new ObjectId(body.productLineId),
+                        userId: new ObjectId(body.userId),
+                        storageId: new ObjectId(body.storageId),
+                        createdBy: new ObjectId(body.createdBy),
                         createdAt: new Date(),
                     },
                 ],
@@ -265,7 +293,7 @@ export class ProductService {
                         quantityOfProduct: 1,
                     },
                     $set: {
-                        updatedBy: body.createdBy,
+                        updatedBy: new ObjectId(body.createdBy),
                         updatedAt: new Date(),
                     },
                 },
