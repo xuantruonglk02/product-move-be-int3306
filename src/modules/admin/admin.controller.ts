@@ -17,7 +17,6 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { hashPassword } from 'src/common/helpers/utilityFunctions';
-import { ConvertObjectIdPipe } from 'src/common/pipes/convertObjectId.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
@@ -113,14 +112,12 @@ export class AdminController {
     @Post('/storage')
     async createStorage(
         @Req() req,
-        @Body(
-            new TrimBodyPipe(),
-            new JoiValidationPipe(createStorageSchema),
-            new ConvertObjectIdPipe(),
-        )
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(createStorageSchema))
         body: ICreateStorage,
     ) {
         try {
+            body.userId = new ObjectId(body.userId);
+
             const user = await this.userService.getUserByField(
                 { key: '_id', value: body.userId },
                 ['_id', 'role'],

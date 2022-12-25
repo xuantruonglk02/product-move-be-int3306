@@ -363,14 +363,8 @@ GET /api/v1/product/:id
     "code": 200,
     "message": "Success",
     "data": {
-        "_id": "638d813b70c5c2e16b58e5dd",
-        "createdAt": "2022-12-05T05:27:23.322Z",
-        "updatedAt": "2022-12-05T05:27:23.322Z",
-        "deletedAt": null,
-        "createdBy": "638d69f4383b14090809a7e8",
-        "updatedBy": null,
-        "deletedBy": null,
-        "productLineId": "638d6bbce7f9bf2f085460c9",
+        "_id": "638d810770c5c2e16b58e5d8",
+        "productLineId": "638d6ba0f16ac5aff21e9969",
         "userId": "638d69f4383b14090809a7e8",
         "storageId": "638d809c085dd06475c5f016",
         "name": "Iphone 1",
@@ -384,20 +378,26 @@ GET /api/v1/product/:id
         "status": "new",
         "location": "in_producer",
         "sold": false,
-        "__v": 0,
         "productLine": {
-            "_id": "638d6bbce7f9bf2f085460c9",
-            "createdAt": "2022-12-05T03:55:40.423Z",
-            "updatedAt": "2022-12-05T05:27:23.327Z",
-            "deletedAt": null,
-            "createdBy": "638b4b7718844a05965a0ca3",
-            "updatedBy": "638d69f4383b14090809a7e8",
-            "deletedBy": null,
+            "_id": "638d6ba0f16ac5aff21e9969",
             "name": "Iphone",
-            "price": 1000,
-            "quantityOfProduct": 1,
-            "__v": 0
-        }
+            "price": 1000
+        },
+        "user": {
+            "_id": "638d69f4383b14090809a7e8",
+            "email": "producer@productmove.com",
+            "name": "producer"
+        },
+        "storage": {
+            "_id": "638d809c085dd06475c5f016",
+            "name": "producer storage",
+            "address": "producer storage"
+        },
+        "createdBy": {
+            "_id": "638d69f4383b14090809a7e8",
+            "email": "producer@productmove.com",
+            "name": "producer"
+        },
     },
     "version": "1.0.0"
 }
@@ -427,41 +427,44 @@ GET /api/v1/product
     "data": {
         "items": [
             {
-                "_id": "638d80b5085dd06475c5f01c",
-                "productLineId": "638d6ba0f16ac5aff21e9969",
+                "_id": "63a88b0b7cfcda0928b81419",
+                "productLineId": "639460a71db64de99f5f7111",
                 "userId": "638d69f4383b14090809a7e8",
                 "storageId": "638d809c085dd06475c5f016",
-                "name": "Iphone 1",
+                "name": "56736d617274204a6f792034",
                 "description": "Iphone 1",
+                "status": "new",
+                "location": "in_producer",
+                "sold": false,
                 "weight": 1000,
                 "displaySize": 9.7,
                 "bodySize": "1x1",
                 "color": "black",
                 "bodyBuild": "body build",
                 "batteryVolume": 1000,
-                "status": "new",
-                "location": "in_producer",
-                "sold": false
+                "productLine": {
+                    "_id": "639460a71db64de99f5f7111",
+                    "name": "Samsung",
+                    "price": 1000
+                },
+                "user": {
+                    "_id": "638d69f4383b14090809a7e8",
+                    "email": "producer@productmove.com",
+                    "name": "producer"
+                },
+                "storage": {
+                    "_id": "638d809c085dd06475c5f016",
+                    "name": "producer storage",
+                    "address": "producer storage"
+                }
+                "createdBy": {
+                    "_id": "638d69f4383b14090809a7e8",
+                    "email": "producer@productmove.com",
+                    "name": "producer"
+                },
             },
-            {
-                "_id": "638d810770c5c2e16b58e5d8",
-                "productLineId": "638d6ba0f16ac5aff21e9969",
-                "userId": "638d69f4383b14090809a7e8",
-                "storageId": "638d809c085dd06475c5f016",
-                "name": "Iphone 1",
-                "description": "Iphone 1",
-                "weight": 1000,
-                "displaySize": 9.7,
-                "bodySize": "1x1",
-                "color": "black",
-                "bodyBuild": "body build",
-                "batteryVolume": 1000,
-                "status": "new",
-                "location": "in_producer",
-                "sold": false
-            }
         ],
-        "totalItems": 2
+        "totalItems": 1
     },
     "version": "1.0.0"
 }

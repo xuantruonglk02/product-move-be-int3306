@@ -36,7 +36,6 @@ import { ICommonListQuery } from 'src/common/interfaces';
 import { ICreateStorage } from '../storage/storage.interfaces';
 import { createOwnStorageSchema } from '../storage/storage.validators';
 import { ObjectId } from 'mongodb';
-import { ConvertObjectIdPipe } from 'src/common/pipes/convertObjectId.pipe';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -89,14 +88,13 @@ export class ProducerController {
     @Post('/product')
     async createProduct(
         @Req() req,
-        @Body(
-            new TrimBodyPipe(),
-            new JoiValidationPipe(createProductSchema),
-            new ConvertObjectIdPipe(),
-        )
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(createProductSchema))
         body: ICreateProduct,
     ) {
         try {
+            body.productLineId = new ObjectId(body.productLineId);
+            body.storageId = new ObjectId(body.storageId);
+
             const productLine = await this.productService.getProductLineDetail(
                 body.productLineId,
                 ['_id'],
@@ -149,11 +147,14 @@ export class ProducerController {
         @Body(
             new TrimBodyPipe(),
             new JoiValidationPipe(exportNewProductToAgencySchema),
-            new ConvertObjectIdPipe(),
         )
         body: IExportNewProductToAgency,
     ) {
         try {
+            body.storageId = new ObjectId(body.storageId);
+            body.agencyId = new ObjectId(body.agencyId);
+            body.productIds = body.productIds.map((id) => new ObjectId(id));
+
             const storage = await this.storageService.getStorageById(
                 body.storageId,
                 ['userId'],

@@ -21,7 +21,6 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { ICommonListQuery } from 'src/common/interfaces';
-import { ConvertObjectIdPipe } from 'src/common/pipes/convertObjectId.pipe';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
@@ -104,11 +103,14 @@ export class AgencyController {
         @Body(
             new TrimBodyPipe(),
             new JoiValidationPipe(importNewProductFromProducerSchema),
-            new ConvertObjectIdPipe(),
         )
         body: IImportNewProductFromProducer,
     ) {
         try {
+            body.transitionId = new ObjectId(body.transitionId);
+            body.producerId = new ObjectId(body.producerId);
+            body.agencyStorageId = new ObjectId(body.agencyStorageId);
+
             const producer = await this.userService.getUserByField(
                 {
                     key: '_id',
@@ -165,14 +167,12 @@ export class AgencyController {
     @Post('/checkout')
     async checkout(
         @Req() req,
-        @Body(
-            new TrimBodyPipe(),
-            new JoiValidationPipe(checkoutProductSchema),
-            new ConvertObjectIdPipe(),
-        )
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(checkoutProductSchema))
         body: ICreateOrder,
     ) {
         try {
+            body.productIds = body.productIds.map((id) => new ObjectId(id));
+
             const products = await this.productService.getProductByIds(
                 body.productIds,
                 ['userId', 'status', 'location', 'sold'],
@@ -217,14 +217,13 @@ export class AgencyController {
     @Post('/receive-error-product')
     async receiveErrorProductFromCustomer(
         @Req() req,
-        @Body(
-            new TrimBodyPipe(),
-            new JoiValidationPipe(receiveErrorProduct),
-            new ConvertObjectIdPipe(),
-        )
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(receiveErrorProduct))
         body: IReceiveErrorProduct,
     ) {
         try {
+            body.productId = new ObjectId(body.productId);
+            body.agencyStorageId = new ObjectId(body.agencyStorageId);
+
             const product = await this.productService.getProductById(
                 body.productId,
                 ['sold', 'soldDate'],
@@ -277,14 +276,12 @@ export class AgencyController {
     @Post('/return-fixed-product')
     async returnFixedProduct(
         @Req() req,
-        @Body(
-            new TrimBodyPipe(),
-            new JoiValidationPipe(returnFixedProduct),
-            new ConvertObjectIdPipe(),
-        )
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(returnFixedProduct))
         body: IReturnFixedProduct,
     ) {
         try {
+            body.productId = new ObjectId(body.productId);
+
             const product = await this.productService.getProductById(
                 body.productId,
                 ['_id', 'userId', 'status', 'location'],
