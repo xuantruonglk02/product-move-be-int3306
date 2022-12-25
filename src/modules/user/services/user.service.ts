@@ -127,7 +127,7 @@ export class UserService {
                 },
                 {
                     $set: {
-                        deletedBy: new ObjectId(deletedBy),
+                        deletedBy: deletedBy,
                         deletedAt: new Date(),
                     },
                 },

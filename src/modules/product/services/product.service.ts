@@ -256,7 +256,6 @@ export class ProductService {
         try {
             return await this.productLineModel.create({
                 ...body,
-                createdBy: new ObjectId(body.createdBy),
                 createdAt: new Date(),
             });
         } catch (error) {

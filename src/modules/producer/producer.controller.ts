@@ -35,6 +35,7 @@ import { commonListQuerySchema } from 'src/common/constants';
 import { ICommonListQuery } from 'src/common/interfaces';
 import { ICreateStorage } from '../storage/storage.interfaces';
 import { createOwnStorageSchema } from '../storage/storage.validators';
+import { ObjectId } from 'mongodb';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -60,7 +61,7 @@ export class ProducerController {
             return new SuccessResponse(
                 await this.storageService.getStorageList({
                     ...query,
-                    userId: req.loggedUser._id,
+                    userId: new ObjectId(req.loggedUser._id),
                 }),
             );
         } catch (error) {

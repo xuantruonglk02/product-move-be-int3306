@@ -116,6 +116,9 @@ export class AdminController {
         body: ICreateStorage,
     ) {
         try {
+            body.userId = new ObjectId(body.userId);
+            body.createdBy = new ObjectId(req.loggedUser._id);
+
             const user = await this.userService.getUserByField(
                 { key: '_id', value: body.userId },
                 ['_id', 'role'],
@@ -145,8 +148,6 @@ export class AdminController {
                 ]);
             }
 
-            body.userId = new ObjectId(body.userId);
-            body.createdBy = new ObjectId(req.loggedUser._id);
             const storage = await this.storageService.createStorage(body);
             return new SuccessResponse(storage);
         } catch (error) {
@@ -165,6 +166,7 @@ export class AdminController {
     ) {
         try {
             body.createdBy = new ObjectId(req.loggedUser._id);
+
             const newProductLine =
                 await this.productService.createNewProductLine(body);
             return new SuccessResponse(newProductLine);

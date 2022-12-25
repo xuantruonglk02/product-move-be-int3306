@@ -88,8 +88,6 @@ export class StorageService {
         try {
             return await this.storageModel.create({
                 ...body,
-                userId: new ObjectId(body.userId),
-                createdBy: new ObjectId(body.createdBy),
                 createdAt: new Date(),
             });
         } catch (error) {

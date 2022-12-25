@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import moment from 'moment';
+import { ObjectId } from 'mongodb';
 import ConfigKey from 'src/common/config/configKey';
 import { commonListQuerySchema } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
@@ -72,7 +73,7 @@ export class AgencyController {
             return new SuccessResponse(
                 await this.storageService.getStorageList({
                     ...query,
-                    userId: req.loggedUser._id,
+                    userId: new ObjectId(req.loggedUser._id),
                 }),
             );
         } catch (error) {
@@ -87,8 +88,9 @@ export class AgencyController {
         body: ICreateStorage,
     ) {
         try {
-            body.userId = req.loggedUser._id;
-            body.createdBy = req.loggedUser._id;
+            body.userId = new ObjectId(req.loggedUser._id);
+            body.createdBy = new ObjectId(req.loggedUser._id);
+
             const storage = await this.storageService.createStorage(body);
             return new SuccessResponse(storage);
         } catch (error) {
