@@ -1,5 +1,6 @@
 import {
     AREA_TEXT_MAX_LENGTH,
+    ARRAY_MAX_LENGTH,
     INPUT_TEXT_MAX_LENGTH,
     PHONE_NUMBER_MAX_LENGTH,
     Regex,
@@ -19,7 +20,10 @@ export const checkoutProductSchema = Joi.object().keys({
         .regex(Regex.EMAIL)
         .required(),
     customerPhone: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).required(),
-    productIds: Joi.array().items(Joi.isObjectId()).required(),
+    productIds: Joi.array()
+        .max(ARRAY_MAX_LENGTH)
+        .items(Joi.isObjectId())
+        .required(),
 });
 
 export const returnFixedProduct = Joi.object().keys({

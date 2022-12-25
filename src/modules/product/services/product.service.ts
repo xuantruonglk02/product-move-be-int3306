@@ -195,6 +195,9 @@ export class ProductService {
             if (query.productLineId) {
                 getListQuery.productLineId = query.productLineId;
             }
+            if (query.createdBy) {
+                getListQuery.createdBy = query.createdBy;
+            }
 
             const [productList, total] = await Promise.all([
                 this.productModel

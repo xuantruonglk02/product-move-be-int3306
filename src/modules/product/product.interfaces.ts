@@ -32,6 +32,7 @@ export interface IProduct {
 
 export interface IGetProductList extends ICommonListQuery {
     productLineId?: ObjectId;
+    createdBy?: ObjectId;
 }
 
 export interface ICreateProductLine extends IProductLine {

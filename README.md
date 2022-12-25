@@ -412,6 +412,7 @@ GET /api/v1/product
 | Parameter        | Type       | Description                               |
 | :--------------- | :--------- | :---------------------------------------- |
 | `productLineId`  | `ObjectId` | **Optional**                              |
+| `createdBy`      | `ObjectId` | **Optional**                              |
 | `keyword`        | `string`   | **Optional**                              |
 | `page`           | `number`   | **Optional**                              |
 | `limit`          | `number`   | **Optional**                              |

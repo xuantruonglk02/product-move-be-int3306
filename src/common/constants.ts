@@ -31,7 +31,10 @@ export const Regex = {
 };
 
 export const AREA_TEXT_MAX_LENGTH = 2000;
+export const ARRAY_MAX_LENGTH = 100;
 export const DEFAULT_ITEM_PER_PAGE_LIMIT = 10;
+export const DEFAULT_ORDER_BY = OrderBy.CREATED_AT;
+export const DEFAULT_ORDER_DIRECTION = OrderDirection.DESCENDING;
 export const HASH_PASSWORD_LENGTH = 60;
 export const IMAGE_URL_MAX_LENGTH = 255;
 export const INPUT_TEXT_MAX_LENGTH = 255;

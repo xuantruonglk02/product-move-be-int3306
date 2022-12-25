@@ -78,6 +78,9 @@ export class ProductController {
             query.productLineId = query.productLineId
                 ? new ObjectId(query.productLineId)
                 : null;
+            query.createdBy = query.createdBy
+                ? new ObjectId(query.createdBy)
+                : null;
 
             return new SuccessResponse(
                 await this.productService.getProductList(query),

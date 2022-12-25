@@ -10,6 +10,7 @@ import { ProductColor } from './product.constants';
 export const getProductListSchema = Joi.object().keys({
     ...commonListQuerySchemaKeys,
     productLineId: Joi.isObjectId().optional().allow(null),
+    createdBy: Joi.isObjectId().optional().allow(null),
 });
 
 export const createProductLineSchema = Joi.object().keys({
