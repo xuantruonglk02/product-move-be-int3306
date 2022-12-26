@@ -12,6 +12,7 @@ export enum MongoCollection {
     ORDERS = 'orders',
     ORDER_DETAILS = 'order_details',
     STORAGES = 'storages',
+    NOTIFICATIONS = 'notifications',
 }
 
 export enum OrderDirection {

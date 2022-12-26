@@ -35,3 +35,11 @@ export const receiveErrorProduct = Joi.object().keys({
     errorDescription: Joi.string().max(AREA_TEXT_MAX_LENGTH),
     agencyStorageId: Joi.isObjectId().required(),
 });
+
+export const transferErrorProductSchema = Joi.object().keys({
+    productIds: Joi.array()
+        .max(ARRAY_MAX_LENGTH)
+        .items(Joi.isObjectId())
+        .required(),
+    warrantyCenterId: Joi.isObjectId().required(),
+});

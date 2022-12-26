@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
-import { Model } from 'mongoose';
+import { Connection, Model } from 'mongoose';
+import { softDeleteCondition } from 'src/common/constants';
 import {
     ProductLocation,
     ProductStatus,
@@ -10,30 +11,80 @@ import {
     ProductStatusTransition,
     ProductStatusTransitionDocument,
 } from 'src/modules/product/schemas/product-status-transition.schema';
+import {
+    Product,
+    ProductDocument,
+} from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
+import { IReceiveErrorProductFromAgency } from '../warranty-center.interfaces';
 
 @Injectable()
 export class WarrantyService {
     constructor(
+        @InjectModel(Product.name)
+        private readonly productModel: Model<ProductDocument>,
         @InjectModel(ProductStatusTransition.name)
         private readonly productStatusTransitionModel: Model<ProductStatusTransitionDocument>,
+        @InjectConnection()
+        private readonly connection: Connection,
         private readonly productService: ProductService,
     ) {}
 
-    async handleWarranty(productId: ObjectId, warrantyCenterId: ObjectId) {
-        try {
-            const product = await this.productService.getProductById(productId);
-            product.userId = warrantyCenterId;
-            product.storageId = null;
-            product.status = ProductStatus.IN_WARRANTY;
-            product.location = ProductLocation.IN_WARRANTY_CENTER;
-            product.updatedBy = warrantyCenterId;
-            product.updatedAt = new Date();
-            await product.save();
+    async handleWarranty(
+        warrantyCenterId: ObjectId,
+        body: IReceiveErrorProductFromAgency,
+    ) {
+        const session = await this.connection.startSession();
 
-            return product;
+        try {
+            session.startTransaction();
+
+            const transition = await this.productStatusTransitionModel
+                .findOneAndUpdate(
+                    {
+                        _id: body.transitionId,
+                        ...softDeleteCondition,
+                    },
+                    {
+                        $set: {
+                            finishDate: new Date(),
+                            updatedBy: warrantyCenterId,
+                            updatedAt: new Date(),
+                        },
+                    },
+                    { session },
+                )
+                .select(['productIds']);
+            await this.productModel.updateMany(
+                {
+                    _id: {
+                        $in: transition.productIds,
+                    },
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: warrantyCenterId,
+                        storageId: null,
+                        status: ProductStatus.IN_WARRANTY,
+                        location: ProductLocation.IN_WARRANTY_CENTER,
+                        updatedBy: warrantyCenterId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
+
+            await session.commitTransaction();
+
+            return await this.productService.getProductStatusTransition(
+                body.transitionId,
+            );
         } catch (error) {
+            await session.abortTransaction();
             throw error;
+        } finally {
+            session.endSession();
         }
     }
 

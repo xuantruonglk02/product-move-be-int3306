@@ -118,25 +118,27 @@ export class UserService {
         try {
             session.startTransaction();
 
-            await this.userModel.updateOne(
-                {
-                    _id: id,
-                    ...softDeleteCondition,
-                },
-                {
-                    $set: {
-                        deletedBy: deletedBy,
-                        deletedAt: new Date(),
+            const user = await this.userModel
+                .findOneAndUpdate(
+                    {
+                        _id: id,
+                        ...softDeleteCondition,
                     },
-                },
-                { session },
-            );
+                    {
+                        $set: {
+                            deletedBy: deletedBy,
+                            deletedAt: new Date(),
+                        },
+                    },
+                    { session },
+                )
+                .select(userAttributes);
 
             // TODO: Delete storage;
 
             await session.commitTransaction();
 
-            return this.getUserByField({ key: '_id', value: id });
+            return user;
         } catch (error) {
             await session.abortTransaction();
             throw error;

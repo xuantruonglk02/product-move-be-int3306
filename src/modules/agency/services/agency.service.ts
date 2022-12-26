@@ -26,7 +26,10 @@ import {
     ProductDocument,
 } from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
-import { IReceiveErrorProduct } from '../agency.interfaces';
+import {
+    IReceiveErrorProduct,
+    ITransferErrorProduct,
+} from '../agency.interfaces';
 
 @Injectable()
 export class AgencyService {
@@ -172,41 +175,41 @@ export class AgencyService {
     }
 
     async transferErrorProductToWarrantyCenter(
-        productId: ObjectId,
-        warrantyCenterId: ObjectId,
+        agencyId: ObjectId,
+        storageId: ObjectId,
+        body: ITransferErrorProduct,
     ) {
         const session = await this.connection.startSession();
 
         try {
-            const product = await this.productService.getProductById(
-                productId,
-                ['userId', 'storageId', 'status'],
-            );
-
             session.startTransaction();
 
             const transitionId = new ObjectId();
             await this.productStatusTransitionModel.create(
-                {
-                    _id: transitionId,
-                    productId: productId,
-                    previousUserId: product.userId,
-                    nextUserId: warrantyCenterId,
-                    previousStorageId: product.storageId,
-                    nextStorageId: null,
-                    previousStatus: product.status,
-                    nextStatus: ProductStatus.IN_WARRANTY,
-                    previousLocation: ProductLocation.IN_AGENCY,
-                    nextLocation: ProductLocation.IN_WARRANTY_CENTER,
-                    startDate: new Date(),
-                    createdBy: product.userId,
-                    createdAt: new Date(),
-                },
+                [
+                    {
+                        _id: transitionId,
+                        previousUserId: agencyId,
+                        nextUserId: body.warrantyCenterId,
+                        previousStorageId: storageId,
+                        nextStorageId: null,
+                        previousStatus: ProductStatus.NEED_WARRANTY,
+                        nextStatus: ProductStatus.IN_WARRANTY,
+                        previousLocation: ProductLocation.IN_AGENCY,
+                        nextLocation: ProductLocation.IN_WARRANTY_CENTER,
+                        productIds: body.productIds,
+                        startDate: new Date(),
+                        createdBy: agencyId,
+                        createdAt: new Date(),
+                    },
+                ],
                 { session },
             );
-            await this.productModel.updateOne(
+            await this.productModel.updateMany(
                 {
-                    _id: productId,
+                    _id: {
+                        $in: body.productIds,
+                    },
                     ...softDeleteCondition,
                 },
                 {
@@ -215,7 +218,7 @@ export class AgencyService {
                         storageId: null,
                         status: ProductStatus.IN_TRANSITION,
                         location: ProductLocation.IN_TRANSITION,
-                        updatedBy: product.userId,
+                        updatedBy: agencyId,
                         updatedAt: new Date(),
                     },
                 },

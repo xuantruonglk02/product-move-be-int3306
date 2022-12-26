@@ -31,6 +31,7 @@ import { productMessages } from '../product/product.messages';
 import { ProductService } from '../product/services/product.service';
 import { StorageService } from '../storage/services/storage.service';
 import { ICreateStorage } from '../storage/storage.interfaces';
+import { storageMessage } from '../storage/storage.messages';
 import { createOwnStorageSchema } from '../storage/storage.validators';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
@@ -39,6 +40,7 @@ import {
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
     IReturnFixedProduct,
+    ITransferErrorProduct,
 } from './agency.interfaces';
 import { agencyMessages } from './agency.messages';
 import {
@@ -46,6 +48,7 @@ import {
     importNewProductFromProducerSchema,
     receiveErrorProduct,
     returnFixedProduct,
+    transferErrorProductSchema,
 } from './agency.validators';
 import { AgencyService } from './services/agency.service';
 
@@ -185,7 +188,7 @@ export class AgencyController {
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: productMessages.errors.productNotFound,
-                        key: 'productId',
+                        key: 'productIds',
                     },
                 ]);
             }
@@ -203,8 +206,8 @@ export class AgencyController {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
-                        message: agencyMessages.errors.unprocessableProduct,
-                        key: 'productId',
+                        message: agencyMessages.errors.unprocessableProducts,
+                        key: 'productIds',
                     },
                 ]);
             }
@@ -267,9 +270,84 @@ export class AgencyController {
         }
     }
 
-    // TODO
-    // @Post('/transfer-error-product')
-    // async transferErrorProduct() {}
+    @Post('/transfer-error-product')
+    async transferErrorProduct(
+        @Req() req,
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(transferErrorProductSchema),
+        )
+        body: ITransferErrorProduct,
+    ) {
+        try {
+            convertObjectId(body, ['productIds', 'warrantyCenterId']);
+
+            const products = await this.productService.getProductByIds(
+                body.productIds,
+                ['userId', 'storageId', 'status', 'location'],
+            );
+            if (products.length !== body.productIds.length) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.productNotFound,
+                        key: 'productIds',
+                    },
+                ]);
+            }
+            if (
+                !products.every(
+                    (product) =>
+                        product.storageId &&
+                        product.storageId.toString() ===
+                            products[0].storageId.toString() &&
+                        product.status === ProductStatus.NEED_WARRANTY &&
+                        product.location === ProductLocation.IN_AGENCY,
+                )
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: agencyMessages.errors.unprocessableProducts,
+                        key: 'productIds',
+                    },
+                ]);
+            }
+
+            const storage = await this.storageService.getStorageById(
+                products[0].storageId,
+                ['userId'],
+            );
+            if (!storage) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: storageMessage.errors.notFound,
+                        key: 'product.storageId',
+                    },
+                ]);
+            }
+            if (storage.userId.toString() !== req.loggedUser._id.toString()) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: agencyMessages.errors.notInAgency,
+                        key: 'product.userId',
+                    },
+                ]);
+            }
+
+            const transition =
+                await this.agencyService.transferErrorProductToWarrantyCenter(
+                    new ObjectId(req.loggedUser._id),
+                    products[0].storageId,
+                    body,
+                );
+            return new SuccessResponse(transition);
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     // TODO
     // @Post('/receive-fixed-product')

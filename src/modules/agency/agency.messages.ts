@@ -1,6 +1,7 @@
 export const agencyMessages = {
     errors: {
         notProducer: 'The producer ID is wrong',
-        unprocessableProduct: 'Some products are unprocessable',
+        unprocessableProducts: 'Some products are unprocessable',
+        notInAgency: 'Some products are not in this agency',
     },
 };

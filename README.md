@@ -81,7 +81,10 @@ Nest is [MIT licensed](LICENSE).
 ### Admin module
 
 -   [x] [Create user](#create-user)
--   [ ] Delete user (TODO: delete storage and inside products)
+-   [ ] [Delete user](#delete-user)
+    -   [x] Delete user
+    -   [ ] Delete own storages
+    -   [ ] Delete inside products
 -   [x] [Create storage for producer and agency](#create-storage)
 -   [x] [Create product line](#create-product-line)
 -   [ ] View report (status | producer | agency | warranty center)
@@ -103,8 +106,8 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Create storage](#agency-create-storage)
 -   [x] [Import new product from producer](#import-new-product-from-producer)
 -   [x] [Sold product](#checkout)
--   [ ] Receive error product from customer
--   [ ] Transfer error product to warranty center
+-   [x] [Receive error product from customer](#receive-error-product-from-customer)
+-   [x] [Transfer error product to warranty center](#transfer-error-product-to-warranty-center)
 -   [ ] Receive fixed product from warranty center
 -   [ ] Return fixed product to customer
 -   [ ] Return new product to customer
@@ -114,7 +117,7 @@ Nest is [MIT licensed](LICENSE).
 
 ### Warranty center module
 
--   [ ] Receive error product which still under warranty from agency
+-   [x] [Receive error product which still under warranty from agency](#receive-error-product-from-agency)
 -   [ ] Return fixed product to agency
 -   [ ] Notify agency that the product can not be fixed
 -   [ ] Return error product to producer
@@ -506,6 +509,33 @@ POST /api/v1/admin/user
         "avatar": "https://avatar.com",
         "_id": "638f8be6e5340b16eaef5a3e",
         "__v": 0
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Delete user
+
+```http
+DELETE /api/v1/admin/user/:id
+```
+
+| Path Variables | Type       |
+| :------------- | :--------- |
+| `id`           | `ObjectId` |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63a9ed8d2b42b26df3f4be87",
+        "email": "warrantyy@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "warranty center",
+        "role": "warranty_center",
+        "avatar": "https://avatar.com"
     },
     "version": "1.0.0"
 }
@@ -905,6 +935,124 @@ POST /api/v1/agency/checkout
                 ]
             }
         ]
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Receive error product from customer
+
+```http
+POST /api/v1/agency/receive-error-product
+```
+
+| Parameter          | Type       | Description  |
+| :----------------- | :--------- | :----------- |
+| `productId`        | `ObjectId` | **Required** |
+| `errorDescription` | `string`   | **Required** |
+| `agencyStorageId`  | `ObjectId` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "product": {
+            "_id": "638d80b5085dd06475c5f01c",
+            "productLineId": "638d6ba0f16ac5aff21e9969",
+            "userId": "638f8be6e5340b16eaef5a3e",
+            "storageId": "63945a5c1db64de99f5f70ff",
+            "name": "Iphone 1",
+            "description": "Iphone 1",
+            "weight": 1000,
+            "displaySize": 9.7,
+            "bodySize": "1x1",
+            "color": "black",
+            "bodyBuild": "body build",
+            "batteryVolume": 1000,
+            "status": "need_warranty",
+            "location": "in_agency",
+            "sold": true,
+            "soldDate": "2022-12-24T11:12:05.676Z"
+        },
+        "report": {
+            "_id": "63a9ea742b42b26df3f4be6c",
+            "productId": "638d80b5085dd06475c5f01c",
+            "description": "error"
+        }
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Transfer error product to warranty center
+
+```http
+POST /api/v1/agency/transfer-error-product
+```
+
+| Parameter          | Type              | Description  |
+| :----------------- | :---------------- | :----------- |
+| `warrantyCenterId` | `ObjectId`        | **Required** |
+| `productIds`       | `Array<ObjectId>` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63a9eb812b42b26df3f4be7e",
+        "previousUserId": "638f8be6e5340b16eaef5a3e",
+        "nextUserId": "63a9eb312b42b26df3f4be75",
+        "previousStorageId": "63945a5c1db64de99f5f70ff",
+        "nextStorageId": null,
+        "productIds": [
+            "638d80b5085dd06475c5f01c"
+        ],
+        "previousStatus": "need_warranty",
+        "nextStatus": "in_warranty",
+        "previousLocation": "in_agency",
+        "nextLocation": "in_warranty_center",
+        "startDate": "2022-12-26T18:44:17.082Z"
+    },
+    "version": "1.0.0"
+}
+```
+
+### Warranty Center module
+
+#### Receive error product from agency
+
+```http
+POST /api/v1/warranty-center/receive-error-product
+```
+
+| Parameter      | Type       | Description  |
+| :------------- | :--------- | :----------- |
+| `transitionId` | `ObjectId` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63a9eb812b42b26df3f4be7e",
+        "previousUserId": "638f8be6e5340b16eaef5a3e",
+        "nextUserId": "63a9eb312b42b26df3f4be75",
+        "previousStorageId": "63945a5c1db64de99f5f70ff",
+        "nextStorageId": null,
+        "productIds": [
+            "638d80b5085dd06475c5f01c"
+        ],
+        "previousStatus": "need_warranty",
+        "nextStatus": "in_warranty",
+        "previousLocation": "in_agency",
+        "nextLocation": "in_warranty_center",
+        "startDate": "2022-12-26T18:44:17.082Z",
+        "finishDate": "2022-12-26T19:54:24.247Z"
     },
     "version": "1.0.0"
 }

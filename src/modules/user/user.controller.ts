@@ -31,7 +31,7 @@ import { getUserListSchema, updateUserSchema } from './user.validators';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Get()
+    @Get('')
     async getUserList(
         @Query(
             new RemoveEmptyQueryPipe(),

@@ -15,3 +15,8 @@ export interface IReceiveErrorProduct {
     errorDescription: string;
     agencyStorageId: ObjectId;
 }
+
+export interface ITransferErrorProduct {
+    productIds: ObjectId[];
+    warrantyCenterId: ObjectId;
+}
