@@ -24,6 +24,13 @@ export class ProductErrorReport extends BaseEntity {
         required: true,
     })
     description: string;
+
+    @Prop({
+        type: Boolean,
+        required: true,
+        default: false,
+    })
+    solved: boolean;
 }
 
 export const ProductErrorReportSchema =
@@ -35,4 +42,8 @@ ProductErrorReportSchema.index(
     { unique: false },
 );
 
-export const productErrorReportAttributes = ['productId', 'description'];
+export const productErrorReportAttributes = [
+    'productId',
+    'description',
+    'solved',
+];

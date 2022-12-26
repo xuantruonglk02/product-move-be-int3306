@@ -2,8 +2,6 @@ import { ObjectId } from 'mongodb';
 
 export interface IImportNewProductFromProducer {
     transitionId: ObjectId;
-    producerId: ObjectId;
-    agencyStorageId: ObjectId;
 }
 
 export interface IReturnFixedProduct {

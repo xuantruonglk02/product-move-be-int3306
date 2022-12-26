@@ -27,6 +27,7 @@ import {
 } from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
 import {
+    IImportNewProductFromProducer,
     IReceiveErrorProduct,
     ITransferErrorProduct,
 } from '../agency.interfaces';
@@ -49,9 +50,8 @@ export class AgencyService {
     ) {}
 
     async importNewProductFromProducer(
-        transitionId: ObjectId,
         agencyId: ObjectId,
-        storageId: ObjectId,
+        body: IImportNewProductFromProducer,
     ) {
         const session = await this.connection.startSession();
 
@@ -61,12 +61,11 @@ export class AgencyService {
             const transition = await this.productStatusTransitionModel
                 .findOneAndUpdate(
                     {
-                        _id: transitionId,
+                        _id: body.transitionId,
                         ...softDeleteCondition,
                     },
                     {
                         $set: {
-                            nextStorageId: storageId,
                             finishDate: new Date(),
                             updatedBy: agencyId,
                             updatedAt: new Date(),
@@ -74,7 +73,7 @@ export class AgencyService {
                     },
                     { session },
                 )
-                .select(['productIds']);
+                .select(['productIds', 'nextStorageId']);
             await this.productModel.updateMany(
                 {
                     _id: {
@@ -85,7 +84,7 @@ export class AgencyService {
                 {
                     $set: {
                         userId: agencyId,
-                        storageId: storageId,
+                        storageId: transition.nextStorageId,
                         status: ProductStatus.IN_AGENCY,
                         location: ProductLocation.IN_AGENCY,
                         updatedBy: agencyId,
@@ -98,7 +97,7 @@ export class AgencyService {
             await session.commitTransaction();
 
             return await this.productService.getProductStatusTransition(
-                transitionId,
+                body.transitionId,
             );
         } catch (error) {
             await session.abortTransaction();
@@ -299,8 +298,8 @@ export class AgencyService {
     }
 
     async returnFixedProductToCustomer(
-        productId: ObjectId,
         agencyId: ObjectId,
+        productId: ObjectId,
     ) {
         try {
             await this.productModel.updateOne(

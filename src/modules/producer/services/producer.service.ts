@@ -16,6 +16,7 @@ import {
     ProductDocument,
 } from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
+import { IExportNewProductToAgency } from '../producer.interfaces';
 
 @Injectable()
 export class ProducerService {
@@ -30,10 +31,9 @@ export class ProducerService {
     ) {}
 
     async exportNewProductToAgency(
-        productIds: ObjectId[],
         producerId: ObjectId,
-        storageId: ObjectId,
-        agencyId: ObjectId,
+        producerStorageId: ObjectId,
+        body: IExportNewProductToAgency,
     ) {
         const session = await this.connection.startSession();
 
@@ -46,9 +46,10 @@ export class ProducerService {
                     {
                         _id: transitionId,
                         previousUserId: producerId,
-                        nextUserId: agencyId,
-                        previousStorageId: storageId,
-                        productIds: productIds,
+                        nextUserId: body.agencyId,
+                        previousStorageId: producerStorageId,
+                        nextStorageId: body.agencyStorageId,
+                        productIds: body.productIds,
                         previousStatus: ProductStatus.NEW,
                         nextStatus: ProductStatus.IN_AGENCY,
                         previousLocation: ProductLocation.IN_PRODUCER,
@@ -63,7 +64,7 @@ export class ProducerService {
             await this.productModel.updateMany(
                 {
                     _id: {
-                        $in: productIds,
+                        $in: body.productIds,
                     },
                     ...softDeleteCondition,
                 },

@@ -9,8 +9,6 @@ import Joi from 'src/plugins/joi';
 
 export const importNewProductFromProducerSchema = Joi.object().keys({
     transitionId: Joi.isObjectId().required(),
-    producerId: Joi.isObjectId().required(),
-    agencyStorageId: Joi.isObjectId().required(),
 });
 
 export const checkoutProductSchema = Joi.object().keys({

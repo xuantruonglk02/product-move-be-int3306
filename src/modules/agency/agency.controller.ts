@@ -35,7 +35,7 @@ import { storageMessage } from '../storage/storage.messages';
 import { createOwnStorageSchema } from '../storage/storage.validators';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
-import { userMessages } from '../user/user.messages';
+import warrantyCenterMessages from '../warranty-center/warranty-center.messages';
 import {
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
@@ -111,42 +111,12 @@ export class AgencyController {
         body: IImportNewProductFromProducer,
     ) {
         try {
-            convertObjectId(body, [
-                'transitionId',
-                'producerId',
-                'agencyStorageId',
-            ]);
-
-            const producer = await this.userService.getUserByField(
-                {
-                    key: '_id',
-                    value: body.producerId,
-                },
-                ['role'],
-            );
-            if (!producer) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.NOT_FOUND,
-                        message: userMessages.errors.userNotFound,
-                        key: 'producerId',
-                    },
-                ]);
-            }
-            if (producer.role !== UserRole.PRODUCER) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.FORBIDDEN,
-                        message: agencyMessages.errors.notProducer,
-                        key: 'producerId',
-                    },
-                ]);
-            }
+            convertObjectId(body, ['transitionId']);
 
             const transition =
                 await this.productService.getProductStatusTransition(
                     body.transitionId,
-                    ['_id'],
+                    ['nextUserId', 'previousStatus', 'nextStatus'],
                 );
             if (!transition) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -157,12 +127,36 @@ export class AgencyController {
                     },
                 ]);
             }
+            if (
+                transition.previousStatus !== ProductStatus.NEW &&
+                transition.nextStatus !== ProductStatus.IN_AGENCY
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: productMessages.errors.transitionWrong,
+                        key: 'transitionId',
+                    },
+                ]);
+            }
+            if (
+                transition.nextUserId.toString() !==
+                req.loggedUser._id.toString()
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message:
+                            warrantyCenterMessages.errors.transitionNotToThis,
+                        key: 'transitionId',
+                    },
+                ]);
+            }
 
             return new SuccessResponse(
                 await this.agencyService.importNewProductFromProducer(
-                    body.transitionId,
                     new ObjectId(req.loggedUser._id),
-                    body.agencyStorageId,
+                    body,
                 ),
             );
         } catch (error) {
@@ -252,6 +246,29 @@ export class AgencyController {
                 ]);
             }
 
+            const storage = await this.storageService.getStorageById(
+                body.agencyStorageId,
+                ['userId'],
+            );
+            if (!storage) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: storageMessage.errors.notFound,
+                        key: 'agencyStorageId',
+                    },
+                ]);
+            }
+            if (storage.userId.toString() !== req.loggedUser._id.toString()) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: storageMessage.errors.notOfAgency,
+                        key: 'agencyStorageId',
+                    },
+                ]);
+            }
+
             if (
                 moment(new Date()).diff(moment(product.soldDate), 'years') >
                 this.configService.get(ConfigKey.PRODUCT_WARRANTY_TIME_IN_YEAR)
@@ -284,7 +301,7 @@ export class AgencyController {
 
             const products = await this.productService.getProductByIds(
                 body.productIds,
-                ['userId', 'storageId', 'status', 'location'],
+                ['storageId', 'status', 'location'],
             );
             if (products.length !== body.productIds.length) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -364,7 +381,7 @@ export class AgencyController {
 
             const product = await this.productService.getProductById(
                 body.productId,
-                ['_id', 'userId', 'status', 'location'],
+                ['userId', 'status', 'location'],
             );
             if (!product) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -375,7 +392,7 @@ export class AgencyController {
                     },
                 ]);
             }
-            if (req.loggedUser._id.toString() !== product.userId) {
+            if (product.userId !== req.loggedUser._id.toString()) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -399,8 +416,8 @@ export class AgencyController {
 
             const fixedProduct =
                 await this.agencyService.returnFixedProductToCustomer(
-                    body.productId,
                     new ObjectId(req.loggedUser._id),
+                    body.productId,
                 );
             return new SuccessResponse(fixedProduct);
         } catch (error) {

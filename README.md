@@ -735,11 +735,11 @@ POST /api/v1/producer/product
 POST /api/v1/producer/export-to-agency
 ```
 
-| Parameter    | Type              | Description  |
-| :----------- | :---------------- | :----------- |
-| `storageId`  | `ObjectId`        | **Required** |
-| `agencyId`   | `ObjectId`        | **Required** |
-| `productIds` | `Array<ObjectId>` | **Required** |
+| Parameter         | Type              | Description  |
+| :---------------- | :---------------- | :----------- |
+| `agencyId`        | `ObjectId`        | **Required** |
+| `agencyStorageId` | `ObjectId`        | **Required** |
+| `productIds`      | `Array<ObjectId>` | **Required** |
 
 ```javascript
 {
@@ -751,6 +751,7 @@ POST /api/v1/producer/export-to-agency
         "previousUserId": "638d69f4383b14090809a7e8",
         "nextUserId": "638f8be6e5340b16eaef5a3e",
         "previousStorageId": "638d809c085dd06475c5f016",
+        "nextStorageId": "63945a5c1db64de99f5f70ff",
         "productIds": [
             "638d80b5085dd06475c5f01c"
         ],
@@ -839,11 +840,9 @@ POST /api/v1/agency/storage
 POST /api/v1/agency/import-new-product
 ```
 
-| Parameter         | Type       | Description  |
-| :---------------- | :--------- | :----------- |
-| `transitionId`    | `ObjectId` | **Required** |
-| `producerId`      | `ObjectId` | **Required** |
-| `agencyStorageId` | `ObjectId` | **Required** |
+| Parameter      | Type       | Description  |
+| :------------- | :--------- | :----------- |
+| `transitionId` | `ObjectId` | **Required** |
 
 ```javascript
 {
@@ -855,6 +854,7 @@ POST /api/v1/agency/import-new-product
         "previousUserId": "638d69f4383b14090809a7e8",
         "nextUserId": "638f8be6e5340b16eaef5a3e",
         "previousStorageId": "638d809c085dd06475c5f016",
+        "nextStorageId": "63945a5c1db64de99f5f70ff"
         "productIds": [
             "638d80b5085dd06475c5f01c"
         ],
@@ -864,7 +864,6 @@ POST /api/v1/agency/import-new-product
         "nextLocation": "in_agency",
         "startDate": "2022-12-24T10:59:34.578Z",
         "finishDate": "2022-12-24T11:07:24.878Z",
-        "nextStorageId": "63945a5c1db64de99f5f70ff"
     },
     "version": "1.0.0"
 }
