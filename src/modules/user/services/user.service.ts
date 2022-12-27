@@ -46,14 +46,13 @@ export class UserService {
                 limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
                 orderDirection = DEFAULT_ORDER_DIRECTION,
                 orderBy = DEFAULT_ORDER_BY,
+                role,
             } = query;
 
             const getListQuery: Record<string, any> = {
+                role,
                 ...softDeleteCondition,
             };
-            if (query.role) {
-                getListQuery.role = query.role;
-            }
 
             const [userList, total] = await Promise.all([
                 this.userModel

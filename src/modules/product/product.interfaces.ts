@@ -32,6 +32,11 @@ export interface IProduct {
 
 export interface IGetProductList extends ICommonListQuery {
     productLineId?: ObjectId;
+    userId?: ObjectId;
+    storageId?: ObjectId;
+    status?: string;
+    location?: string;
+    sold?: boolean;
     createdBy?: ObjectId;
 }
 

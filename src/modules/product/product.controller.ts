@@ -78,6 +78,10 @@ export class ProductController {
             query.productLineId = query.productLineId
                 ? new ObjectId(query.productLineId)
                 : null;
+            query.userId = query.userId ? new ObjectId(query.userId) : null;
+            query.storageId = query.storageId
+                ? new ObjectId(query.storageId)
+                : null;
             query.createdBy = query.createdBy
                 ? new ObjectId(query.createdBy)
                 : null;

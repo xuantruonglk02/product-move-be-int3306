@@ -12,8 +12,7 @@ export const getUserListSchema = Joi.object().keys({
     ...commonListQuerySchemaKeys,
     role: Joi.string()
         .valid(...Object.values(UserRole))
-        .optional()
-        .allow(null, ''),
+        .optional(),
 });
 
 export const createUserSchema = Joi.object().keys({

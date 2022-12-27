@@ -5,12 +5,25 @@ import {
     MIN_POSITIVE_NUMBER,
 } from 'src/common/constants';
 import Joi from 'src/plugins/joi';
-import { ProductColor } from './product.constants';
+import {
+    ProductColor,
+    ProductLocation,
+    ProductStatus,
+} from './product.constants';
 
 export const getProductListSchema = Joi.object().keys({
     ...commonListQuerySchemaKeys,
-    productLineId: Joi.isObjectId().optional().allow(null),
-    createdBy: Joi.isObjectId().optional().allow(null),
+    productLineId: Joi.isObjectId().optional(),
+    userId: Joi.isObjectId().optional(),
+    storageId: Joi.isObjectId().optional(),
+    status: Joi.string()
+        .valid(...Object.values(ProductStatus))
+        .optional(),
+    location: Joi.string()
+        .valid(...Object.values(ProductLocation))
+        .optional(),
+    sold: Joi.boolean().optional(),
+    createdBy: Joi.isObjectId().optional(),
 });
 
 export const createProductLineSchema = Joi.object().keys({

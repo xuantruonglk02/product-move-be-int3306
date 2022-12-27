@@ -219,8 +219,24 @@ export class ProductService {
             if (query.productLineId) {
                 getListQuery.productLineId = query.productLineId;
             }
+            if (query.userId) {
+                getListQuery.userId = query.userId;
+            }
+            if (query.storageId) {
+                getListQuery.storageId = query.storageId;
+            }
             if (query.createdBy) {
                 getListQuery.createdBy = query.createdBy;
+            }
+            if (query.status) {
+                getListQuery.status = query.status;
+            }
+            if (query.location) {
+                getListQuery.location = query.location;
+            }
+            if (query.sold) {
+                getListQuery.sold =
+                    query.sold.toString() === 'true' ? true : false;
             }
 
             const [productList, total] = await Promise.all([

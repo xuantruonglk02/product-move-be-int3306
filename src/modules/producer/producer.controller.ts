@@ -166,7 +166,7 @@ export class ProducerController {
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: storageMessage.errors.notFound,
-                        key: 'storageId',
+                        key: 'agencyStorageId',
                     },
                 ]);
             }
@@ -175,7 +175,7 @@ export class ProducerController {
                     {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
                         message: producerMessages.errors.wrongStorage,
-                        key: 'storageId',
+                        key: 'agencyStorageId',
                     },
                 ]);
             }

@@ -466,13 +466,18 @@ GET /api/v1/product
 
 | Parameter        | Type       | Description                               |
 | :--------------- | :--------- | :---------------------------------------- |
-| `productLineId`  | `ObjectId` | **Optional**                              |
-| `createdBy`      | `ObjectId` | **Optional**                              |
-| `keyword`        | `string`   | **Optional**                              |
 | `page`           | `number`   | **Optional**                              |
 | `limit`          | `number`   | **Optional**                              |
 | `orderBy`        | `string`   | **Optional**                              |
 | `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
+| `keyword`        | `string`   | **Optional**                              |
+| `productLineId`  | `ObjectId` | **Optional**                              |
+| `userId`         | `ObjectId` | **Optional**                              |
+| `storageId`      | `ObjectId` | **Optional**                              |
+| `status`         | `ObjectId` | **Optional**                              |
+| `location`       | `ObjectId` | **Optional**                              |
+| `sold`           | `boolean`  | **Optional**                              |
+| `createdBy`      | `ObjectId` | **Optional**                              |
 
 ```javascript
 {
