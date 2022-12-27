@@ -217,6 +217,7 @@ export class AgencyController {
                     },
                 ]);
             }
+            // TODO: check product status in customer
 
             const storage = await this.storageService.getStorageById(
                 body.agencyStorageId,

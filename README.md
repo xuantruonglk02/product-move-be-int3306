@@ -934,11 +934,11 @@ POST /api/v1/agency/checkout
 POST /api/v1/agency/receive-error-product
 ```
 
-| Parameter          | Type       | Description  |
-| :----------------- | :--------- | :----------- |
-| `productId`        | `ObjectId` | **Required** |
-| `errorDescription` | `string`   | **Required** |
-| `agencyStorageId`  | `ObjectId` | **Required** |
+| Parameter         | Type            | Description  |
+| :---------------- | :-------------- | :----------- |
+| `productId`       | `ObjectId`      | **Required** |
+| `errors`          | `Array<string>` | **Required** |
+| `agencyStorageId` | `ObjectId`      | **Required** |
 
 ```javascript
 {
@@ -947,8 +947,8 @@ POST /api/v1/agency/receive-error-product
     "message": "Success",
     "data": {
         "product": {
-            "_id": "638d80b5085dd06475c5f01c",
-            "productLineId": "638d6ba0f16ac5aff21e9969",
+            "_id": "638d813b70c5c2e16b58e5dd",
+            "productLineId": "638d6bbce7f9bf2f085460c9",
             "userId": "638f8be6e5340b16eaef5a3e",
             "storageId": "63945a5c1db64de99f5f70ff",
             "name": "Iphone 1",
@@ -962,13 +962,22 @@ POST /api/v1/agency/receive-error-product
             "status": "need_warranty",
             "location": "in_agency",
             "sold": true,
-            "soldDate": "2022-12-24T11:12:05.676Z"
+            "soldDate": "2022-12-10T08:24:27.196Z"
         },
-        "report": {
-            "_id": "63a9ea742b42b26df3f4be6c",
-            "productId": "638d80b5085dd06475c5f01c",
-            "description": "error"
-        }
+        "reports": [
+            {
+                "_id": "63ab38b6abe20deba7f6fe8a",
+                "productId": "638d813b70c5c2e16b58e5dd",
+                "description": "error 1",
+                "solved": false
+            },
+            {
+                "_id": "63ab38b6abe20deba7f6fe8b",
+                "productId": "638d813b70c5c2e16b58e5dd",
+                "description": "error 2",
+                "solved": false
+            }
+        ]
     },
     "version": "1.0.0"
 }
