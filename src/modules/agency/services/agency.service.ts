@@ -122,22 +122,19 @@ export class AgencyService {
         const session = await this.connection.startSession();
 
         try {
+            const errorReports = body.errors.map((error) => ({
+                _id: new ObjectId(),
+                productId: body.productId,
+                description: error,
+                createdBy: agencyId,
+                createdAt: new Date(),
+            }));
+
             session.startTransaction();
 
-            const reportId = new ObjectId();
-            await this.productErrorReportModel.create(
-                [
-                    {
-                        _id: reportId,
-                        productId: body.productId,
-                        description: body.errorDescription,
-                        createdBy: agencyId,
-                        createdAt: new Date(),
-                    },
-                ],
-                { session },
-            );
-
+            await this.productErrorReportModel.insertMany(errorReports, {
+                session,
+            });
             await this.productModel.updateOne(
                 {
                     _id: body.productId,
@@ -153,18 +150,18 @@ export class AgencyService {
                         updatedAt: new Date(),
                     },
                 },
+                { session },
             );
 
             await session.commitTransaction();
 
-            return {
-                product: await this.productService.getProductById(
-                    body.productId,
+            const [product, reports] = await Promise.all([
+                this.productService.getProductById(body.productId),
+                this.productService.getProductErrorReports(
+                    errorReports.map((report) => report._id),
                 ),
-                report: await this.productService.getProductErrorReport(
-                    reportId,
-                ),
-            };
+            ]);
+            return { product, reports };
         } catch (error) {
             await session.abortTransaction();
             throw error;

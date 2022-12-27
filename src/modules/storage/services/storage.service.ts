@@ -38,7 +38,6 @@ export class StorageService {
     async getStorageList(query: IGetStorageList) {
         try {
             const {
-                userId,
                 keyword = '',
                 page = MIN_POSITIVE_NUMBER,
                 limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
@@ -46,16 +45,20 @@ export class StorageService {
                 orderBy = 'name',
             } = query;
 
+            const getListQuery: Record<string, any> = {
+                name: {
+                    $regex: `.*${keyword}.*`,
+                    $options: 'i',
+                },
+                ...softDeleteCondition,
+            };
+            if (query.userId) {
+                getListQuery.userId = query.userId;
+            }
+
             const [storageList, total] = await Promise.all([
                 this.storageModel
-                    .find({
-                        userId,
-                        name: {
-                            $regex: `.*${keyword}.*`,
-                            $options: 'i',
-                        },
-                        ...softDeleteCondition,
-                    })
+                    .find(getListQuery)
                     .select(storageAttributes)
                     .sort({
                         [orderBy]:
@@ -65,14 +68,7 @@ export class StorageService {
                     })
                     .limit(limit)
                     .skip(limit * (page - 1)),
-                this.storageModel.countDocuments({
-                    userId,
-                    name: {
-                        $regex: `.*${keyword}.*`,
-                        $options: 'i',
-                    },
-                    ...softDeleteCondition,
-                }),
+                this.storageModel.countDocuments(getListQuery),
             ]);
 
             return {

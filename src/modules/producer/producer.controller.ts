@@ -1,42 +1,37 @@
 import {
     Body,
     Controller,
-    Get,
     HttpStatus,
     InternalServerErrorException,
     Post,
-    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
     Roles,
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
+import { convertObjectId } from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateProduct } from '../product/product.interfaces';
 import { productMessages } from '../product/product.messages';
 import { createProductSchema } from '../product/product.validators';
 import { ProductService } from '../product/services/product.service';
-import { UserService } from '../user/services/user.service';
 import { StorageService } from '../storage/services/storage.service';
+import { ICreateStorage } from '../storage/storage.interfaces';
+import { storageMessage } from '../storage/storage.messages';
+import { createOwnStorageSchema } from '../storage/storage.validators';
+import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
 import { IExportNewProductToAgency } from './producer.interfaces';
 import { producerMessages } from './producer.messages';
 import { exportNewProductToAgencySchema } from './producer.validators';
 import { ProducerService } from './services/producer.service';
-import { storageMessage } from '../storage/storage.messages';
-import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
-import { commonListQuerySchema } from 'src/common/constants';
-import { ICommonListQuery } from 'src/common/interfaces';
-import { ICreateStorage } from '../storage/storage.interfaces';
-import { createOwnStorageSchema } from '../storage/storage.validators';
-import { ObjectId } from 'mongodb';
-import { convertObjectId } from 'src/common/helpers/utilityFunctions';
 
 @Controller('/producer')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -48,27 +43,6 @@ export class ProducerController {
         private readonly userService: UserService,
         private readonly storageService: StorageService,
     ) {}
-
-    @Get('/storage')
-    async getStorageList(
-        @Req() req,
-        @Query(
-            new RemoveEmptyQueryPipe(),
-            new JoiValidationPipe(commonListQuerySchema),
-        )
-        query: ICommonListQuery,
-    ) {
-        try {
-            return new SuccessResponse(
-                await this.storageService.getStorageList({
-                    ...query,
-                    userId: new ObjectId(req.loggedUser._id),
-                }),
-            );
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
-    }
 
     @Post('/storage')
     async createStorage(
@@ -151,7 +125,11 @@ export class ProducerController {
         body: IExportNewProductToAgency,
     ) {
         try {
-            convertObjectId(body, ['agencyId', 'storageId', 'productIds']);
+            convertObjectId(body, [
+                'agencyId',
+                'agencyStorageId',
+                'productIds',
+            ]);
 
             const agency = await this.userService.getUserByField(
                 {

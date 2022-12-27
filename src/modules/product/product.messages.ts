@@ -8,5 +8,7 @@ export const productMessages = {
         productNotOfAgency: 'Product not of this agency',
         cantReturn: 'Can not return this product',
         productNotSold: 'Product has not been sold yet',
+        errorReportNotFound: 'Product error report not found',
+        errorReportNotOfProduct: 'The error report not about this product',
     },
 };

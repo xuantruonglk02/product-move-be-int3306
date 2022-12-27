@@ -8,7 +8,7 @@ export interface IStorage {
 }
 
 export interface IGetStorageList extends ICommonListQuery {
-    userId: ObjectId;
+    userId?: ObjectId;
 }
 
 export interface ICreateStorage extends IStorage {

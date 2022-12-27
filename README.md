@@ -71,6 +71,10 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Get user list](#get-user-list)
 -   [x] [Update user](#update-user)
 
+### Storage module
+
+-   [x] [Get storage list](#get-storage-list)
+
 ### Product module
 
 -   [x] [Get product line detail](#get-product-line-detail)
@@ -91,7 +95,6 @@ Nest is [MIT licensed](LICENSE).
 
 ### Producer module
 
--   [x] [Get storage list](#get-producers-storage-list)
 -   [x] [create storage](#producer-create-storage)
 -   [x] [Create product](#create-product)
 -   [x] [Export product to agency](#export-new-product-to-agency)
@@ -102,7 +105,6 @@ Nest is [MIT licensed](LICENSE).
 
 ### Agency module
 
--   [x] [Get storage list](#get-agencys-storage-list)
 -   [x] [Create storage](#agency-create-storage)
 -   [x] [Import new product from producer](#import-new-product-from-producer)
 -   [x] [Sold product](#checkout)
@@ -118,6 +120,7 @@ Nest is [MIT licensed](LICENSE).
 ### Warranty center module
 
 -   [x] [Receive error product which still under warranty from agency](#receive-error-product-from-agency)
+-   [ ] Verify product errors fixed done
 -   [ ] Return fixed product to agency
 -   [ ] Notify agency that the product can not be fixed
 -   [ ] Return error product to producer
@@ -272,6 +275,55 @@ PATCH /api/v1/user/:id
         "name": "Admin",
         "role": "admin",
         "avatar": "https://avatar.com"
+    },
+    "version": "1.0.0"
+}
+```
+
+### Storage module
+
+#### Get storage list
+
+```http
+GET /api/v1/storage
+```
+
+| Parameter        | Type       | Description                               |
+| :--------------- | :--------- | :---------------------------------------- |
+| `page`           | `number`   | **Optional**                              |
+| `limit`          | `number`   | **Optional**                              |
+| `orderBy`        | `string`   | **Optional**                              |
+| `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
+| `keyword`        | `string`   | **Optional**                              |
+| `userId`         | `ObjectId` | **Optional**                              |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "63945a5c1db64de99f5f70ff",
+                "userId": "638f8be6e5340b16eaef5a3e",
+                "name": "agency storage",
+                "address": "agency storage"
+            },
+            {
+                "_id": "63a81384157ef2658cdfe5b6",
+                "userId": "638f8be6e5340b16eaef5a3e",
+                "name": "agency storage 2",
+                "address": "agency storage 2"
+            },
+            {
+                "_id": "638d809c085dd06475c5f016",
+                "userId": "638d69f4383b14090809a7e8",
+                "name": "producer storage",
+                "address": "producer storage"
+            }
+        ],
+        "totalItems": 3
     },
     "version": "1.0.0"
 }
@@ -610,40 +662,6 @@ POST /api/v1/admin/product-line
 
 ### Producer module
 
-#### Get producer's storage list
-
-```http
-GET /api/v1/producer/storage
-```
-
-| Parameter        | Type     | Description                               |
-| :--------------- | :------- | :---------------------------------------- |
-| `keyword`        | `string` | **Optional**                              |
-| `page`           | `number` | **Optional**                              |
-| `limit`          | `number` | **Optional**                              |
-| `orderBy`        | `string` | **Optional**                              |
-| `orderDirection` | `string` | **Optional**. (in [ascending,descending]) |
-
-```javascript
-{
-    "success": true,
-    "code": 200,
-    "message": "Success",
-    "data": {
-        "items": [
-            {
-                "_id": "638d809c085dd06475c5f016",
-                "userId": "638d69f4383b14090809a7e8",
-                "name": "producer storage",
-                "address": "producer storage"
-            }
-        ],
-        "totalItems": 1
-    },
-    "version": "1.0.0"
-}
-```
-
 #### Producer create storage
 
 ```http
@@ -766,40 +784,6 @@ POST /api/v1/producer/export-to-agency
 ```
 
 ### Agency module
-
-#### Get agency's storage list
-
-```http
-GET /api/v1/agency/storage
-```
-
-| Parameter        | Type     | Description                               |
-| :--------------- | :------- | :---------------------------------------- |
-| `keyword`        | `string` | **Optional**                              |
-| `page`           | `number` | **Optional**                              |
-| `limit`          | `number` | **Optional**                              |
-| `orderBy`        | `string` | **Optional**                              |
-| `orderDirection` | `string` | **Optional**. (in [ascending,descending]) |
-
-```javascript
-{
-    "success": true,
-    "code": 200,
-    "message": "Success",
-    "data": {
-        "items": [
-            {
-                "_id": "63945a5c1db64de99f5f70ff",
-                "userId": "638f8be6e5340b16eaef5a3e",
-                "name": "agency storage",
-                "address": "agency storage"
-            }
-        ],
-        "totalItems": 1
-    },
-    "version": "1.0.0"
-}
-```
 
 #### Agency create storage
 

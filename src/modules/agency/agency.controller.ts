@@ -1,11 +1,9 @@
 import {
     Body,
     Controller,
-    Get,
     HttpStatus,
     InternalServerErrorException,
     Post,
-    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
@@ -13,7 +11,6 @@ import { ConfigService } from '@nestjs/config';
 import moment from 'moment';
 import { ObjectId } from 'mongodb';
 import ConfigKey from 'src/common/config/configKey';
-import { commonListQuerySchema } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -21,9 +18,7 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { convertObjectId } from 'src/common/helpers/utilityFunctions';
-import { ICommonListQuery } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
-import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateOrder } from '../order/order.interfaces';
 import { ProductLocation, ProductStatus } from '../product/product.constants';
@@ -33,7 +28,6 @@ import { StorageService } from '../storage/services/storage.service';
 import { ICreateStorage } from '../storage/storage.interfaces';
 import { storageMessage } from '../storage/storage.messages';
 import { createOwnStorageSchema } from '../storage/storage.validators';
-import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import warrantyCenterMessages from '../warranty-center/warranty-center.messages';
 import {
@@ -59,31 +53,9 @@ export class AgencyController {
     constructor(
         private readonly agencyService: AgencyService,
         private readonly productService: ProductService,
-        private readonly userService: UserService,
         private readonly storageService: StorageService,
         private readonly configService: ConfigService,
     ) {}
-
-    @Get('/storage')
-    async getStorageList(
-        @Req() req,
-        @Query(
-            new RemoveEmptyQueryPipe(),
-            new JoiValidationPipe(commonListQuerySchema),
-        )
-        query: ICommonListQuery,
-    ) {
-        try {
-            return new SuccessResponse(
-                await this.storageService.getStorageList({
-                    ...query,
-                    userId: new ObjectId(req.loggedUser._id),
-                }),
-            );
-        } catch (error) {
-            throw new InternalServerErrorException(error);
-        }
-    }
 
     @Post('/storage')
     async createStorage(

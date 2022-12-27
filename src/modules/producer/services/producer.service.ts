@@ -78,6 +78,7 @@ export class ProducerService {
                         updatedAt: new Date(),
                     },
                 },
+                { session },
             );
 
             await session.commitTransaction();

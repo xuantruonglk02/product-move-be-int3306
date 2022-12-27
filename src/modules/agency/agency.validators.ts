@@ -30,7 +30,9 @@ export const returnFixedProduct = Joi.object().keys({
 
 export const receiveErrorProduct = Joi.object().keys({
     productId: Joi.isObjectId().required(),
-    errorDescription: Joi.string().max(AREA_TEXT_MAX_LENGTH),
+    errors: Joi.array()
+        .max(ARRAY_MAX_LENGTH)
+        .items(Joi.string().max(AREA_TEXT_MAX_LENGTH)),
     agencyStorageId: Joi.isObjectId().required(),
 });
 

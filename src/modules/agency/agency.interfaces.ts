@@ -10,7 +10,7 @@ export interface IReturnFixedProduct {
 
 export interface IReceiveErrorProduct {
     productId: ObjectId;
-    errorDescription: string;
+    errors: string[];
     agencyStorageId: ObjectId;
 }
 

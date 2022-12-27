@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
-import { Connection, Model } from 'mongoose';
+import { ClientSession, Connection, Model } from 'mongoose';
 import {
     DEFAULT_ITEM_PER_PAGE_LIMIT,
     MIN_POSITIVE_NUMBER,
@@ -444,6 +444,49 @@ export class ProductService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductErrorReports(
+        ids: ObjectId[],
+        attrs = productErrorReportAttributes,
+    ) {
+        try {
+            return await this.productErrorReportModel
+                .find({
+                    _id: { $in: ids },
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async checkProductHasNoErrorReport(id: ObjectId, session?: ClientSession) {
+        try {
+            return !(await this.productErrorReportModel
+                .findOne({
+                    productId: id,
+                    $or: [
+                        {
+                            solved: {
+                                $exists: true,
+                                $eq: false,
+                            },
+                        },
+                        {
+                            solved: {
+                                $exists: false,
+                            },
+                        },
+                    ],
+                    ...softDeleteCondition,
+                })
+                .select(['_id'])
+                .session(session));
         } catch (error) {
             throw error;
         }

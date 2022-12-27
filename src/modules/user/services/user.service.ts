@@ -5,6 +5,8 @@ import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
 import {
     DEFAULT_ITEM_PER_PAGE_LIMIT,
+    DEFAULT_ORDER_BY,
+    DEFAULT_ORDER_DIRECTION,
     MIN_POSITIVE_NUMBER,
     OrderDirection,
     softDeleteCondition,
@@ -42,8 +44,8 @@ export class UserService {
             const {
                 page = MIN_POSITIVE_NUMBER,
                 limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
-                orderDirection = OrderDirection.ASCENDING,
-                orderBy = 'createdAt',
+                orderDirection = DEFAULT_ORDER_DIRECTION,
+                orderBy = DEFAULT_ORDER_BY,
             } = query;
 
             const getListQuery: Record<string, any> = {

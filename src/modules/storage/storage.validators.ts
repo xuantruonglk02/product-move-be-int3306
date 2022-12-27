@@ -6,7 +6,7 @@ import Joi from 'src/plugins/joi';
 
 export const getStorageListSchema = Joi.object().keys({
     ...commonListQuerySchemaKeys,
-    userId: Joi.isObjectId().required(),
+    userId: Joi.isObjectId().optional(),
 });
 
 export const createStorageSchema = Joi.object().keys({
