@@ -214,7 +214,10 @@ export class ProducerController {
                 products[0].storageId,
                 ['userId'],
             );
-            if (!productStorage.userId !== req.loggedUser._id.toString()) {
+            if (
+                productStorage.userId.toString() !==
+                req.loggedUser._id.toString()
+            ) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
