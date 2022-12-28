@@ -97,7 +97,7 @@ export class AgencyService {
 
             await session.commitTransaction();
 
-            return await this.productService.getProductStatusTransition(
+            return await this.productService.getProductStatusTransitionDetail(
                 body.transitionId,
             );
         } catch (error) {
@@ -224,7 +224,7 @@ export class AgencyService {
 
             await session.commitTransaction();
 
-            return await this.productService.getProductStatusTransition(
+            return await this.productService.getProductStatusTransitionDetail(
                 transitionId,
             );
         } catch (error) {
@@ -279,7 +279,7 @@ export class AgencyService {
 
             await session.commitTransaction();
 
-            return await this.productService.getProductStatusTransition(
+            return await this.productService.getProductStatusTransitionDetail(
                 body.transitionId,
             );
         } catch (error) {

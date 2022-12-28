@@ -451,6 +451,127 @@ export class ProductService {
         }
     }
 
+    async getProductStatusTransitionDetail(id: ObjectId) {
+        try {
+            return (
+                await this.productStatusTransitionModel.aggregate([
+                    {
+                        $match: {
+                            _id: id,
+                            ...softDeleteCondition,
+                        },
+                    },
+                    {
+                        $project: Object.fromEntries(
+                            productStatusTransitionAttributes.map((attr) => [
+                                attr,
+                                1,
+                            ]),
+                        ),
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'previousUser',
+                            localField: 'previousUserId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1, role: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$previousUser',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'nextUser',
+                            localField: 'nextUserId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1, role: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$nextUser',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'previousStorage',
+                            localField: 'previousStorageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { userId: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$previousStorage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'nextStorage',
+                            localField: 'nextStorageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { userId: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$nextStorage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ])
+            )[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getProductStatusTransitionList(
         query: IGetProductStatusTransitionList,
     ) {

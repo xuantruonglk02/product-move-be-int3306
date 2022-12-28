@@ -83,7 +83,7 @@ export class ProducerService {
 
             await session.commitTransaction();
 
-            return await this.productService.getProductStatusTransition(
+            return await this.productService.getProductStatusTransitionDetail(
                 transitionId,
             );
         } catch (error) {
