@@ -415,8 +415,8 @@ export class ProductService {
                                 ? 1
                                 : -1,
                     })
-                    .limit(limit)
-                    .skip(limit * (page - 1)),
+                    .skip(limit * (page - 1))
+                    .limit(limit),
                 this.productLineModel.countDocuments({
                     name: {
                         $regex: `.*${keyword}.*`,

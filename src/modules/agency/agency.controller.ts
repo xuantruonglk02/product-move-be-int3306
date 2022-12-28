@@ -437,7 +437,7 @@ export class AgencyController {
                     },
                 ]);
             }
-            if (product.userId !== req.loggedUser._id.toString()) {
+            if (product.userId.toString() !== req.loggedUser._id.toString()) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
