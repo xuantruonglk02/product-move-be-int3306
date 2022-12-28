@@ -120,8 +120,8 @@ Nest is [MIT licensed](LICENSE).
 ### Warranty center module
 
 -   [x] [Receive error product which still under warranty from agency](#receive-error-product-from-agency)
--   [ ] Verify product errors fixed done
--   [ ] Return fixed product to agency
+-   [x] [Verify product errors fixed done](#verify-product-errors-fixed-done)
+-   [x] [Return fixed product to agency](#return-fixed-product-to-agency)
 -   [ ] Notify agency that the product can not be fixed
 -   [ ] Return error product to producer
 -   [ ] Report about product (line | status) (month | quarter | year)
@@ -1050,6 +1050,96 @@ POST /api/v1/warranty-center/receive-error-product
         "nextLocation": "in_warranty_center",
         "startDate": "2022-12-26T18:44:17.082Z",
         "finishDate": "2022-12-26T19:54:24.247Z"
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Verify product errors fixed done
+
+```http
+POST /api/v1/warranty-center/verify-errors-fix-done
+```
+
+| Parameter        | Type              | Description  |
+| :--------------- | :---------------- | :----------- |
+| `productId`      | `ObjectId`        | **Required** |
+| `errorReportIds` | `Array<ObjectId>` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "product": {
+            "_id": "638d813b70c5c2e16b58e5dd",
+            "productLineId": "638d6bbce7f9bf2f085460c9",
+            "userId": "63a9eb312b42b26df3f4be75",
+            "storageId": null,
+            "name": "Iphone 1",
+            "description": "Iphone 1",
+            "weight": 1000,
+            "displaySize": 9.7,
+            "bodySize": "1x1",
+            "color": "black",
+            "bodyBuild": "body build",
+            "batteryVolume": 1000,
+            "status": "warranty_done",
+            "location": "in_warranty_center",
+            "sold": true,
+            "soldDate": "2022-12-10T08:24:27.196Z"
+        },
+        "reports": [
+            {
+                "_id": "63aa1bec8811cd49f39b539b",
+                "productId": "638d813b70c5c2e16b58e5dd",
+                "description": "error 1",
+                "solved": true
+            },
+            {
+                "_id": "63aa1bec8811cd49f39b539c",
+                "productId": "638d813b70c5c2e16b58e5dd",
+                "description": "error 2",
+                "solved": true
+            }
+        ]
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Return fixed product to agency
+
+```http
+POST /api/v1/warranty-center/return-fixed-product
+```
+
+| Parameter         | Type              | Description  |
+| :---------------- | :---------------- | :----------- |
+| `agencyId`        | `ObjectId`        | **Required** |
+| `agencyStorageId` | `ObjectId`        | **Required** |
+| `productIds`      | `Array<ObjectId>` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63ac322f8264bcb844b92718",
+        "previousUserId": "63a9eb312b42b26df3f4be75",
+        "nextUserId": "638f8be6e5340b16eaef5a3e",
+        "previousStorageId": null,
+        "nextStorageId": "63945a5c1db64de99f5f70ff",
+        "productIds": [
+            "638d813b70c5c2e16b58e5dd"
+        ],
+        "previousStatus": "warranty_done",
+        "nextStatus": "warranty_done",
+        "previousLocation": "in_warranty_center",
+        "nextLocation": "in_agency",
+        "startDate": "2022-12-28T12:10:23.154Z"
     },
     "version": "1.0.0"
 }

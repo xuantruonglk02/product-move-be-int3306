@@ -486,19 +486,7 @@ export class ProductService {
             return !(await this.productErrorReportModel
                 .findOne({
                     productId: id,
-                    $or: [
-                        {
-                            solved: {
-                                $exists: true,
-                                $eq: false,
-                            },
-                        },
-                        {
-                            solved: {
-                                $exists: false,
-                            },
-                        },
-                    ],
+                    solved: false,
                     ...softDeleteCondition,
                 })
                 .select(['_id'])

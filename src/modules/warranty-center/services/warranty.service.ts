@@ -181,7 +181,7 @@ export class WarrantyService {
                         nextStorageId: body.agencyStorageId,
                         productIds: body.productIds,
                         previousStatus: ProductStatus.WARRANTY_DONE,
-                        nextStatus: ProductStatus.IN_AGENCY,
+                        nextStatus: ProductStatus.WARRANTY_DONE,
                         previousLocation: ProductLocation.IN_WARRANTY_CENTER,
                         nextLocation: ProductLocation.IN_AGENCY,
                         startDate: new Date(),
