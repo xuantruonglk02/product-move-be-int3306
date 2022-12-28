@@ -13,6 +13,7 @@ export type ProductStatusTransitionDocument = ProductStatusTransition &
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.PRODUCT_STATUS_TRANSITIONS,
 })
 export class ProductStatusTransition extends BaseEntity {

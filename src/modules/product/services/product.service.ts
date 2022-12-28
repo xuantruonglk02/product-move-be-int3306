@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { ClientSession, Connection, Model } from 'mongoose';
 import {
     DEFAULT_ITEM_PER_PAGE_LIMIT,
+    DEFAULT_ORDER_BY,
     MIN_POSITIVE_NUMBER,
     MongoCollection,
     OrderDirection,
@@ -14,6 +15,7 @@ import {
     ICreateProduct,
     ICreateProductLine,
     IGetProductList,
+    IGetProductStatusTransitionList,
 } from '../product.interfaces';
 import {
     ProductErrorReport,
@@ -253,10 +255,10 @@ export class ProductService {
                         },
                     },
                     {
-                        $limit: parseInt(limit.toString()),
+                        $skip: limit * (page - 1),
                     },
                     {
-                        $skip: limit * (page - 1),
+                        $limit: parseInt(limit.toString()),
                     },
                     {
                         $project: Object.fromEntries(
@@ -444,6 +446,181 @@ export class ProductService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductStatusTransitionList(
+        query: IGetProductStatusTransitionList,
+    ) {
+        try {
+            const {
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = DEFAULT_ORDER_BY,
+            } = query;
+
+            const getListQuery: Record<string, any> = {
+                ...softDeleteCondition,
+            };
+            if (query.previousUserId) {
+                getListQuery.previousUserId = query.previousUserId;
+            }
+            if (query.nextUserId) {
+                getListQuery.nextUserId = query.nextUserId;
+            }
+            if (query.previousStorageId) {
+                getListQuery.previousStorageId = query.previousStorageId;
+            }
+            if (query.nextStorageId) {
+                getListQuery.nextStorageId = query.nextStorageId;
+            }
+            if (query.previousStatus) {
+                getListQuery.previousStatus = query.previousStatus;
+            }
+            if (query.nextStatus) {
+                getListQuery.nextStatus = query.nextStatus;
+            }
+            if (query.previousLocation) {
+                getListQuery.previousLocation = query.previousLocation;
+            }
+            if (query.nextLocation) {
+                getListQuery.nextLocation = query.nextLocation;
+            }
+
+            const [transitionList, total] = await Promise.all([
+                this.productStatusTransitionModel.aggregate([
+                    {
+                        $match: getListQuery,
+                    },
+                    {
+                        $sort: {
+                            [orderBy]:
+                                orderDirection === OrderDirection.ASCENDING
+                                    ? 1
+                                    : -1,
+                        },
+                    },
+                    {
+                        $skip: limit * (page - 1),
+                    },
+                    {
+                        $limit: parseInt(limit.toString()),
+                    },
+                    {
+                        $project: Object.fromEntries(
+                            productStatusTransitionAttributes.map((attr) => [
+                                attr,
+                                1,
+                            ]),
+                        ),
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'previousUser',
+                            localField: 'previousUserId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1, role: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$previousUser',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'nextUser',
+                            localField: 'nextUserId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1, role: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$nextUser',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'previousStorage',
+                            localField: 'previousStorageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { userId: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$previousStorage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'nextStorage',
+                            localField: 'nextStorageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { userId: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$nextStorage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ]),
+                this.productStatusTransitionModel.countDocuments(getListQuery),
+            ]);
+
+            return {
+                items: transitionList,
+                totalItem: total,
+            };
         } catch (error) {
             throw error;
         }

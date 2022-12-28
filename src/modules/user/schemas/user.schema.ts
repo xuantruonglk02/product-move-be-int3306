@@ -8,6 +8,7 @@ export type UserDocument = User & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.USERS,
 })
 export class User extends BaseEntity {

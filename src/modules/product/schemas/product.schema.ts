@@ -16,6 +16,7 @@ export type ProductDocument = Product & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.PRODUCTS,
 })
 export class Product extends BaseEntity {

@@ -9,6 +9,7 @@ export type ProductImageDocument = ProductImage & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.PRODUCT_IMAGES,
 })
 export class ProductImage extends BaseEntity {

@@ -7,6 +7,7 @@ export type OrderDocument = Order & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.ORDERS,
 })
 export class Order extends BaseEntity {

@@ -9,6 +9,7 @@ export type StorageDocument = Storage & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.STORAGES,
 })
 export class Storage extends BaseEntity {

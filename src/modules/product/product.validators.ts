@@ -45,3 +45,23 @@ export const createProductSchema = Joi.object().keys({
     bodyBuild: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
     batteryVolume: Joi.number().min(MIN_POSITIVE_NUMBER).required(),
 });
+
+export const getProductStatusTransitionListSchema = Joi.object().keys({
+    ...commonListQuerySchemaKeys,
+    previousUserId: Joi.isObjectId().optional(),
+    nextUserId: Joi.isObjectId().optional(),
+    previousStorageId: Joi.isObjectId().optional(),
+    nextStorageId: Joi.isObjectId().optional(),
+    previousStatus: Joi.string()
+        .valid(...Object.values(ProductStatus))
+        .optional(),
+    nextStatus: Joi.string()
+        .valid(...Object.values(ProductStatus))
+        .optional(),
+    previousLocation: Joi.string()
+        .valid(...Object.values(ProductLocation))
+        .optional(),
+    nextLocation: Joi.string()
+        .valid(...Object.values(ProductLocation))
+        .optional(),
+});

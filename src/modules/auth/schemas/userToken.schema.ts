@@ -10,6 +10,7 @@ export type UserTokenDocument = UserToken & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.USER_TOKENS,
 })
 export class UserToken extends BaseEntity {

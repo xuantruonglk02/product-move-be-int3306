@@ -29,6 +29,7 @@ import { ProductService } from 'src/modules/product/services/product.service';
 import {
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
+    IReceiveFixedProduct,
     ITransferErrorProduct,
 } from '../agency.interfaces';
 
@@ -234,11 +235,7 @@ export class AgencyService {
         }
     }
 
-    async receiveFixedProduct(
-        transitionId: ObjectId,
-        agencyId: ObjectId,
-        storageId: ObjectId,
-    ) {
+    async receiveFixedProduct(agencyId: ObjectId, body: IReceiveFixedProduct) {
         const session = await this.connection.startSession();
 
         try {
@@ -247,12 +244,11 @@ export class AgencyService {
             const transition = await this.productStatusTransitionModel
                 .findOneAndUpdate(
                     {
-                        _id: transitionId,
+                        _id: body.transitionId,
                         ...softDeleteCondition,
                     },
                     {
                         $set: {
-                            nextStorageId: storageId,
                             finishDate: new Date(),
                             updatedBy: agencyId,
                             updatedAt: new Date(),
@@ -260,7 +256,7 @@ export class AgencyService {
                     },
                     { session },
                 )
-                .select(['productIds']);
+                .select(['productIds', 'nextStorageId']);
             await this.productModel.updateMany(
                 {
                     _id: {
@@ -271,7 +267,7 @@ export class AgencyService {
                 {
                     $set: {
                         userId: agencyId,
-                        storageId: storageId,
+                        storageId: transition.nextStorageId,
                         status: ProductStatus.WARRANTY_DONE,
                         location: ProductLocation.IN_AGENCY,
                         updatedBy: agencyId,
@@ -281,10 +277,10 @@ export class AgencyService {
                 { session },
             );
 
-            await session.abortTransaction();
+            await session.commitTransaction();
 
             return await this.productService.getProductStatusTransition(
-                transitionId,
+                body.transitionId,
             );
         } catch (error) {
             await session.abortTransaction();

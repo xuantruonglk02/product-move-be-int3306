@@ -33,6 +33,7 @@ import warrantyCenterMessages from '../warranty-center/warranty-center.messages'
 import {
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
+    IReceiveFixedProduct,
     IReturnFixedProduct,
     ITransferErrorProduct,
 } from './agency.interfaces';
@@ -41,6 +42,7 @@ import {
     checkoutProductSchema,
     importNewProductFromProducerSchema,
     receiveErrorProduct,
+    receiveFixedProductSchema,
     returnFixedProduct,
     transferErrorProductSchema,
 } from './agency.validators';
@@ -88,7 +90,12 @@ export class AgencyController {
             const transition =
                 await this.productService.getProductStatusTransition(
                     body.transitionId,
-                    ['nextUserId', 'previousStatus', 'nextStatus'],
+                    [
+                        'nextUserId',
+                        'previousStatus',
+                        'nextStatus',
+                        'finishDate',
+                    ],
                 );
             if (!transition) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -100,8 +107,9 @@ export class AgencyController {
                 ]);
             }
             if (
-                transition.previousStatus !== ProductStatus.NEW &&
-                transition.nextStatus !== ProductStatus.IN_AGENCY
+                transition.previousStatus !== ProductStatus.NEW ||
+                transition.nextStatus !== ProductStatus.IN_AGENCY ||
+                transition.finishDate
             ) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
@@ -339,9 +347,73 @@ export class AgencyController {
         }
     }
 
-    // TODO
-    // @Post('/receive-fixed-product')
-    // async receiveFixedProduct() {}
+    @Post('/receive-fixed-product')
+    async receiveFixedProduct(
+        @Req() req,
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(receiveFixedProductSchema),
+        )
+        body: IReceiveFixedProduct,
+    ) {
+        try {
+            convertObjectId(body, ['transitionId']);
+
+            const transition =
+                await this.productService.getProductStatusTransition(
+                    body.transitionId,
+                    [
+                        'nextUserId',
+                        'previousStatus',
+                        'nextStatus',
+                        'finishDate',
+                    ],
+                );
+            if (!transition) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.transitionNotFound,
+                        key: 'transitionId',
+                    },
+                ]);
+            }
+            if (
+                transition.previousStatus !== ProductStatus.WARRANTY_DONE ||
+                transition.nextStatus !== ProductStatus.WARRANTY_DONE ||
+                transition.finishDate
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: productMessages.errors.transitionWrong,
+                        key: 'transitionId',
+                    },
+                ]);
+            }
+            if (
+                transition.nextUserId.toString() !==
+                req.loggedUser._id.toString()
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: agencyMessages.errors.transitionNotToThis,
+                        key: 'transitionId',
+                    },
+                ]);
+            }
+
+            return new SuccessResponse(
+                await this.agencyService.receiveFixedProduct(
+                    new ObjectId(req.loggedUser._id),
+                    body,
+                ),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     @Post('/return-fixed-product')
     async returnFixedProduct(

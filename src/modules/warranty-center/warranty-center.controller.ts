@@ -65,7 +65,12 @@ export class WarrantyCenterController {
             const transition =
                 await this.productService.getProductStatusTransition(
                     body.transitionId,
-                    ['nextUserId', 'previousStatus', 'nextStatus'],
+                    [
+                        'nextUserId',
+                        'previousStatus',
+                        'nextStatus',
+                        'finishDate',
+                    ],
                 );
             if (!transition) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -77,8 +82,9 @@ export class WarrantyCenterController {
                 ]);
             }
             if (
-                transition.previousStatus !== ProductStatus.NEED_WARRANTY &&
-                transition.nextStatus !== ProductStatus.IN_WARRANTY
+                transition.previousStatus !== ProductStatus.NEED_WARRANTY ||
+                transition.nextStatus !== ProductStatus.IN_WARRANTY ||
+                transition.finishDate
             ) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {

@@ -48,3 +48,14 @@ export interface ICreateProduct
     extends Omit<IProduct, 'status' | 'location' | 'sold' | 'soldDate'> {
     createdBy: ObjectId;
 }
+
+export interface IGetProductStatusTransitionList extends ICommonListQuery {
+    previousUserId?: ObjectId;
+    nextUserId?: ObjectId;
+    previousStorageId?: ObjectId;
+    nextStorageId?: ObjectId;
+    previousStatus?: ProductStatus;
+    nextStatus?: ProductStatus;
+    previousLocation?: ProductLocation;
+    nextLocation?: ProductLocation;
+}

@@ -9,6 +9,7 @@ export type ProductErrorReportDocument = ProductErrorReport & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.PRODUCT_ERROR_REPORTS,
 })
 export class ProductErrorReport extends BaseEntity {

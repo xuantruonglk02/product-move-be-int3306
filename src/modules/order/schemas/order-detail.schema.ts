@@ -10,6 +10,7 @@ export type OrderDetailDocument = OrderDetail & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.ORDER_DETAILS,
 })
 export class OrderDetail extends BaseEntity {

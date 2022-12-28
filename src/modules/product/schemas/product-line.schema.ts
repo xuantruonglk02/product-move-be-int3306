@@ -7,6 +7,7 @@ export type ProductLineDocument = ProductLine & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.PRODUCT_LINES,
 })
 export class ProductLine extends BaseEntity {

@@ -81,6 +81,7 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Get product line list](#get-product-line-list)
 -   [x] [Get product detail](#get-product-detail)
 -   [x] [Get product list](#get-product-list)
+-   [x] [Get product status transition list](#get-product-status-transition-list)
 
 ### Admin module
 
@@ -110,7 +111,7 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Sold product](#checkout)
 -   [x] [Receive error product from customer](#receive-error-product-from-customer)
 -   [x] [Transfer error product to warranty center](#transfer-error-product-to-warranty-center)
--   [ ] Receive fixed product from warranty center
+-   [x] [Receive fixed product from warranty center](#receive-fixed-product-from-warranty-center)
 -   [ ] Return fixed product to customer
 -   [ ] Return new product to customer
 -   [ ] Report about product (line) (month | quarter | year)
@@ -131,6 +132,71 @@ Nest is [MIT licensed](LICENSE).
 -   TODO: Create notification for all actions
 
 ## API Documentation
+
+### Constants
+
+#### Order directions
+
+```javascript
+enum OrderDirection {
+    ASCENDING = 'ascending',
+    DESCENDING = 'descending',
+}
+```
+
+#### User roles
+
+```javascript
+enum UserRole {
+    ADMIN = 'admin',
+    PRODUCER = 'producer',
+    AGENCY = 'agency',
+    WARRANTY_CENTER = 'warranty_center',
+    CONSUMER = 'consumer',
+}
+```
+
+#### Product statuses
+
+```javascript
+enum ProductStatus {
+    NEW = 'new',
+    IN_AGENCY = 'in_agency',
+    SOLD = 'sold',
+    NEED_WARRANTY = 'need_warranty',
+    IN_WARRANTY = 'in_warranty',
+    WARRANTY_DONE = 'warranty_done',
+    RETURN_CONSUMER = 'return_consumer',
+    NEED_RETURN_PRODUCER = 'need_return_producer',
+    RETURN_PRODUCER_DONE = 'return_producer_done',
+    NEED_RECALL = 'need_recall',
+    OUT_OF_WARRANTY = 'out_of_warranty',
+    IN_TRANSITION = 'in_transition',
+}
+```
+
+#### Product locations
+
+```javascript
+enum ProductLocation {
+    IN_PRODUCER = 'in_producer',
+    IN_AGENCY = 'in_agency',
+    IN_WARRANTY_CENTER = 'in_warranty_center',
+    IN_CUSTOMER = 'in_customer',
+    IN_TRANSITION = 'in_transition',
+}
+```
+
+#### Product colors
+
+```javascript
+enum ProductColor {
+    BLACK = 'black',
+    GRAY = 'gray',
+    RED = 'red',
+    WHITE = 'white',
+}
+```
 
 ### Auth module
 
@@ -206,8 +272,8 @@ GET /api/v1/user
 | `page`           | `number` | **Optional**                                               |
 | `limit`          | `number` | **Optional**                                               |
 | `orderBy`        | `string` | **Optional**                                               |
-| `orderDirection` | `string` | **Optional**. (in [ascending,descending])                  |
-| `role`           | `string` | **Optional**. (in [admin,producer,agency,warranty_center]) |
+| `orderDirection` | `string` | **Optional**. (view [Order directions](#order-directions)) |
+| `role`           | `string` | **Optional**. (view [User roles](#user-roles))             |
 
 ```javascript
 {
@@ -288,14 +354,14 @@ PATCH /api/v1/user/:id
 GET /api/v1/storage
 ```
 
-| Parameter        | Type       | Description                               |
-| :--------------- | :--------- | :---------------------------------------- |
-| `page`           | `number`   | **Optional**                              |
-| `limit`          | `number`   | **Optional**                              |
-| `orderBy`        | `string`   | **Optional**                              |
-| `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
-| `keyword`        | `string`   | **Optional**                              |
-| `userId`         | `ObjectId` | **Optional**                              |
+| Parameter        | Type       | Description                                                |
+| :--------------- | :--------- | :--------------------------------------------------------- |
+| `page`           | `number`   | **Optional**                                               |
+| `limit`          | `number`   | **Optional**                                               |
+| `orderBy`        | `string`   | **Optional**                                               |
+| `orderDirection` | `string`   | **Optional**. (view [Order directions](#order-directions)) |
+| `keyword`        | `string`   | **Optional**                                               |
+| `userId`         | `ObjectId` | **Optional**                                               |
 
 ```javascript
 {
@@ -362,13 +428,13 @@ GET /api/v1/product/product-line/:id
 GET /api/v1/product/product-line
 ```
 
-| Parameter        | Type     | Description                               |
-| :--------------- | :------- | :---------------------------------------- |
-| `keyword`        | `string` | **Optional**                              |
-| `page`           | `number` | **Optional**                              |
-| `limit`          | `number` | **Optional**                              |
-| `orderBy`        | `string` | **Optional**                              |
-| `orderDirection` | `string` | **Optional**. (in [ascending,descending]) |
+| Parameter        | Type     | Description                                                |
+| :--------------- | :------- | :--------------------------------------------------------- |
+| `keyword`        | `string` | **Optional**                                               |
+| `page`           | `number` | **Optional**                                               |
+| `limit`          | `number` | **Optional**                                               |
+| `orderBy`        | `string` | **Optional**                                               |
+| `orderDirection` | `string` | **Optional**. (view [Order directions](#order-directions)) |
 
 ```javascript
 {
@@ -464,20 +530,92 @@ GET /api/v1/product/:id
 GET /api/v1/product
 ```
 
-| Parameter        | Type       | Description                               |
-| :--------------- | :--------- | :---------------------------------------- |
-| `page`           | `number`   | **Optional**                              |
-| `limit`          | `number`   | **Optional**                              |
-| `orderBy`        | `string`   | **Optional**                              |
-| `orderDirection` | `string`   | **Optional**. (in [ascending,descending]) |
-| `keyword`        | `string`   | **Optional**                              |
-| `productLineId`  | `ObjectId` | **Optional**                              |
-| `userId`         | `ObjectId` | **Optional**                              |
-| `storageId`      | `ObjectId` | **Optional**                              |
-| `status`         | `ObjectId` | **Optional**                              |
-| `location`       | `ObjectId` | **Optional**                              |
-| `sold`           | `boolean`  | **Optional**                              |
-| `createdBy`      | `ObjectId` | **Optional**                              |
+| Parameter        | Type       | Description                                                |
+| :--------------- | :--------- | :--------------------------------------------------------- |
+| `page`           | `number`   | **Optional**                                               |
+| `limit`          | `number`   | **Optional**                                               |
+| `orderBy`        | `string`   | **Optional**                                               |
+| `orderDirection` | `string`   | **Optional**. (view [Order directions](#order-directions)) |
+| `keyword`        | `string`   | **Optional**                                               |
+| `productLineId`  | `ObjectId` | **Optional**                                               |
+| `userId`         | `ObjectId` | **Optional**                                               |
+| `storageId`      | `ObjectId` | **Optional**                                               |
+| `status`         | `ObjectId` | **Optional**                                               |
+| `location`       | `ObjectId` | **Optional**                                               |
+| `sold`           | `boolean`  | **Optional**                                               |
+| `createdBy`      | `ObjectId` | **Optional**                                               |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "63a88b0b7cfcda0928b81419",
+                "productLineId": "639460a71db64de99f5f7111",
+                "userId": "638d69f4383b14090809a7e8",
+                "storageId": "638d809c085dd06475c5f016",
+                "name": "56736d617274204a6f792034",
+                "description": "Iphone 1",
+                "status": "new",
+                "location": "in_producer",
+                "sold": false,
+                "weight": 1000,
+                "displaySize": 9.7,
+                "bodySize": "1x1",
+                "color": "black",
+                "bodyBuild": "body build",
+                "batteryVolume": 1000,
+                "productLine": {
+                    "_id": "639460a71db64de99f5f7111",
+                    "name": "Samsung",
+                    "price": 1000
+                },
+                "user": {
+                    "_id": "638d69f4383b14090809a7e8",
+                    "email": "producer@productmove.com",
+                    "name": "producer"
+                },
+                "storage": {
+                    "_id": "638d809c085dd06475c5f016",
+                    "name": "producer storage",
+                    "address": "producer storage"
+                }
+                "createdBy": {
+                    "_id": "638d69f4383b14090809a7e8",
+                    "email": "producer@productmove.com",
+                    "name": "producer"
+                },
+            },
+        ],
+        "totalItems": 1
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Get product status transition list
+
+```http
+GET /api/v1/product
+```
+
+| Parameter           | Type       | Description                                                  |
+| :------------------ | :--------- | :----------------------------------------------------------- |
+| `page`              | `number`   | **Optional**                                                 |
+| `limit`             | `number`   | **Optional**                                                 |
+| `orderBy`           | `string`   | **Optional**                                                 |
+| `orderDirection`    | `string`   | **Optional**. (view [Order directions](#order-directions))   |
+| `previousUserId`    | `ObjectId` | **Optional**                                                 |
+| `nextUserId`        | `ObjectId` | **Optional**                                                 |
+| `previousStorageId` | `ObjectId` | **Optional**                                                 |
+| `nextStorageId`     | `ObjectId` | **Optional**                                                 |
+| `previousStatus`    | `string`   | **Optional**. (view [Product statuses](#product-statuses))   |
+| `nextStatus`        | `string`   | **Optional**. (view [Product statuses](#product-statuses))   |
+| `previousLocation`  | `string`   | **Optional**. (view [Product locations](#product-locations)) |
+| `nextLocation`      | `string`   | **Optional**. (view [Product locations](#product-locations)) |
 
 ```javascript
 {
@@ -538,14 +676,14 @@ GET /api/v1/product
 POST /api/v1/admin/user
 ```
 
-| Parameter     | Type     | Description                                                |
-| :------------ | :------- | :--------------------------------------------------------- |
-| `email`       | `string` | **Required**                                               |
-| `name`        | `string` | **Required**                                               |
-| `role`        | `string` | **Required**. (in [admin,producer,agency,warranty_center]) |
-| `password`    | `string` | **Required**                                               |
-| `phoneNumber` | `string` | **Optional**                                               |
-| `avatar`      | `string` | **Optional**                                               |
+| Parameter     | Type     | Description                                    |
+| :------------ | :------- | :--------------------------------------------- |
+| `email`       | `string` | **Required**                                   |
+| `name`        | `string` | **Required**                                   |
+| `role`        | `string` | **Optional**. (view [User roles](#user-roles)) |
+| `password`    | `string` | **Required**                                   |
+| `phoneNumber` | `string` | **Optional**                                   |
+| `avatar`      | `string` | **Optional**                                   |
 
 ```javascript
 {
@@ -706,18 +844,18 @@ POST /api/v1/producer/storage
 POST /api/v1/producer/product
 ```
 
-| Parameter       | Type       | Description                               |
-| :-------------- | :--------- | :---------------------------------------- |
-| `productLineId` | `ObjectId` | **Required**                              |
-| `storageId`     | `ObjectId` | **Required**                              |
-| `name`          | `string`   | **Required**                              |
-| `description`   | `string`   | **Required**                              |
-| `weight`        | `number`   | **Required**. (in gram)                   |
-| `displaySize`   | `number`   | **Required**. (in inch)                   |
-| `bodySize`      | `string`   | **Required**                              |
-| `color`         | `string`   | **Required**. (in [black,gray,red,white]) |
-| `bodyBuild`     | `string`   | **Required**                              |
-| `batteryVolume` | `number`   | **Required**. (in mAh)                    |
+| Parameter       | Type       | Description                                            |
+| :-------------- | :--------- | :----------------------------------------------------- |
+| `productLineId` | `ObjectId` | **Required**                                           |
+| `storageId`     | `ObjectId` | **Required**                                           |
+| `name`          | `string`   | **Required**                                           |
+| `description`   | `string`   | **Required**                                           |
+| `weight`        | `number`   | **Required**. (in gram)                                |
+| `displaySize`   | `number`   | **Required**. (in inch)                                |
+| `bodySize`      | `string`   | **Required**                                           |
+| `color`         | `string`   | **Required**. (view [Product colors](#product-colors)) |
+| `bodyBuild`     | `string`   | **Required**                                           |
+| `batteryVolume` | `number`   | **Required**. (in mAh)                                 |
 
 ```javascript
 {
@@ -1013,6 +1151,41 @@ POST /api/v1/agency/transfer-error-product
         "previousLocation": "in_agency",
         "nextLocation": "in_warranty_center",
         "startDate": "2022-12-26T18:44:17.082Z"
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Receive fixed product from warranty center
+
+```http
+POST /api/v1/agency/receive-fixed-product
+```
+
+| Parameter      | Type       | Description  |
+| :------------- | :--------- | :----------- |
+| `transitionId` | `ObjectId` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63ac322f8264bcb844b92718",
+        "previousUserId": "63a9eb312b42b26df3f4be75",
+        "nextUserId": "638f8be6e5340b16eaef5a3e",
+        "previousStorageId": null,
+        "nextStorageId": "63945a5c1db64de99f5f70ff",
+        "productIds": [
+            "638d813b70c5c2e16b58e5dd"
+        ],
+        "previousStatus": "warranty_done",
+        "nextStatus": "warranty_done",
+        "previousLocation": "in_warranty_center",
+        "nextLocation": "in_agency",
+        "startDate": "2022-12-28T12:10:23.154Z",
+        "finishDate": "2022-12-28T14:15:48.437Z"
     },
     "version": "1.0.0"
 }

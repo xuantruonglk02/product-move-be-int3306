@@ -9,6 +9,7 @@ export type ProductReplacementDocument = ProductReplacement & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.PRODUCT_REPLACEMENTS,
 })
 export class ProductReplacement extends BaseEntity {

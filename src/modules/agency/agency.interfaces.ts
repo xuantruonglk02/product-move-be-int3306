@@ -18,3 +18,7 @@ export interface ITransferErrorProduct {
     productIds: ObjectId[];
     warrantyCenterId: ObjectId;
 }
+
+export interface IReceiveFixedProduct {
+    transitionId: ObjectId;
+}

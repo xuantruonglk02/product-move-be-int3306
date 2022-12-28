@@ -43,3 +43,7 @@ export const transferErrorProductSchema = Joi.object().keys({
         .required(),
     warrantyCenterId: Joi.isObjectId().required(),
 });
+
+export const receiveFixedProductSchema = Joi.object().keys({
+    transitionId: Joi.isObjectId().required(),
+});

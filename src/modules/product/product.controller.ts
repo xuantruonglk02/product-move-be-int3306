@@ -15,9 +15,15 @@ import { ICommonListQuery } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
-import { IGetProductList } from './product.interfaces';
+import {
+    IGetProductList,
+    IGetProductStatusTransitionList,
+} from './product.interfaces';
 import { productMessages } from './product.messages';
-import { getProductListSchema } from './product.validators';
+import {
+    getProductListSchema,
+    getProductStatusTransitionListSchema,
+} from './product.validators';
 import { ProductService } from './services/product.service';
 
 @Controller('/product')
@@ -61,6 +67,36 @@ export class ProductController {
             }
 
             return new SuccessResponse(productLine);
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Get('/status-transition')
+    async getStatusTransitionList(
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(getProductStatusTransitionListSchema),
+        )
+        query: IGetProductStatusTransitionList,
+    ) {
+        try {
+            query.previousUserId = query.previousUserId
+                ? new ObjectId(query.previousUserId)
+                : null;
+            query.nextUserId = query.nextUserId
+                ? new ObjectId(query.nextUserId)
+                : null;
+            query.previousStorageId = query.previousStorageId
+                ? new ObjectId(query.previousStorageId)
+                : null;
+            query.nextStorageId = query.nextStorageId
+                ? new ObjectId(query.nextStorageId)
+                : null;
+
+            return new SuccessResponse(
+                await this.productService.getProductStatusTransitionList(query),
+            );
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

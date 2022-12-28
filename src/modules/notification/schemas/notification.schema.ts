@@ -8,6 +8,7 @@ export type NotificationDocument = Notification & Document;
 
 @Schema({
     timestamps: true,
+    versionKey: false,
     collection: MongoCollection.NOTIFICATIONS,
 })
 export class Notification extends BaseEntity {
