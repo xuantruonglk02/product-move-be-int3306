@@ -22,3 +22,8 @@ export interface ITransferErrorProduct {
 export interface IReceiveFixedProduct {
     transitionId: ObjectId;
 }
+
+export interface IReturnNewProductToCustomer {
+    oldProductId: ObjectId;
+    newProductId: ObjectId;
+}

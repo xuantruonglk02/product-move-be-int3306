@@ -30,6 +30,7 @@ import {
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
     IReceiveFixedProduct,
+    IReturnNewProductToCustomer,
     ITransferErrorProduct,
 } from '../agency.interfaces';
 
@@ -319,9 +320,8 @@ export class AgencyService {
     }
 
     async returnNewProductToCustomer(
-        oldProductId: ObjectId,
-        newProductId: ObjectId,
         agencyId: ObjectId,
+        body: IReturnNewProductToCustomer,
     ) {
         const session = await this.connection.startSession();
 
@@ -330,7 +330,7 @@ export class AgencyService {
 
             await this.productModel.updateOne(
                 {
-                    _id: newProductId,
+                    _id: body.newProductId,
                     ...softDeleteCondition,
                 },
                 {
@@ -346,18 +346,22 @@ export class AgencyService {
                 { session },
             );
             await this.productReplacementModel.create(
-                {
-                    oldProductId: oldProductId,
-                    newProductId: newProductId,
-                    createdBy: agencyId,
-                    createdAt: new Date(),
-                },
+                [
+                    {
+                        oldProductId: body.oldProductId,
+                        newProductId: body.newProductId,
+                        createdBy: agencyId,
+                        createdAt: new Date(),
+                    },
+                ],
                 { session },
             );
 
             await session.commitTransaction();
 
-            return await this.productService.getProductDetail(newProductId);
+            return await this.productService.getProductDetail(
+                body.newProductId,
+            );
         } catch (error) {
             await session.abortTransaction();
             throw error;

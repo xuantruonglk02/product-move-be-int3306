@@ -114,7 +114,7 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Transfer error product to warranty center](#transfer-error-product-to-warranty-center)
 -   [x] [Receive fixed product from warranty center](#receive-fixed-product-from-warranty-center)
 -   [x] [Return fixed product to customer](#return-fixed-product-to-customer)
--   [ ] Return new product to customer
+-   [x] [Return new product to customer](#return-new-product-to-customer)
 -   [ ] Report about product (line) (month | quarter | year)
 -   [ ] Report about sold product (line) (month | quarter | year)
 -   TODO: recall
@@ -1263,6 +1263,54 @@ POST /api/v1/agency/return-fixed-product
         "productLine": {
             "_id": "638d6bbce7f9bf2f085460c9",
             "name": "Iphone",
+            "price": 1000
+        }
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Return new product to customer
+
+```http
+POST /api/v1/agency/return-new-product
+```
+
+| Parameter      | Type       | Description  |
+| :------------- | :--------- | :----------- |
+| `oldProductId` | `ObjectId` | **Required** |
+| `newProductId` | `ObjectId` | **Required** |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "63a8947d9bb78d3a2675a516",
+        "createdBy": {
+            "_id": "638d69f4383b14090809a7e8",
+            "email": "producer@productmove.com",
+            "name": "producer"
+        },
+        "productLineId": "639460a71db64de99f5f7111",
+        "userId": null,
+        "storageId": null,
+        "name": "Vsmart Joy 4",
+        "description": "Iphone 1",
+        "status": "return_consumer",
+        "location": "in_customer",
+        "sold": true,
+        "soldDate": "2022-12-10T08:24:27.196Z",
+        "weight": 1000,
+        "displaySize": 9.7,
+        "bodySize": "1x1",
+        "color": "black",
+        "bodyBuild": "body build",
+        "batteryVolume": 1000,
+        "productLine": {
+            "_id": "639460a71db64de99f5f7111",
+            "name": "Samsung",
             "price": 1000
         }
     },

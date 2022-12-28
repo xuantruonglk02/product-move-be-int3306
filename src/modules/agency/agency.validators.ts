@@ -2,6 +2,7 @@ import {
     AREA_TEXT_MAX_LENGTH,
     ARRAY_MAX_LENGTH,
     INPUT_TEXT_MAX_LENGTH,
+    MIN_POSITIVE_NUMBER,
     PHONE_NUMBER_MAX_LENGTH,
     Regex,
 } from 'src/common/constants';
@@ -19,6 +20,7 @@ export const checkoutProductSchema = Joi.object().keys({
         .required(),
     customerPhone: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).required(),
     productIds: Joi.array()
+        .min(MIN_POSITIVE_NUMBER)
         .max(ARRAY_MAX_LENGTH)
         .items(Joi.isObjectId())
         .required(),
@@ -31,6 +33,7 @@ export const returnFixedProduct = Joi.object().keys({
 export const receiveErrorProduct = Joi.object().keys({
     productId: Joi.isObjectId().required(),
     errors: Joi.array()
+        .min(MIN_POSITIVE_NUMBER)
         .max(ARRAY_MAX_LENGTH)
         .items(Joi.string().max(AREA_TEXT_MAX_LENGTH)),
     agencyStorageId: Joi.isObjectId().required(),
@@ -38,6 +41,7 @@ export const receiveErrorProduct = Joi.object().keys({
 
 export const transferErrorProductSchema = Joi.object().keys({
     productIds: Joi.array()
+        .min(MIN_POSITIVE_NUMBER)
         .max(ARRAY_MAX_LENGTH)
         .items(Joi.isObjectId())
         .required(),
@@ -46,4 +50,9 @@ export const transferErrorProductSchema = Joi.object().keys({
 
 export const receiveFixedProductSchema = Joi.object().keys({
     transitionId: Joi.isObjectId().required(),
+});
+
+export const returnNewProductSchema = Joi.object().keys({
+    oldProductId: Joi.isObjectId().required(),
+    newProductId: Joi.isObjectId().required(),
 });

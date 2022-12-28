@@ -35,6 +35,7 @@ import {
     IReceiveErrorProduct,
     IReceiveFixedProduct,
     IReturnFixedProduct,
+    IReturnNewProductToCustomer,
     ITransferErrorProduct,
 } from './agency.interfaces';
 import { agencyMessages } from './agency.messages';
@@ -44,6 +45,7 @@ import {
     receiveErrorProduct,
     receiveFixedProductSchema,
     returnFixedProduct,
+    returnNewProductSchema,
     transferErrorProductSchema,
 } from './agency.validators';
 import { AgencyService } from './services/agency.service';
@@ -437,7 +439,10 @@ export class AgencyController {
                     },
                 ]);
             }
-            if (product.userId.toString() !== req.loggedUser._id.toString()) {
+            if (
+                !product.userId ||
+                product.userId.toString() !== req.loggedUser._id.toString()
+            ) {
                 return new ErrorResponse(HttpStatus.BAD_REQUEST, [
                     {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -470,7 +475,76 @@ export class AgencyController {
         }
     }
 
-    // TODO
-    // @Post('/return-fixed-product')
-    // async returnNewProduct() {}
+    @Post('/return-new-product')
+    async returnNewProduct(
+        @Req() req,
+        @Body(new TrimBodyPipe(), new JoiValidationPipe(returnNewProductSchema))
+        body: IReturnNewProductToCustomer,
+    ) {
+        try {
+            convertObjectId(body, ['oldProductId', 'newProductId']);
+
+            const oldProduct = await this.productService.getProductById(
+                body.oldProductId,
+                ['_id'],
+            );
+            if (!oldProduct) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.productNotFound,
+                        key: 'oldProductId',
+                    },
+                ]);
+            }
+            // TODO: check old product
+
+            const newProduct = await this.productService.getProductById(
+                body.newProductId,
+                ['userId', 'status', 'sold'],
+            );
+            if (!newProduct) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: productMessages.errors.productNotFound,
+                        key: 'newProductId',
+                    },
+                ]);
+            }
+            if (
+                !newProduct.userId ||
+                newProduct.userId.toString() !== req.loggedUser._id.toString()
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.NOT_FOUND,
+                        message: agencyMessages.errors.notInAgency,
+                        key: 'newProductId',
+                    },
+                ]);
+            }
+            if (
+                newProduct.status !== ProductStatus.IN_AGENCY ||
+                newProduct.sold === true
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: agencyMessages.errors.unprocessableProducts,
+                        key: 'newProductId',
+                    },
+                ]);
+            }
+
+            return new SuccessResponse(
+                await this.agencyService.returnNewProductToCustomer(
+                    new ObjectId(req.loggedUser._id),
+                    body,
+                ),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 }
