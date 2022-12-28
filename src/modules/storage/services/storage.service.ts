@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import {
     DEFAULT_ITEM_PER_PAGE_LIMIT,
     MIN_POSITIVE_NUMBER,
+    MongoCollection,
     OrderDirection,
     softDeleteCondition,
 } from 'src/common/constants';
@@ -30,6 +31,52 @@ export class StorageService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getStorageDetail(id: ObjectId) {
+        try {
+            return (
+                await this.storageModel.aggregate([
+                    {
+                        $match: {
+                            _id: id,
+                            ...softDeleteCondition,
+                        },
+                    },
+                    {
+                        $project: Object.fromEntries(
+                            storageAttributes.map((attr) => [attr, 1]),
+                        ),
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'user',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1, role: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$user',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ])
+            )[0];
         } catch (error) {
             throw error;
         }

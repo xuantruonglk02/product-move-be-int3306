@@ -73,6 +73,7 @@ Nest is [MIT licensed](LICENSE).
 
 ### Storage module
 
+-   [x] [Get storage detail](#get-storage-detail)
 -   [x] [Get storage list](#get-storage-list)
 
 ### Product module
@@ -347,6 +348,37 @@ PATCH /api/v1/user/:id
 ```
 
 ### Storage module
+
+#### Get storage detail
+
+```http
+GET /api/v1/storage/:id
+```
+
+| Path Variables | Type       |
+| :------------- | :--------- |
+| `id`           | `ObjectId` |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "_id": "638d809c085dd06475c5f016",
+        "userId": "638d69f4383b14090809a7e8",
+        "name": "producer storage",
+        "address": "producer storage",
+        "user": {
+            "_id": "638d69f4383b14090809a7e8",
+            "email": "producer@productmove.com",
+            "name": "producer",
+            "role": "producer"
+        }
+    },
+    "version": "1.0.0"
+}
+```
 
 #### Get storage list
 
