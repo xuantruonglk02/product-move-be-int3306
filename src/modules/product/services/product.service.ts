@@ -392,6 +392,21 @@ export class ProductService {
         }
     }
 
+    async getProductLines(ids: ObjectId[], attrs = productLineAttributes) {
+        try {
+            return await this.productLineModel
+                .find({
+                    _id: {
+                        $in: ids,
+                    },
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getProductLineDetail(id: ObjectId, attrs = productLineAttributes) {
         try {
             return await this.productLineModel

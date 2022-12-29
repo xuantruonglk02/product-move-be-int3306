@@ -161,6 +161,7 @@ export class ProducerService {
     async reportProduct(producerId: ObjectId, query: IReportProduct) {
         try {
             const getListQuery: Record<string, any> = {
+                createdBy: producerId,
                 createdAt: {
                     $gte: query.startDate,
                     $lt: query.finishDate,
@@ -179,21 +180,16 @@ export class ProducerService {
                     createdAt: 1,
                 })
                 .select(['productLineId', 'createdAt']);
+            // const productLines = await this.productService.getProductLines(
+            //     query.productLineIds,
+            // );
 
-            console.log(products[0].createdAt);
+            console.log(new Date());
             console.log(
                 moment
-                    .utc(products[0].createdAt)
+                    .utc(new Date())
                     .tz('Asia/Ho_Chi_Minh')
                     .fmFullTimeTString(),
-            );
-            console.log(
-                new Date(
-                    moment
-                        .utc(products[0].createdAt)
-                        .tz('Asia/Ho_Chi_Minh')
-                        .fmFullTimeTString(),
-                ),
             );
 
             const reportTimeline = makeReportTimeline(

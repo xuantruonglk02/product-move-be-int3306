@@ -14,6 +14,11 @@ import {
     OrderDetail,
     OrderDetailDocument,
 } from 'src/modules/order/schemas/order-detail.schema';
+import {
+    Order,
+    orderAttributes,
+    OrderDocument,
+} from 'src/modules/order/schemas/order.schema';
 import { OrderService } from 'src/modules/order/services/order.service';
 import {
     ProductLocation,
@@ -57,6 +62,8 @@ export class AgencyService {
         private readonly productReplacementModel: Model<ProductReplacementDocument>,
         @InjectModel(ProductErrorReport.name)
         private readonly productErrorReportModel: Model<ProductErrorReportDocument>,
+        @InjectModel(Order.name)
+        private readonly orderModel: Model<OrderDocument>,
         @InjectModel(OrderDetail.name)
         private readonly orderDetailModel: Model<OrderDetailDocument>,
         @InjectConnection()
@@ -72,7 +79,31 @@ export class AgencyService {
                     createdBy: agencyId,
                     ...softDeleteCondition,
                 })
-                .select(['productId']);
+                .select(['orderId', 'productId']);
+            const orders = await this.orderModel
+                .find({
+                    _id: {
+                        $in: orderDetails.map((detail) => detail.orderId),
+                    },
+                    ...softDeleteCondition,
+                })
+                .select(orderAttributes);
+
+            const mapProductIdToOrder = new Map<string, any>();
+            orderDetails.forEach((orderDetail) => {
+                if (
+                    !mapProductIdToOrder.get(orderDetail.productId.toString())
+                ) {
+                    mapProductIdToOrder.set(
+                        orderDetail.productId.toString(),
+                        orders.find(
+                            (order) =>
+                                order._id.toString() ===
+                                orderDetail.orderId.toString(),
+                        ),
+                    );
+                }
+            });
 
             const {
                 page = MIN_POSITIVE_NUMBER,
@@ -218,7 +249,10 @@ export class AgencyService {
             ]);
 
             return {
-                items: productList,
+                items: productList.map((product) => ({
+                    ...product,
+                    order: mapProductIdToOrder.get(product._id.toString()),
+                })),
                 totalItems: total,
             };
         } catch (error) {
