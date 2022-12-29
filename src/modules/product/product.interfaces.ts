@@ -58,4 +58,5 @@ export interface IGetProductStatusTransitionList extends ICommonListQuery {
     nextStatus?: ProductStatus;
     previousLocation?: ProductLocation;
     nextLocation?: ProductLocation;
+    finished?: boolean;
 }

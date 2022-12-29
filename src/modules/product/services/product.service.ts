@@ -630,7 +630,7 @@ export class ProductService {
                 orderBy = DEFAULT_ORDER_BY,
             } = query;
 
-            const getListQuery: Record<string, any> = {
+            let getListQuery: Record<string, any> = {
                 ...softDeleteCondition,
             };
             if (query.previousUserId) {
@@ -656,6 +656,32 @@ export class ProductService {
             }
             if (query.nextLocation) {
                 getListQuery.nextLocation = query.nextLocation;
+            }
+            if (!query.finished || query.finished.toString() === 'false') {
+                getListQuery = {
+                    ...getListQuery,
+                    $or: [
+                        {
+                            finishDate: {
+                                $exists: true,
+                                $eq: null,
+                            },
+                        },
+                        {
+                            finishDate: {
+                                $exists: false,
+                            },
+                        },
+                    ],
+                };
+            } else {
+                getListQuery = {
+                    ...getListQuery,
+                    finishDate: {
+                        $exists: true,
+                        $ne: null,
+                    },
+                };
             }
 
             const [transitionList, total] = await Promise.all([

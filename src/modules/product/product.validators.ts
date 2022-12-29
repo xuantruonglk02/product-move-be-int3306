@@ -64,4 +64,5 @@ export const getProductStatusTransitionListSchema = Joi.object().keys({
     nextLocation: Joi.string()
         .valid(...Object.values(ProductLocation))
         .optional(),
+    finished: Joi.boolean().optional(),
 });
