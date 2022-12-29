@@ -127,6 +127,19 @@ export class StorageService {
         }
     }
 
+    async getStoragesByUserId(id: ObjectId, attrs = storageAttributes) {
+        try {
+            return await this.storageModel
+                .find({
+                    userId: id,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async createStorage(body: ICreateStorage) {
         try {
             return await this.storageModel.create({

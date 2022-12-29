@@ -29,12 +29,14 @@ import { userMessages } from '../user/user.messages';
 import { WarrantyService } from './services/warranty.service';
 import {
     IReceiveErrorProductFromAgency,
+    IReturnErrorProductToProducer,
     IReturnFixedProductToAgency,
     IVerifyProductErrorsFixedDone,
 } from './warranty-center.interfaces';
 import warrantyCenterMessages from './warranty-center.messages';
 import {
     receiveErrorProductFromAgency,
+    returnErrorProductToProducer,
     returnFixedProductToAgency,
     verifyProductErrorsFixedDoneSchema,
 } from './warranty-center.validators';
@@ -308,6 +310,31 @@ export class WarrantyCenterController {
 
             return new SuccessResponse(
                 await this.warrantyService.returnFixedProductToAgency(
+                    new ObjectId(req.loggedUser._id),
+                    body,
+                ),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/return-error-product')
+    async returnErrorProductToProducer(
+        @Req() req,
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(returnErrorProductToProducer),
+        )
+        body: IReturnErrorProductToProducer,
+    ) {
+        try {
+            convertObjectId(body, ['productIds']);
+
+            // TODO: check
+
+            return new SuccessResponse(
+                await this.warrantyService.returnErrorProductToProducer(
                     new ObjectId(req.loggedUser._id),
                     body,
                 ),

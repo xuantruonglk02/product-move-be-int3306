@@ -35,6 +35,7 @@ import { UserRole } from '../user/user.constants';
 import { ICreateUser } from '../user/user.interfaces';
 import { userMessages } from '../user/user.messages';
 import { createUserSchema } from '../user/user.validators';
+import adminMessages from './admin.messages';
 
 @Controller('/admin')
 @UseGuards(AuthenticationGuard, AuthorizationGuard)
@@ -97,6 +98,35 @@ export class AdminController {
                     {
                         code: HttpStatus.NOT_FOUND,
                         message: userMessages.errors.userNotFound,
+                        key: 'id',
+                    },
+                ]);
+            }
+
+            const products = await this.productService.getProductsByField(
+                { key: 'userId', value: id },
+                ['_id'],
+            );
+            if (products.length) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: adminMessages.errors.stillHasProduct,
+                        key: 'id',
+                    },
+                ]);
+            }
+
+            const transitions =
+                await this.productService.getProductStatusTransitionsByField(
+                    { key: 'nextUserId', value: id },
+                    ['_id'],
+                );
+            if (transitions.length) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: adminMessages.errors.stillHasTransitionTo,
                         key: 'id',
                     },
                 ]);

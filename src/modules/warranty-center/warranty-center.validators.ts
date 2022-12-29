@@ -23,3 +23,13 @@ export const returnFixedProductToAgency = Joi.object().keys({
         .items(Joi.isObjectId())
         .required(),
 });
+
+export const returnErrorProductToProducer = Joi.object().keys({
+    producerId: Joi.isObjectId().required(),
+    producerStorageId: Joi.isObjectId().required(),
+    productIds: Joi.array()
+        .min(MIN_POSITIVE_NUMBER)
+        .max(ARRAY_MAX_LENGTH)
+        .items(Joi.isObjectId())
+        .required(),
+});

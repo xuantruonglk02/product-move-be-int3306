@@ -28,9 +28,15 @@ import { createOwnStorageSchema } from '../storage/storage.validators';
 import { UserService } from '../user/services/user.service';
 import { UserRole } from '../user/user.constants';
 import { userMessages } from '../user/user.messages';
-import { IExportNewProductToAgency } from './producer.interfaces';
+import {
+    IExportNewProductToAgency,
+    IReceiveErrorProductFromWarrantyCenter,
+} from './producer.interfaces';
 import { producerMessages } from './producer.messages';
-import { exportNewProductToAgencySchema } from './producer.validators';
+import {
+    exportNewProductToAgencySchema,
+    receiveErrorProductFromWarrantyCenter,
+} from './producer.validators';
 import { ProducerService } from './services/producer.service';
 
 @Controller('/producer')
@@ -234,6 +240,31 @@ export class ProducerController {
                     body,
                 );
             return new SuccessResponse(transition);
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Post('/receive-error-product')
+    async receiveErrorProductFromWarrantyCenter(
+        @Req() req,
+        @Body(
+            new TrimBodyPipe(),
+            new JoiValidationPipe(receiveErrorProductFromWarrantyCenter),
+        )
+        body: IReceiveErrorProductFromWarrantyCenter,
+    ) {
+        try {
+            convertObjectId(body, ['transitionId']);
+
+            // TODO: check
+
+            return new SuccessResponse(
+                await this.producerService.receiveErrorProductFromWarrantyCenter(
+                    new ObjectId(req.loggedUser._id),
+                    body,
+                ),
+            );
         } catch (error) {
             throw new InternalServerErrorException(error);
         }

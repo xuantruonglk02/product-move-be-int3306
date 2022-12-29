@@ -11,6 +11,11 @@ import {
     OrderDirection,
     softDeleteCondition,
 } from 'src/common/constants';
+import {
+    Storage,
+    StorageDocument,
+} from 'src/modules/storage/schemas/storage.schema';
+import { StorageService } from 'src/modules/storage/services/storage.service';
 import { User, userAttributes, UserDocument } from '../schemas/user.schema';
 import { ICreateUser, IGetUserList, IUpdateUser } from '../user.interfaces';
 
@@ -19,8 +24,11 @@ export class UserService {
     constructor(
         @InjectModel(User.name)
         private readonly userModel: Model<UserDocument>,
+        @InjectModel(Storage.name)
+        private readonly storageModel: Model<StorageDocument>,
         @InjectConnection()
         private readonly connection: Connection,
+        private readonly storageService: StorageService,
     ) {}
 
     async getUserByField(
@@ -117,6 +125,8 @@ export class UserService {
         const session = await this.connection.startSession();
 
         try {
+            const storages = await this.storageService.getStoragesByUserId(id);
+
             session.startTransaction();
 
             const user = await this.userModel
@@ -134,12 +144,28 @@ export class UserService {
                     { session },
                 )
                 .select(userAttributes);
-
-            // TODO: Delete storage;
+            await this.storageModel.updateMany(
+                {
+                    _id: {
+                        $in: storages.map((storage) => storage._id),
+                    },
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        deletedBy: deletedBy,
+                        deletedAt: new Date(),
+                    },
+                },
+                { session },
+            );
 
             await session.commitTransaction();
 
-            return user;
+            return {
+                user,
+                storages,
+            };
         } catch (error) {
             await session.abortTransaction();
             throw error;

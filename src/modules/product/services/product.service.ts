@@ -81,6 +81,22 @@ export class ProductService {
         }
     }
 
+    async getProductsByField(
+        field: { key: string; value: any },
+        attrs = productAttributes,
+    ) {
+        try {
+            return await this.productModel
+                .find({
+                    [field.key]: field.value,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getProductDetail(id: ObjectId) {
         try {
             return (
@@ -567,6 +583,22 @@ export class ProductService {
                     },
                 ])
             )[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductStatusTransitionsByField(
+        field: { key: string; value: any },
+        attrs = productStatusTransitionAttributes,
+    ) {
+        try {
+            return await this.productStatusTransitionModel
+                .find({
+                    [field.key]: field.value,
+                    ...softDeleteCondition,
+                })
+                .select(attrs);
         } catch (error) {
             throw error;
         }

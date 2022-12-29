@@ -10,3 +10,7 @@ export const exportNewProductToAgencySchema = Joi.object().keys({
         .items(Joi.isObjectId())
         .required(),
 });
+
+export const receiveErrorProductFromWarrantyCenter = Joi.object().keys({
+    transitionId: Joi.isObjectId().required(),
+});

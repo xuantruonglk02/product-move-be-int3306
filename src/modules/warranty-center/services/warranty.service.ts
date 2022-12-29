@@ -22,6 +22,7 @@ import {
 import { ProductService } from 'src/modules/product/services/product.service';
 import {
     IReceiveErrorProductFromAgency,
+    IReturnErrorProductToProducer,
     IReturnFixedProductToAgency,
     IVerifyProductErrorsFixedDone,
 } from '../warranty-center.interfaces';
@@ -224,25 +225,66 @@ export class WarrantyService {
         }
     }
 
-    async returnFailedProductToProducer(
-        productId: number,
-        warrantyCenterId: number,
-        producerId: number,
+    async returnErrorProductToProducer(
+        warrantyCenterId: ObjectId,
+        body: IReturnErrorProductToProducer,
     ) {
-        try {
-            const transition = await this.productStatusTransitionModel.create({
-                productId: productId,
-                previousUserId: warrantyCenterId,
-                nextUserId: producerId,
-                previousStatus: ProductStatus.IN_WARRANTY,
-                nextStatus: ProductStatus.RETURN_PRODUCER_DONE,
-                createdBy: warrantyCenterId,
-                createdAt: new Date(),
-            });
+        const session = await this.connection.startSession();
 
-            return transition;
+        try {
+            session.startTransaction();
+
+            const transitionId = new ObjectId();
+            await this.productStatusTransitionModel.create(
+                [
+                    {
+                        _id: transitionId,
+                        previousUserId: warrantyCenterId,
+                        nextUserId: body.producerId,
+                        previousStorageId: null,
+                        nextStorageId: body.producerStorageId,
+                        productIds: body.productIds,
+                        previousStatus: ProductStatus.NEED_RETURN_PRODUCER,
+                        nextStatus: ProductStatus.RETURN_PRODUCER_DONE,
+                        previousLocation: ProductLocation.IN_WARRANTY_CENTER,
+                        nextLocation: ProductLocation.IN_PRODUCER,
+                        startDate: new Date(),
+                        createdBy: warrantyCenterId,
+                        createdAt: new Date(),
+                    },
+                ],
+                { session },
+            );
+            await this.productModel.updateMany(
+                {
+                    _id: {
+                        $in: body.productIds,
+                    },
+                    ...softDeleteCondition,
+                },
+                {
+                    $set: {
+                        userId: null,
+                        storageId: null,
+                        status: ProductStatus.IN_TRANSITION,
+                        location: ProductLocation.IN_TRANSITION,
+                        updatedBy: warrantyCenterId,
+                        updatedAt: new Date(),
+                    },
+                },
+                { session },
+            );
+
+            await session.commitTransaction();
+
+            return await this.productService.getProductStatusTransitionDetail(
+                transitionId,
+            );
         } catch (error) {
+            await session.abortTransaction();
             throw error;
+        } finally {
+            session.endSession();
         }
     }
 }

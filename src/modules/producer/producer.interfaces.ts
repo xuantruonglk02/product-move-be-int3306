@@ -5,3 +5,7 @@ export interface IExportNewProductToAgency {
     agencyStorageId: ObjectId;
     productIds: ObjectId[];
 }
+
+export interface IReceiveErrorProductFromWarrantyCenter {
+    transitionId: ObjectId;
+}

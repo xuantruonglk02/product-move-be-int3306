@@ -87,10 +87,9 @@ Nest is [MIT licensed](LICENSE).
 ### Admin module
 
 -   [x] [Create user](#create-user)
--   [ ] [Delete user](#delete-user)
+-   [x] [Delete user](#delete-user)
     -   [x] Delete user
-    -   [ ] Delete own storages
-    -   [ ] Delete inside products
+    -   [x] Delete own storages
 -   [x] [Create storage for producer and agency](#create-storage)
 -   [x] [Create product line](#create-product-line)
 -   [ ] View report (status | producer | agency | warranty center)
@@ -100,7 +99,7 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [create storage](#producer-create-storage)
 -   [x] [Create product](#create-product)
 -   [x] [Export product to agency](#export-new-product-to-agency)
--   [ ] Receive error product from warranty center
+-   [-] Receive error product from warranty center
 -   [ ] Report about product (type | status) (month | quarter | year)
 -   [ ] Report about sold product (month | quarter | year)
 -   [ ] Report about error product (line | producer | agency)
@@ -115,9 +114,9 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Receive fixed product from warranty center](#receive-fixed-product-from-warranty-center)
 -   [x] [Return fixed product to customer](#return-fixed-product-to-customer)
 -   [x] [Return new product to customer](#return-new-product-to-customer)
+-   [-] Recall error products
 -   [ ] Report about product (line) (month | quarter | year)
 -   [ ] Report about sold product (line) (month | quarter | year)
--   TODO: recall
 
 ### Warranty center module
 
@@ -125,7 +124,7 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Verify product errors fixed done](#verify-product-errors-fixed-done)
 -   [x] [Return fixed product to agency](#return-fixed-product-to-agency)
 -   [ ] Notify agency that the product can not be fixed
--   [ ] Return error product to producer
+-   [-] Return error product to producer
 -   [ ] Report about product (line | status) (month | quarter | year)
 
 ### Notification
@@ -631,7 +630,7 @@ GET /api/v1/product
 #### Get product status transition list
 
 ```http
-GET /api/v1/product
+GET /api/v1/product/status-transition
 ```
 
 | Parameter           | Type       | Description                                                  |
@@ -757,12 +756,32 @@ DELETE /api/v1/admin/user/:id
     "code": 200,
     "message": "Success",
     "data": {
-        "_id": "63a9ed8d2b42b26df3f4be87",
-        "email": "warrantyy@productmove.com",
-        "phoneNumber": "0123456456",
-        "name": "warranty center",
-        "role": "warranty_center",
-        "avatar": "https://avatar.com"
+        "user": {
+            "_id": "638d69f4383b14090809a7e8",
+            "email": "producer@productmove.com",
+            "name": "producer",
+            "role": "producer"
+        },
+        "storages": [
+            {
+                "_id": "638d809c085dd06475c5f016",
+                "userId": "638d69f4383b14090809a7e8",
+                "name": "producer storage",
+                "address": "producer storage"
+            },
+            {
+                "_id": "63a813bc157ef2658cdfe5ba",
+                "userId": "638d69f4383b14090809a7e8",
+                "name": "producer storage 2",
+                "address": "producer storage 2"
+            },
+            {
+                "_id": "63a813f55b89e87de7d9f28f",
+                "userId": "638d69f4383b14090809a7e8",
+                "name": "producer storage 3",
+                "address": "producer storage 3"
+            }
+        ]
     },
     "version": "1.0.0"
 }

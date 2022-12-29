@@ -14,3 +14,9 @@ export interface IReturnFixedProductToAgency {
     agencyStorageId: ObjectId;
     productIds: ObjectId[];
 }
+
+export interface IReturnErrorProductToProducer {
+    producerId: ObjectId;
+    producerStorageId: ObjectId;
+    productIds: ObjectId[];
+}
