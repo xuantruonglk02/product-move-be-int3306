@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import { ICommonListQuery } from 'src/common/interfaces';
 
 export interface IImportNewProductFromProducer {
     transitionId: ObjectId;
@@ -26,4 +27,8 @@ export interface IReceiveFixedProduct {
 export interface IReturnNewProductToCustomer {
     oldProductId: ObjectId;
     newProductId: ObjectId;
+}
+
+export interface IGetSoldProducts extends ICommonListQuery {
+    productLineId: ObjectId;
 }

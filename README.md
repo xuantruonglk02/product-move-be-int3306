@@ -109,6 +109,7 @@ Nest is [MIT licensed](LICENSE).
 -   [x] [Create storage](#agency-create-storage)
 -   [x] [Import new product from producer](#import-new-product-from-producer)
 -   [x] [Sold product](#checkout)
+-   [x] [Get sold products](#get-sold-products)
 -   [x] [Receive error product from customer](#receive-error-product-from-customer)
 -   [x] [Transfer error product to warranty center](#transfer-error-product-to-warranty-center)
 -   [x] [Receive fixed product from warranty center](#receive-fixed-product-from-warranty-center)
@@ -1112,6 +1113,63 @@ POST /api/v1/agency/checkout
                 ]
             }
         ]
+    },
+    "version": "1.0.0"
+}
+```
+
+#### Get sold products
+
+```http
+GET /api/v1/agency/product/sold
+```
+
+| Parameter        | Type       | Description                                                |
+| :--------------- | :--------- | :--------------------------------------------------------- |
+| `page`           | `number`   | **Optional**                                               |
+| `limit`          | `number`   | **Optional**                                               |
+| `orderBy`        | `string`   | **Optional**                                               |
+| `orderDirection` | `string`   | **Optional**. (view [Order directions](#order-directions)) |
+| `keyword`        | `string`   | **Optional**                                               |
+| `productLineId`  | `ObjectId` | **Optional**                                               |
+
+```javascript
+{
+    "success": true,
+    "code": 200,
+    "message": "Success",
+    "data": {
+        "items": [
+            {
+                "_id": "638db36fd64edfe4d9b02f38",
+                "createdBy": {
+                    "_id": "638d69f4383b14090809a7e8",
+                    "email": "producer@productmove.com",
+                    "name": "producer"
+                },
+                "productLineId": "638d6bbce7f9bf2f085460c9",
+                "userId": null,
+                "storageId": null,
+                "name": "Iphone 1",
+                "description": "Iphone 1",
+                "weight": 1000,
+                "displaySize": 9.7,
+                "bodySize": "1x1",
+                "color": "black",
+                "bodyBuild": "body build",
+                "batteryVolume": 1000,
+                "status": "sold",
+                "location": "in_customer",
+                "sold": true,
+                "soldDate": "2022-12-06T18:45:14.581Z",
+                "productLine": {
+                    "_id": "638d6bbce7f9bf2f085460c9",
+                    "name": "Iphone",
+                    "price": 1000
+                }
+            },
+        ],
+        "totalItems": 1
     },
     "version": "1.0.0"
 }

@@ -9,7 +9,6 @@ import {
     OrderDirection,
     softDeleteCondition,
 } from 'src/common/constants';
-import { ICommonListQuery } from 'src/common/interfaces';
 import { ICreateOrder } from 'src/modules/order/order.interfaces';
 import {
     OrderDetail,
@@ -39,6 +38,7 @@ import {
 } from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
 import {
+    IGetSoldProducts,
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
     IReceiveFixedProduct,
@@ -65,7 +65,7 @@ export class AgencyService {
         private readonly orderService: OrderService,
     ) {}
 
-    async getSoldProducts(agencyId: ObjectId, query: ICommonListQuery) {
+    async getSoldProducts(agencyId: ObjectId, query: IGetSoldProducts) {
         try {
             const orderDetails = await this.orderDetailModel
                 .find({
@@ -87,6 +87,9 @@ export class AgencyService {
                 },
                 ...softDeleteCondition,
             };
+            if (query.productLineId) {
+                getListQuery.productLineId = query.productLineId;
+            }
 
             const [productList, total] = await Promise.all([
                 this.productModel.aggregate([

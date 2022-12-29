@@ -1,6 +1,7 @@
 import {
     AREA_TEXT_MAX_LENGTH,
     ARRAY_MAX_LENGTH,
+    commonListQuerySchemaKeys,
     INPUT_TEXT_MAX_LENGTH,
     MIN_POSITIVE_NUMBER,
     PHONE_NUMBER_MAX_LENGTH,
@@ -55,4 +56,9 @@ export const receiveFixedProductSchema = Joi.object().keys({
 export const returnNewProductSchema = Joi.object().keys({
     oldProductId: Joi.isObjectId().required(),
     newProductId: Joi.isObjectId().required(),
+});
+
+export const getSoldProductsSchema = Joi.object().keys({
+    ...commonListQuerySchemaKeys,
+    productLineId: Joi.isObjectId().optional(),
 });

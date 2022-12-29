@@ -13,7 +13,6 @@ import { ConfigService } from '@nestjs/config';
 import moment from 'moment';
 import { ObjectId } from 'mongodb';
 import ConfigKey from 'src/common/config/configKey';
-import { commonListQuerySchema } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -21,7 +20,6 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { convertObjectId } from 'src/common/helpers/utilityFunctions';
-import { ICommonListQuery } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
@@ -36,6 +34,7 @@ import { createOwnStorageSchema } from '../storage/storage.validators';
 import { UserRole } from '../user/user.constants';
 import warrantyCenterMessages from '../warranty-center/warranty-center.messages';
 import {
+    IGetSoldProducts,
     IImportNewProductFromProducer,
     IReceiveErrorProduct,
     IReceiveFixedProduct,
@@ -46,6 +45,7 @@ import {
 import { agencyMessages } from './agency.messages';
 import {
     checkoutProductSchema,
+    getSoldProductsSchema,
     importNewProductFromProducerSchema,
     receiveErrorProduct,
     receiveFixedProductSchema,
@@ -71,11 +71,15 @@ export class AgencyController {
         @Req() req,
         @Query(
             new RemoveEmptyQueryPipe(),
-            new JoiValidationPipe(commonListQuerySchema),
+            new JoiValidationPipe(getSoldProductsSchema),
         )
-        query: ICommonListQuery,
+        query: IGetSoldProducts,
     ) {
         try {
+            query.productLineId = query.productLineId
+                ? new ObjectId(query.productLineId)
+                : null;
+
             return new SuccessResponse(
                 await this.agencyService.getSoldProducts(
                     new ObjectId(req.loggedUser._id),
