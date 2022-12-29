@@ -66,3 +66,9 @@ export const getProductStatusTransitionListSchema = Joi.object().keys({
         .optional(),
     finished: Joi.boolean().optional(),
 });
+
+export const getProductErrorListSchema = Joi.object().keys({
+    ...commonListQuerySchemaKeys,
+    productId: Joi.isObjectId().optional(),
+    solved: Joi.boolean().optional(),
+});

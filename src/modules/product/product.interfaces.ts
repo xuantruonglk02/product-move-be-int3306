@@ -60,3 +60,8 @@ export interface IGetProductStatusTransitionList extends ICommonListQuery {
     nextLocation?: ProductLocation;
     finished?: boolean;
 }
+
+export interface IGetProductErrorList extends ICommonListQuery {
+    productId?: ObjectId;
+    solved?: boolean;
+}

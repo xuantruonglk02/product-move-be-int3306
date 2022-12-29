@@ -16,11 +16,13 @@ import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
 import { ParseObjectIdPipe } from 'src/common/pipes/objectId.validation.pipe';
 import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import {
+    IGetProductErrorList,
     IGetProductList,
     IGetProductStatusTransitionList,
 } from './product.interfaces';
 import { productMessages } from './product.messages';
 import {
+    getProductErrorListSchema,
     getProductListSchema,
     getProductStatusTransitionListSchema,
 } from './product.validators';
@@ -96,6 +98,29 @@ export class ProductController {
 
             return new SuccessResponse(
                 await this.productService.getProductStatusTransitionList(query),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+
+    @Get('/error')
+    async getProductErrors(
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(getProductErrorListSchema),
+        )
+        query: IGetProductErrorList,
+    ) {
+        try {
+            query.productId = query.productId
+                ? new ObjectId(query.productId)
+                : null;
+
+            return new SuccessResponse(
+                await this.productService.getProductErrorReportsOfProduct(
+                    query,
+                ),
             );
         } catch (error) {
             throw new InternalServerErrorException(error);

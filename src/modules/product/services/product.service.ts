@@ -14,6 +14,7 @@ import { ICommonListQuery } from 'src/common/interfaces';
 import {
     ICreateProduct,
     ICreateProductLine,
+    IGetProductErrorList,
     IGetProductList,
     IGetProductStatusTransitionList,
 } from '../product.interfaces';
@@ -831,6 +832,55 @@ export class ProductService {
                     ...softDeleteCondition,
                 })
                 .select(attrs);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getProductErrorReportsOfProduct(query: IGetProductErrorList) {
+        try {
+            const {
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = DEFAULT_ORDER_BY,
+            } = query;
+
+            const getListQuery: Record<string, any> = {
+                ...softDeleteCondition,
+            };
+            if (query.productId) {
+                getListQuery.productId = query.productId;
+            }
+            if (query.solved !== undefined) {
+                if (query.solved.toString() === 'true') {
+                    getListQuery.solved = true;
+                } else {
+                    getListQuery.solved = {
+                        $exists: false,
+                    };
+                }
+            }
+
+            const [errorList, total] = await Promise.all([
+                this.productErrorReportModel
+                    .find(getListQuery)
+                    .select(productErrorReportAttributes)
+                    .sort({
+                        [orderBy]:
+                            orderDirection === OrderDirection.ASCENDING
+                                ? 1
+                                : -1,
+                    })
+                    .skip(limit * (page - 1))
+                    .limit(limit),
+                this.productErrorReportModel.countDocuments(getListQuery),
+            ]);
+
+            return {
+                items: errorList,
+                totalItems: total,
+            };
         } catch (error) {
             throw error;
         }
