@@ -1,3 +1,4 @@
+import 'moment-timezone';
 import moment from 'moment';
 declare module 'moment' {
     interface Moment {
@@ -11,6 +12,11 @@ declare module 'moment' {
          * @return string
          */
         fmFullTimeString(): string;
+        /**
+         * format YYYY-MM-DD HH:mm:ss
+         * @return string
+         */
+        fmFullTimeTString(): string;
         /**
          * format YYYY-MM-DD
          * @return string
@@ -111,6 +117,10 @@ declare module 'moment' {
 
 moment.fn.fmFullTimeWithoutSecond = function (): string {
     return this.format('YYYY-MM-DD HH:mm');
+};
+
+moment.fn.fmFullTimeTString = function (): string {
+    return this.format('YYYY-MM-DDTHH:mm:ss');
 };
 
 moment.fn.fmFullTimeString = function (): string {

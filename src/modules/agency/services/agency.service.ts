@@ -2,8 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
-import { softDeleteCondition } from 'src/common/constants';
+import {
+    DEFAULT_ITEM_PER_PAGE_LIMIT,
+    MIN_POSITIVE_NUMBER,
+    MongoCollection,
+    OrderDirection,
+    softDeleteCondition,
+} from 'src/common/constants';
+import { ICommonListQuery } from 'src/common/interfaces';
 import { ICreateOrder } from 'src/modules/order/order.interfaces';
+import {
+    OrderDetail,
+    OrderDetailDocument,
+} from 'src/modules/order/schemas/order-detail.schema';
 import { OrderService } from 'src/modules/order/services/order.service';
 import {
     ProductLocation,
@@ -23,6 +34,7 @@ import {
 } from 'src/modules/product/schemas/product-status-transition.schema';
 import {
     Product,
+    productAttributes,
     ProductDocument,
 } from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
@@ -45,11 +57,171 @@ export class AgencyService {
         private readonly productReplacementModel: Model<ProductReplacementDocument>,
         @InjectModel(ProductErrorReport.name)
         private readonly productErrorReportModel: Model<ProductErrorReportDocument>,
+        @InjectModel(OrderDetail.name)
+        private readonly orderDetailModel: Model<OrderDetailDocument>,
         @InjectConnection()
         private readonly connection: Connection,
         private readonly productService: ProductService,
         private readonly orderService: OrderService,
     ) {}
+
+    async getSoldProducts(agencyId: ObjectId, query: ICommonListQuery) {
+        try {
+            const orderDetails = await this.orderDetailModel
+                .find({
+                    createdBy: agencyId,
+                    ...softDeleteCondition,
+                })
+                .select(['productId']);
+
+            const {
+                page = MIN_POSITIVE_NUMBER,
+                limit = DEFAULT_ITEM_PER_PAGE_LIMIT,
+                orderDirection = OrderDirection.ASCENDING,
+                orderBy = 'soldDate',
+            } = query;
+
+            const getListQuery: Record<string, any> = {
+                _id: {
+                    $in: orderDetails.map((detail) => detail.productId),
+                },
+                ...softDeleteCondition,
+            };
+
+            const [productList, total] = await Promise.all([
+                this.productModel.aggregate([
+                    {
+                        $match: getListQuery,
+                    },
+                    {
+                        $sort: {
+                            [orderBy]:
+                                orderDirection === OrderDirection.ASCENDING
+                                    ? 1
+                                    : -1,
+                        },
+                    },
+                    {
+                        $skip: limit * (page - 1),
+                    },
+                    {
+                        $limit: parseInt(limit.toString()),
+                    },
+                    {
+                        $project: Object.fromEntries(
+                            productAttributes
+                                .map((attr) => [attr, 1])
+                                .concat([['createdBy', 1]]),
+                        ),
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.PRODUCT_LINES,
+                            as: 'productLine',
+                            localField: 'productLineId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { name: 1, price: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$productLine',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'createdBy',
+                            localField: 'createdBy',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$createdBy',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.USERS,
+                            as: 'user',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { email: 1, name: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$user',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: MongoCollection.STORAGES,
+                            as: 'storage',
+                            localField: 'storageId',
+                            foreignField: '_id',
+                            pipeline: [
+                                {
+                                    $match: {
+                                        ...softDeleteCondition,
+                                    },
+                                },
+                                {
+                                    $project: { name: 1, address: 1 },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $unwind: {
+                            path: '$storage',
+                            preserveNullAndEmptyArrays: true,
+                        },
+                    },
+                ]),
+                this.productModel.countDocuments(getListQuery),
+            ]);
+
+            return {
+                items: productList,
+                totalItems: total,
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
 
     async importNewProductFromProducer(
         agencyId: ObjectId,

@@ -25,6 +25,12 @@ export enum OrderBy {
     UPDATED_AT = 'updatedAt',
 }
 
+export enum ReportTimeUnit {
+    MONTH = 'month',
+    QUARTER = 'quarter',
+    YEAR = 'year',
+}
+
 export const Regex = {
     EMAIL: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     PASSWORD:
@@ -77,3 +83,11 @@ export const commonListQuerySchemaKeys = {
 export const commonListQuerySchema = Joi.object().keys({
     ...commonListQuerySchemaKeys,
 });
+
+export const baseReportProductSchemaKeys = {
+    startDate: Joi.date().required(),
+    finishDate: Joi.date().required(),
+    timeUnit: Joi.string()
+        .valid(...Object.values(ReportTimeUnit))
+        .required(),
+};

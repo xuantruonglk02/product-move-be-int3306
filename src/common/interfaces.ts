@@ -1,4 +1,4 @@
-import { OrderDirection } from './constants';
+import { OrderDirection, ReportTimeUnit } from './constants';
 
 export interface ICommonListQuery {
     page?: number;
@@ -6,4 +6,10 @@ export interface ICommonListQuery {
     orderBy?: string;
     orderDirection?: OrderDirection;
     keyword?: string;
+}
+
+export interface IBaseReportProduct {
+    startDate: Date;
+    finishDate: Date;
+    timeUnit: ReportTimeUnit;
 }

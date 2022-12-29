@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import moment from 'moment';
 import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
 import { softDeleteCondition } from 'src/common/constants';
+import { makeReportTimeline } from 'src/common/helpers/utilityFunctions';
 import {
     ProductLocation,
     ProductStatus,
@@ -19,6 +21,7 @@ import { ProductService } from 'src/modules/product/services/product.service';
 import {
     IExportNewProductToAgency,
     IReceiveErrorProductFromWarrantyCenter,
+    IReportProduct,
 } from '../producer.interfaces';
 
 @Injectable()
@@ -152,6 +155,68 @@ export class ProducerService {
             throw error;
         } finally {
             session.endSession();
+        }
+    }
+
+    async reportProduct(producerId: ObjectId, query: IReportProduct) {
+        try {
+            const getListQuery: Record<string, any> = {
+                createdAt: {
+                    $gte: query.startDate,
+                    $lt: query.finishDate,
+                },
+                ...softDeleteCondition,
+            };
+            if (query.productLineIds) {
+                getListQuery.productLineId = {
+                    $in: query.productLineIds,
+                };
+            }
+
+            const products = await this.productModel
+                .find(getListQuery)
+                .sort({
+                    createdAt: 1,
+                })
+                .select(['productLineId', 'createdAt']);
+
+            console.log(products[0].createdAt);
+            console.log(
+                moment
+                    .utc(products[0].createdAt)
+                    .tz('Asia/Ho_Chi_Minh')
+                    .fmFullTimeTString(),
+            );
+            console.log(
+                new Date(
+                    moment
+                        .utc(products[0].createdAt)
+                        .tz('Asia/Ho_Chi_Minh')
+                        .fmFullTimeTString(),
+                ),
+            );
+
+            const reportTimeline = makeReportTimeline(
+                query.startDate,
+                query.finishDate,
+                query.timeUnit,
+            );
+            const report = reportTimeline.map((item) => ({
+                time: item,
+                productQuantity: {
+                    total: 0,
+                    productLines: [
+                        {
+                            productLine: {},
+                            quantity: 0,
+                        },
+                    ],
+                },
+            }));
+
+            return { products, report };
+        } catch (error) {
+            throw error;
         }
     }
 }

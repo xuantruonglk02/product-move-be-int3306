@@ -1,9 +1,11 @@
 import {
     Body,
     Controller,
+    Get,
     HttpStatus,
     InternalServerErrorException,
     Post,
+    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
@@ -11,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import moment from 'moment';
 import { ObjectId } from 'mongodb';
 import ConfigKey from 'src/common/config/configKey';
+import { commonListQuerySchema } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -18,7 +21,9 @@ import {
 } from 'src/common/guards/authorization.guard';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { convertObjectId } from 'src/common/helpers/utilityFunctions';
+import { ICommonListQuery } from 'src/common/interfaces';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
+import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateOrder } from '../order/order.interfaces';
 import { ProductLocation, ProductStatus } from '../product/product.constants';
@@ -60,6 +65,27 @@ export class AgencyController {
         private readonly storageService: StorageService,
         private readonly configService: ConfigService,
     ) {}
+
+    @Get('/product/sold')
+    async getSoldProducts(
+        @Req() req,
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(commonListQuerySchema),
+        )
+        query: ICommonListQuery,
+    ) {
+        try {
+            return new SuccessResponse(
+                await this.agencyService.getSoldProducts(
+                    new ObjectId(req.loggedUser._id),
+                    query,
+                ),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
 
     @Post('/storage')
     async createStorage(

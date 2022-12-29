@@ -1,9 +1,11 @@
 import {
     Body,
     Controller,
+    Get,
     HttpStatus,
     InternalServerErrorException,
     Post,
+    Query,
     Req,
     UseGuards,
 } from '@nestjs/common';
@@ -16,6 +18,7 @@ import {
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { convertObjectId } from 'src/common/helpers/utilityFunctions';
 import { JoiValidationPipe } from 'src/common/pipes/joi.validation.pipe';
+import { RemoveEmptyQueryPipe } from 'src/common/pipes/removeEmptyQuery.pipe';
 import { TrimBodyPipe } from 'src/common/pipes/trimBody.pipe';
 import { ICreateProduct } from '../product/product.interfaces';
 import { productMessages } from '../product/product.messages';
@@ -31,11 +34,13 @@ import { userMessages } from '../user/user.messages';
 import {
     IExportNewProductToAgency,
     IReceiveErrorProductFromWarrantyCenter,
+    IReportProduct,
 } from './producer.interfaces';
 import { producerMessages } from './producer.messages';
 import {
     exportNewProductToAgencySchema,
     receiveErrorProductFromWarrantyCenter,
+    reportProductSchema,
 } from './producer.validators';
 import { ProducerService } from './services/producer.service';
 
@@ -269,4 +274,33 @@ export class ProducerController {
             throw new InternalServerErrorException(error);
         }
     }
+
+    @Get('/report/product')
+    async reportProduct(
+        @Req() req,
+        @Query(
+            new RemoveEmptyQueryPipe(),
+            new JoiValidationPipe(reportProductSchema),
+        )
+        query: IReportProduct,
+    ) {
+        try {
+            query.startDate = new Date(query.startDate);
+            query.finishDate = new Date(query.finishDate);
+            query.productLineIds = query.productLineIds
+                ? query.productLineIds.map((id) => new ObjectId(id))
+                : null;
+
+            return new SuccessResponse(
+                await this.producerService.reportProduct(
+                    new ObjectId(req.loggedUser._id),
+                    query,
+                ),
+            );
+        } catch (error) {
+            throw new InternalServerErrorException(error);
+        }
+    }
+    // @Get('/report/sold-product')
+    // @Get('/report/error-product')
 }
