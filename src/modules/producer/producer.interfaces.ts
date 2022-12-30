@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { IBaseReportProduct } from 'src/common/interfaces';
+import { IBaseReportProductQuery } from 'src/common/interfaces';
 
 export interface IExportNewProductToAgency {
     agencyId: ObjectId;
@@ -11,6 +11,6 @@ export interface IReceiveErrorProductFromWarrantyCenter {
     transitionId: ObjectId;
 }
 
-export interface IReportProduct extends IBaseReportProduct {
+export interface IReportProductQuery extends IBaseReportProductQuery {
     productLineIds?: ObjectId[];
 }

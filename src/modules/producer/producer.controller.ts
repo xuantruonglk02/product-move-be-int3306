@@ -34,13 +34,13 @@ import { userMessages } from '../user/user.messages';
 import {
     IExportNewProductToAgency,
     IReceiveErrorProductFromWarrantyCenter,
-    IReportProduct,
+    IReportProductQuery,
 } from './producer.interfaces';
 import { producerMessages } from './producer.messages';
 import {
     exportNewProductToAgencySchema,
     receiveErrorProductFromWarrantyCenter,
-    reportProductSchema,
+    reportProductQuerySchema,
 } from './producer.validators';
 import { ProducerService } from './services/producer.service';
 
@@ -280,9 +280,9 @@ export class ProducerController {
         @Req() req,
         @Query(
             new RemoveEmptyQueryPipe(),
-            new JoiValidationPipe(reportProductSchema),
+            new JoiValidationPipe(reportProductQuerySchema),
         )
-        query: IReportProduct,
+        query: IReportProductQuery,
     ) {
         try {
             query.startDate = new Date(query.startDate);
@@ -301,6 +301,7 @@ export class ProducerController {
             throw new InternalServerErrorException(error);
         }
     }
+
     // @Get('/report/sold-product')
     // @Get('/report/error-product')
 }

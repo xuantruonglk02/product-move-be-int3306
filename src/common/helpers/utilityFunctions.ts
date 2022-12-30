@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { isPlainObject } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { ReportTimeUnit } from '../constants';
+import { IProductReportTimeUnit } from '../interfaces';
 
 export function extractToken(authorization = '') {
     if (/^Bearer /.test(authorization)) {
@@ -40,7 +41,7 @@ export function makeReportTimeline(
     startDate: Date,
     finishDate: Date,
     timeUnit: ReportTimeUnit,
-) {
+): IProductReportTimeUnit[] {
     const monthIncrement = (() => {
         switch (timeUnit) {
             case ReportTimeUnit.MONTH:

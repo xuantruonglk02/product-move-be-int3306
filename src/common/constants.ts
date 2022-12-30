@@ -84,7 +84,7 @@ export const commonListQuerySchema = Joi.object().keys({
     ...commonListQuerySchemaKeys,
 });
 
-export const baseReportProductSchemaKeys = {
+export const baseReportProductQuerySchemaKeys = {
     startDate: Joi.date().required(),
     finishDate: Joi.date().required(),
     timeUnit: Joi.string()

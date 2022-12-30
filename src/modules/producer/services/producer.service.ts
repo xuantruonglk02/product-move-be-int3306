@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import moment from 'moment';
 import { ObjectId } from 'mongodb';
 import { Connection, Model } from 'mongoose';
 import { softDeleteCondition } from 'src/common/constants';
-import { makeReportTimeline } from 'src/common/helpers/utilityFunctions';
 import {
     ProductLocation,
     ProductStatus,
@@ -18,10 +16,11 @@ import {
     ProductDocument,
 } from 'src/modules/product/schemas/product.schema';
 import { ProductService } from 'src/modules/product/services/product.service';
+import { ProductReportService } from 'src/modules/product/services/report.service';
 import {
     IExportNewProductToAgency,
     IReceiveErrorProductFromWarrantyCenter,
-    IReportProduct,
+    IReportProductQuery,
 } from '../producer.interfaces';
 
 @Injectable()
@@ -34,6 +33,7 @@ export class ProducerService {
         @InjectConnection()
         private readonly connection: Connection,
         private readonly productService: ProductService,
+        private readonly productReportService: ProductReportService,
     ) {}
 
     async exportNewProductToAgency(
@@ -158,7 +158,7 @@ export class ProducerService {
         }
     }
 
-    async reportProduct(producerId: ObjectId, query: IReportProduct) {
+    async reportProduct(producerId: ObjectId, query: IReportProductQuery) {
         try {
             const getListQuery: Record<string, any> = {
                 createdBy: producerId,
@@ -180,35 +180,15 @@ export class ProducerService {
                     createdAt: 1,
                 })
                 .select(['productLineId', 'createdAt']);
-            // const productLines = await this.productService.getProductLines(
-            //     query.productLineIds,
-            // );
-
-            console.log(new Date());
-            console.log(
-                moment
-                    .utc(new Date())
-                    .tz('Asia/Ho_Chi_Minh')
-                    .fmFullTimeTString(),
+            const productLines = await this.productService.getProductLines(
+                query.productLineIds,
             );
 
-            const reportTimeline = makeReportTimeline(
-                query.startDate,
-                query.finishDate,
-                query.timeUnit,
+            const report = await this.productReportService.makeProductReport(
+                query,
+                products,
+                productLines,
             );
-            const report = reportTimeline.map((item) => ({
-                time: item,
-                productQuantity: {
-                    total: 0,
-                    productLines: [
-                        {
-                            productLine: {},
-                            quantity: 0,
-                        },
-                    ],
-                },
-            }));
 
             return { products, report };
         } catch (error) {

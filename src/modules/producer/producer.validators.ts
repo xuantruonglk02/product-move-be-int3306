@@ -1,6 +1,6 @@
 import {
     ARRAY_MAX_LENGTH,
-    baseReportProductSchemaKeys,
+    baseReportProductQuerySchemaKeys,
     MIN_POSITIVE_NUMBER,
 } from 'src/common/constants';
 import Joi from 'src/plugins/joi';
@@ -19,8 +19,8 @@ export const receiveErrorProductFromWarrantyCenter = Joi.object().keys({
     transitionId: Joi.isObjectId().required(),
 });
 
-export const reportProductSchema = Joi.object().keys({
-    ...baseReportProductSchemaKeys,
+export const reportProductQuerySchema = Joi.object().keys({
+    ...baseReportProductQuerySchemaKeys,
     productLineIds: Joi.array()
         .min(MIN_POSITIVE_NUMBER)
         .max(ARRAY_MAX_LENGTH)
