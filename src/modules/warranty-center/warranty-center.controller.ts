@@ -280,21 +280,6 @@ export class WarrantyCenterController {
             }
             if (
                 products.findIndex(
-                    (product) =>
-                        product.userId.toString() !==
-                        req.loggedUser._id.toString(),
-                ) !== -1
-            ) {
-                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
-                    {
-                        code: HttpStatus.UNPROCESSABLE_ENTITY,
-                        message: warrantyCenterMessages.errors.productNotInThis,
-                        key: 'productIds',
-                    },
-                ]);
-            }
-            if (
-                products.findIndex(
                     (product) => product.status !== ProductStatus.WARRANTY_DONE,
                 ) !== -1
             ) {
@@ -303,6 +288,21 @@ export class WarrantyCenterController {
                         code: HttpStatus.UNPROCESSABLE_ENTITY,
                         message:
                             warrantyCenterMessages.errors.productNotFixedDone,
+                        key: 'productIds',
+                    },
+                ]);
+            }
+            if (
+                products.findIndex(
+                    (product) =>
+                        product.userId?.toString() !==
+                        req.loggedUser._id.toString(),
+                ) !== -1
+            ) {
+                return new ErrorResponse(HttpStatus.BAD_REQUEST, [
+                    {
+                        code: HttpStatus.UNPROCESSABLE_ENTITY,
+                        message: warrantyCenterMessages.errors.productNotInThis,
                         key: 'productIds',
                     },
                 ]);

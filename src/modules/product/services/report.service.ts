@@ -2,14 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import moment from 'moment';
 import ConfigKey from 'src/common/config/configKey';
-import { ReportTimeUnit } from 'src/common/constants';
 import {
     makeCheckReportTimeConditions,
     makeReportTimeline,
 } from 'src/common/helpers/utilityFunctions';
 import { IProductReportUnit } from 'src/common/interfaces';
 import { IReportProductQuery } from 'src/modules/producer/producer.interfaces';
-import { IProductLine } from '../product.interfaces';
 import { ProductLineDocument } from '../schemas/product-line.schema';
 import { ProductDocument } from '../schemas/product.schema';
 

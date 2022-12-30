@@ -10,5 +10,6 @@ export const productMessages = {
         productNotSold: 'Product has not been sold yet',
         errorReportNotFound: 'Product error report not found',
         errorReportNotOfProduct: 'The error report not about this product',
+        productsInTransition: 'Products in transition',
     },
 };
