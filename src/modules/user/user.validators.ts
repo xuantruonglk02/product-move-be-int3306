@@ -20,9 +20,12 @@ export const createUserSchema = Joi.object().keys({
         .max(INPUT_TEXT_MAX_LENGTH)
         .regex(Regex.EMAIL)
         .required(),
-    phoneNumber: Joi.string().max(PHONE_NUMBER_MAX_LENGTH).optional(),
+    phoneNumber: Joi.string()
+        .max(PHONE_NUMBER_MAX_LENGTH)
+        .optional()
+        .allow(null, ''),
     name: Joi.string().max(INPUT_TEXT_MAX_LENGTH).required(),
-    avatar: Joi.string().max(INPUT_TEXT_MAX_LENGTH).optional(),
+    avatar: Joi.string().max(INPUT_TEXT_MAX_LENGTH).optional().allow(null, ''),
     role: Joi.string()
         .valid(...Object.values(UserRole))
         .required(),
