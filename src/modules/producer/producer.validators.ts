@@ -21,9 +21,9 @@ export const receiveErrorProductFromWarrantyCenter = Joi.object().keys({
 
 export const reportProductQuerySchema = Joi.object().keys({
     ...baseReportProductQuerySchemaKeys,
-    // productLineIds: Joi.array()
-    //     .min(MIN_POSITIVE_NUMBER)
-    //     .max(ARRAY_MAX_LENGTH)
-    //     .items(Joi.isObjectId())
-    //     .optional(),
+    productLineIds: Joi.array()
+        .min(MIN_POSITIVE_NUMBER)
+        .max(ARRAY_MAX_LENGTH)
+        .items(Joi.isObjectId())
+        .optional(),
 });
