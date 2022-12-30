@@ -856,9 +856,6 @@ export class ProductService {
                 if (query.solved.toString() === 'true') {
                     getListQuery.solved = true;
                 } else {
-                    // getListQuery.solved = {
-                    //     $exists: false,
-                    // };
                     Object.assign(getListQuery, {
                         $or: [
                             {

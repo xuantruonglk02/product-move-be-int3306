@@ -1,4 +1,4 @@
-import { Module, NestModule, Scope } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, Scope } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import mongoose from 'mongoose';
@@ -16,6 +16,7 @@ import { ProductModule } from './modules/product/product.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UserModule } from './modules/user/user.module';
 import { warrantyCenterModule } from './modules/warranty-center/warranty-center.module';
+import { HeaderMiddleware } from './common/middlewares/header.middleware';
 
 @Module({
     imports: [
@@ -49,7 +50,8 @@ import { warrantyCenterModule } from './modules/warranty-center/warranty-center.
     exports: [],
 })
 export class AppModule implements NestModule {
-    configure() {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(HeaderMiddleware).forRoutes('*');
         mongoose.set('debug', process.env[ConfigKey.MONGO_DEBUG] === 'enable');
     }
 }

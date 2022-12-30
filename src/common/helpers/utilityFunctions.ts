@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { isPlainObject } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { ReportTimeUnit } from '../constants';
-import { IProductReportTimeUnit } from '../interfaces';
+import { IProductReportTimeUnit, IProductReportUnit } from '../interfaces';
 
 export function extractToken(authorization = '') {
     if (/^Bearer /.test(authorization)) {
@@ -74,4 +74,24 @@ export function makeReportTimeline(
         });
     }
     return timeline;
+}
+
+export function makeCheckReportTimeConditions(
+    report: IProductReportUnit[],
+    timeUnit: ReportTimeUnit,
+) {
+    switch (timeUnit) {
+        case ReportTimeUnit.MONTH:
+            return (createdAt, loopIndex) =>
+                createdAt.month() + 1 !== report[loopIndex].time.month ||
+                createdAt.year() !== report[loopIndex].time.year;
+        case ReportTimeUnit.QUARTER:
+            return (createdAt, loopIndex) =>
+                Math.floor(createdAt.month() / 3) + 1 !==
+                    report[loopIndex].time.quarter ||
+                createdAt.year() !== report[loopIndex].time.year;
+        case ReportTimeUnit.YEAR:
+            return (createdAt, loopIndex) =>
+                createdAt.year() !== report[loopIndex].time.year;
+    }
 }

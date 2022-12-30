@@ -158,7 +158,11 @@ export class ProducerService {
         }
     }
 
-    async reportProduct(producerId: ObjectId, query: IReportProductQuery) {
+    async reportProduct(
+        producerId: ObjectId,
+        query: IReportProductQuery,
+        timezoneName?: string,
+    ) {
         try {
             const getListQuery: Record<string, any> = {
                 createdBy: producerId,
@@ -188,9 +192,10 @@ export class ProducerService {
                 query,
                 products,
                 productLines,
+                timezoneName,
             );
 
-            return { products, report };
+            return report;
         } catch (error) {
             throw error;
         }

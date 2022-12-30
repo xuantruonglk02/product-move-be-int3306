@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Headers,
     HttpStatus,
     InternalServerErrorException,
     Post,
@@ -10,6 +11,7 @@ import {
     UseGuards,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
+import { TIMEZONE_NAME_HEADER } from 'src/common/constants';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import {
     AuthorizationGuard,
@@ -277,6 +279,7 @@ export class ProducerController {
 
     @Get('/report/product')
     async reportProduct(
+        @Headers() headers,
         @Req() req,
         @Query(
             new RemoveEmptyQueryPipe(),
@@ -295,6 +298,7 @@ export class ProducerController {
                 await this.producerService.reportProduct(
                     new ObjectId(req.loggedUser._id),
                     query,
+                    headers[TIMEZONE_NAME_HEADER],
                 ),
             );
         } catch (error) {

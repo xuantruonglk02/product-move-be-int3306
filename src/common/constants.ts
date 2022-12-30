@@ -49,6 +49,8 @@ export const MAX_ITEM_PER_PAGE_LIMIT = 10000;
 export const MIN_POSITIVE_NUMBER = 1;
 export const PASSWORD_MIN_LENGTH = 8;
 export const PHONE_NUMBER_MAX_LENGTH = 12;
+export const TIMEZONE_HEADER = 'x-timezone';
+export const TIMEZONE_NAME_HEADER = 'x-timezone-name';
 
 export const softDeleteCondition = {
     $or: [
