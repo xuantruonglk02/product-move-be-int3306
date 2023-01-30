@@ -1,0 +1,106 @@
+[
+    {
+        "_id": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407347681"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411018867"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "deletedBy": null,
+        "name": "Iphone 11",
+        "price": 8970000,
+        "quantityOfProduct": 8
+    },
+    {
+        "_id": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407467243"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411141368"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "deletedBy": null,
+        "name": "Iphone 12",
+        "price": 19990000,
+        "quantityOfProduct": 9
+    },
+    {
+        "_id": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407540689"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411220698"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "deletedBy": null,
+        "name": "Iphone 13",
+        "price": 24990000,
+        "quantityOfProduct": 8
+    },
+    {
+        "_id": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407565055"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411258299"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "deletedBy": null,
+        "name": "Iphone 14",
+        "price": 41990000,
+        "quantityOfProduct": 6
+    }
+]

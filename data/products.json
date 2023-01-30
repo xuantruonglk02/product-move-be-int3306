@@ -1,0 +1,1314 @@
+[
+    {
+        "_id": {
+            "$oid": "63aeed322889f91a19344189"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408370953"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408370953"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 11 đỏ",
+        "description": "Iphone 11 siêu rẻ và đẹp",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aeed482889f91a1934418e"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408392562"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408392562"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 11 đen",
+        "description": "Iphone 11 siêu rẻ và đẹp",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aeed7f2889f91a19344193"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408447269"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408447269"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 12 trắng",
+        "description": "Iphone 12 siêu rẻ và đẹp",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aeed982889f91a19344198"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408472683"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408472683"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 13 xám",
+        "description": "Iphone 13 siêu rẻ và đẹp",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "gray",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aeedd82889f91a193441a2"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408536608"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408536608"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 14 xám",
+        "description": "Iphone 14 siêu rẻ và đẹp",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "gray",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aeefcb2889f91a193441ac"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409035801"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409035801"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 11 xám",
+        "description": "Iphone 11 hiện đại",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "gray",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aeefe72889f91a193441b1"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409063659"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409063659"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 12 đỏ",
+        "description": "Iphone 12 hiện đại",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef00d2889f91a193441b6"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409101977"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409101977"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 13 đỏ",
+        "description": "Iphone 13 hiện đại",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef0242889f91a193441bb"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409124982"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409124982"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 14 đỏ",
+        "description": "Iphone 14 hiện đại",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef0562889f91a193441c2"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409174656"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409174656"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 11 đen",
+        "description": "Iphone 11 trẻ trung",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef0862889f91a193441cc"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409222674"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409222674"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 12 đen",
+        "description": "Iphone 12 trẻ trung",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef0942889f91a193441d1"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409236036"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409236036"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 13 đen",
+        "description": "Iphone 13 trẻ trung",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef0a52889f91a193441d6"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409253528"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409253528"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 14 đen",
+        "description": "Iphone 14 trẻ trung",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef2ea2889f91a193441dd"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409834455"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409834455"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 11 trắng",
+        "description": "Iphone 14 trẻ trung",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef3192889f91a193441e2"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672409881027"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672409881027"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 12 đỏ",
+        "description": "Iphone 12 năng động",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef55a2889f91a193441e7"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410458211"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410458211"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 12 đen",
+        "description": "Iphone 12 cuốn hút",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef5832889f91a193441ec"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410499078"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410499078"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 13 trắng",
+        "description": "Iphone 13 bí ẩn",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef5982889f91a193441f1"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410520451"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410520451"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 13 đỏ",
+        "description": "Iphone 13 rực rỡ",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef5c42889f91a193441f7"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410564524"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410564524"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "storageId": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "name": "Iphone 14 đen",
+        "description": "Iphone 14 ma giáo",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef6142889f91a193441fe"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410644192"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410644192"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 14 đen",
+        "description": "Iphone 14 mạnh mẽ",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef6362889f91a19344203"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410678858"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410678858"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 13 trắng",
+        "description": "Iphone 13 ngây thơ",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef6522889f91a19344208"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410706338"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410706338"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344167"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 13 xám",
+        "description": "Iphone 13 tà đạo",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "gray",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef6af2889f91a1934420d"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410799417"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410799417"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 12 trắng",
+        "description": "Iphone 12 chói lóa",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef6c92889f91a19344212"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410825128"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410825128"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 12 đen",
+        "description": "Iphone 12 nguy hiểm",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef7072889f91a19344219"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410887027"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410887027"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "storageId": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "name": "Iphone 11 đen",
+        "description": "Iphone 11 ba chấm",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "black",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef7772889f91a19344220"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672410999782"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672410999782"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 11 đỏ",
+        "description": "Iphone 11 đoàng đoàng",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef78a2889f91a19344225"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411018860"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411018860"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9332889f91a19344163"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 11 trắng",
+        "description": "Iphone 11 bùm bùm",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef7eb2889f91a1934422c"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411115012"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411115012"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 12 xám",
+        "description": "Iphone 12 hảry pỏter",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "gray",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef8052889f91a19344231"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411141364"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411141364"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9ab2889f91a19344165"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 12 đỏ",
+        "description": "Iphone 12 dôn guých",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef8352889f91a19344236"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411189181"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411189181"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 13 xám",
+        "description": "Iphone 13 nghịch ngợm",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "gray",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef8542889f91a1934423b"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411220681"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411220681"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aee9f42889f91a19344167"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 13 trắng",
+        "description": "Iphone 13 răn ning men",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "white",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    },
+    {
+        "_id": {
+            "$oid": "63aef87a2889f91a19344240"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411258295"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411258295"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "productLineId": {
+            "$oid": "63aeea0d2889f91a19344169"
+        },
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "storageId": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "name": "Iphone 14 đỏ",
+        "description": "Iphone 14 bình thường",
+        "status": "new",
+        "location": "in_producer",
+        "sold": false,
+        "weight": 162,
+        "displaySize": 6.1,
+        "bodySize": "146.7x71.5x7.4",
+        "color": "red",
+        "bodyBuild": "Glass",
+        "batteryVolume": 5500
+    }
+]

@@ -1,0 +1,314 @@
+[
+    {
+        "_id": {
+            "$oid": "63aeea872889f91a1934416d"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407687299"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672407687299"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "name": "Kho nhà máy Hà Nội",
+        "address": "123 Cầu Giấy, Hà Nội"
+    },
+    {
+        "_id": {
+            "$oid": "63aeead52889f91a19344171"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407765436"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672407765436"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "name": "Kho nhà máy Thái Nguyên",
+        "address": "123 Phan Đình Phùng, Thái Nguyên"
+    },
+    {
+        "_id": {
+            "$oid": "63aeeb7d2889f91a19344175"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407933752"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672407933752"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "name": "Kho nhà máy Hồ Chí Minh",
+        "address": "123 Trần Nhật Duật, Quận 1, Hồ Chí Minh"
+    },
+    {
+        "_id": {
+            "$oid": "63aeebf12889f91a1934417b"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408049478"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408049478"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638f8be6e5340b16eaef5a3e"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "638f8be6e5340b16eaef5a3e"
+        },
+        "name": "Tổng kho Hà Nội",
+        "address": "12 Hoàng Quốc Việt"
+    },
+    {
+        "_id": {
+            "$oid": "63aeec3c2889f91a1934417f"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408124693"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408124693"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee73b2889f91a1934413e"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee73b2889f91a1934413e"
+        },
+        "name": "Tổng kho Hải Phòng",
+        "address": "12 Lạch Tray, Lê Chân, Hải Phòng"
+    },
+    {
+        "_id": {
+            "$oid": "63aeec5f2889f91a19344183"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672408159136"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672408159136"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee75a2889f91a19344142"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee75a2889f91a19344142"
+        },
+        "name": "Tổng kho Hồ Chí Minh",
+        "address": "12 Lê Duẩn, Hồ Chí Minh"
+    },
+    {
+        "_id": {
+            "$oid": "63aef9ab2889f91a19344247"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411563382"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411563382"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "name": "Kho nhà máy Hà Nội 2",
+        "address": "124 Cầu Giấy, Hà Nội"
+    },
+    {
+        "_id": {
+            "$oid": "63aef9e12889f91a1934424b"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411617223"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411617223"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638f8be6e5340b16eaef5a3e"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "638f8be6e5340b16eaef5a3e"
+        },
+        "name": "Phụ kho Hà Nội",
+        "address": "13 Hoàng Quốc Việt"
+    },
+    {
+        "_id": {
+            "$oid": "63aefa002889f91a1934424f"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411648918"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411648918"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee73b2889f91a1934413e"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee73b2889f91a1934413e"
+        },
+        "name": "Phụ kho Hải Phòng",
+        "address": "13 Lạch Tray, Lê Chân, Hải Phòng"
+    },
+    {
+        "_id": {
+            "$oid": "63aefa2e2889f91a19344253"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411694721"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411694721"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "name": "Kho nhà máy Thái Nguyên 2",
+        "address": "124 Phan Đình Phùng, Thái Nguyên"
+    },
+    {
+        "_id": {
+            "$oid": "63aefa4b2889f91a19344257"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411723454"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411723454"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "name": "Kho nhà máy Hồ Chí Minh 2",
+        "address": "124 Trần Nhật Duật, Quận 1, Hồ Chí Minh"
+    },
+    {
+        "_id": {
+            "$oid": "63aefa762889f91a1934425b"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672411766530"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672411766530"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee75a2889f91a19344142"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "userId": {
+            "$oid": "63aee75a2889f91a19344142"
+        },
+        "name": "Phụ kho Hồ Chí Minh",
+        "address": "13 Lê Duẩn, Hồ Chí Minh"
+    }
+]

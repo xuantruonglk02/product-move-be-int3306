@@ -1,0 +1,262 @@
+[
+    {
+        "_id": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "email": "admin@productmove.com",
+        "phoneNumber": "0123456789",
+        "name": "Admin",
+        "role": "admin",
+        "password": "$2b$12$njt7N6YdnPBIeF3t19BzKOGns8TSGZo7XXddz4xQNZoeCKKkdki2e",
+        "avatar": "https://avatar.com",
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1670349946212"
+            }
+        },
+        "updatedBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "638d69f4383b14090809a7e8"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1670212084660"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672302289049"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "producer.hanoi@productmove.com",
+        "name": "Cơ sở sản xuất Hà Nội",
+        "role": "producer",
+        "password": "$2b$12$Br/bQgyypsNCTIUl5Gv15.MdTALBqzIgldRv/mHnMDyeEZUdvI94G"
+    },
+    {
+        "_id": {
+            "$oid": "638f8be6e5340b16eaef5a3e"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1670351846888"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1670351846888"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "63aee6d0d93639a731484f53"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "agency.hanoi@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Đại lý Hà Nội",
+        "role": "agency",
+        "password": "$2b$12$Pd1NXPx21wVICEKYO/gQi.2psmzZjRez3R4PwfLbyaT11mCJUpsFm",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63a9eb312b42b26df3f4be75"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672080177311"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672080177311"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "warranty.hanoi@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Trung tâm bảo hành Hà Nội",
+        "role": "warranty_center",
+        "password": "$2b$12$nS.utiyf2s7HmFyz/IlbWuKmDf02BPtGXVNHuQeuP0HTYqT1XnsO2",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63aee73b2889f91a1934413e"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672406843530"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672406843530"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "agency.haiphong@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Đại lý Hải Phòng",
+        "role": "agency",
+        "password": "$2b$12$vvMpyIY1KQjyrPKgkn3wU.DfN4K9j9rYuWr.Km89xbckSMyPJf42.",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63aee75a2889f91a19344142"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672406874101"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672406874101"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "agency.hochiminh@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Đại lý Hồ Chí Minh",
+        "role": "agency",
+        "password": "$2b$12$d/FNrqATXrWnR2sxd5vd.OMVOi23QpMfrKDLZGOX2TydRRKVH7BaK",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63aee7952889f91a1934414a"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672406933492"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672406933492"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "producer.thainguyen@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Cơ sở sản xuất Thái Nguyên",
+        "role": "producer",
+        "password": "$2b$12$otdN3LgJWlaUsv98.x6Cle5ckACFQuWwLuDNeqvkXyLFMtqchx8tW",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63aee84f2889f91a19344157"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407119871"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672407119871"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "warranty.haiphong@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Trung tâm bảo hành Hải Phòng",
+        "role": "warranty_center",
+        "password": "$2b$12$1Jc1iXhV72BjgojhJ78YpeKH81eoofhdbRF26PqZWWe8NnmLtUf8u",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63aee8632889f91a1934415b"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407139453"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672407139453"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "warranty.hochiminh@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Trung tâm bảo hành Hồ Chí Minh",
+        "role": "warranty_center",
+        "password": "$2b$12$xLS.4eHeB.fQxmyVxiJ.K.cPuaE.4bvXVh9VcqQCyJGNj6J/IIJ0e",
+        "avatar": "https://avatar.com"
+    },
+    {
+        "_id": {
+            "$oid": "63aee8b72889f91a19344160"
+        },
+        "createdAt": {
+            "$date": {
+                "$numberLong": "1672407223792"
+            }
+        },
+        "updatedAt": {
+            "$date": {
+                "$numberLong": "1672407223792"
+            }
+        },
+        "deletedAt": null,
+        "createdBy": {
+            "$oid": "638b4b7718844a05965a0ca3"
+        },
+        "updatedBy": null,
+        "deletedBy": null,
+        "email": "producer.hochiminh@productmove.com",
+        "phoneNumber": "0123456456",
+        "name": "Cơ sở sản xuất Hồ Chí Minh",
+        "role": "producer",
+        "password": "$2b$12$cSoEVXsfWQH7NVveA2B0iepey45QabC47PJcGjrcMo3q.0FeXgtfa",
+        "avatar": "https://avatar.com"
+    }
+]
